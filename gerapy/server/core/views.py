@@ -8,4 +8,4 @@ def index(request):
 
 
 def client(requests):
-    return HttpResponse(serialize('json', Client.objects.all()))
+    return HttpResponse(serialize('json', Client.objects.order_by('-id')))
