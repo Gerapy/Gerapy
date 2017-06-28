@@ -1,12 +1,3 @@
-/**
- * @file: index.
- * @intro: 时间格式化工具类.
- * @author: zzmhot.
- * @email: zzmhot@163.com.
- * @Date: 2017/4/28 15:55.
- * @Copyright(©) 2017 by zzmhot.
- *
- */
 
 /**
  * 时间格式化函数

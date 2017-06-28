@@ -150,7 +150,7 @@
       //获取数据
       getTaskData(){
         this.loadData = true
-        this.$fetch.api_task.list({
+        this.$fetch.apiClient.index({
           minutesToNow: this.minutesToNow,
           pageSize: this.pageSize,
           lastId: this.lastIds[this.currentPage - 1]

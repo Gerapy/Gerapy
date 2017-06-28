@@ -67,5 +67,11 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/gerapy/client/src/api/pattern.js" />
+    <file url="file://$PROJECT_DIR$/gerapy/client/src/api/table.js" />
+    <file url="file://$PROJECT_DIR$/gerapy/client/src/api/task.js" />
+    <file url="file://$PROJECT_DIR$/gerapy/client/src/api/user.js" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.1 (/usr/local/Cellar/python3/3.6.1/bin/python3)" project-jdk-type="Python SDK" />
 </project>

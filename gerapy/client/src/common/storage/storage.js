@@ -1,17 +1,9 @@
-/**
- * @file: index.
- * @intro: Storage工具类.
- * @author: zzmhot.
- * @email: zzmhot@163.com.
- * @Date: 2017/4/27 15:28.
- * @Copyright(©) 2017 by zzmhot.
- *
- */
+
 
 //存储前缀
-import {storage_prefix} from 'common/config'
+import {storagePrefix} from 'common/config'
 
-import {tools_verify, tools_uri} from 'common/tools'
+import {toolsVerify, toolsUri} from 'common/tools'
 
 class Storage {
 
@@ -21,7 +13,7 @@ class Storage {
     } else if (type === 'session') {
       this.store = window.sessionStorage
     }
-    this.prefix = storage_prefix
+    this.prefix = storagePrefix
   }
 
   set(key, value) {
@@ -31,7 +23,7 @@ class Storage {
       value = value
     }
 
-    this.store.setItem(tools_uri.encode(this.prefix + key), tools_uri.encode(value))
+    this.store.setItem(toolsUri.encode(this.prefix + key), toolsUri.encode(value))
 
     return this
   }
@@ -45,14 +37,14 @@ class Storage {
       throw new Error('key不能是一个对象。')
       return
     }
-    let value = this.store.getItem(tools_uri.encode(this.prefix + key))
+    let value = this.store.getItem(toolsUri.encode(this.prefix + key))
 
     if (value === null) {
       return {}
     }
 
     try {
-      value = JSON.parse(tools_uri.decode(value))
+      value = JSON.parse(toolsUri.decode(value))
     } catch (e) {
       value = {}
     }
@@ -60,7 +52,7 @@ class Storage {
   }
 
   remove(key) {
-    this.store.removeItem(tools_uri.encode(this.prefix + key))
+    this.store.removeItem(toolsUri.encode(this.prefix + key))
     return this
   }
 }

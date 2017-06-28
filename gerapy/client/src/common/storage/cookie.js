@@ -1,17 +1,9 @@
-/**
- * @file: cookie.
- * @intro: cookie存储类.
- * @author: zzmhot.
- * @email: zzmhot@163.com.
- * @Date: 2017/4/28 10:45.
- * @Copyright(©) 2017 by zzmhot.
- *
- */
+
 
 //存储前缀
-import {storage_prefix} from 'common/config'
+import {storagePrefix} from 'common/config'
 
-import {tools_verify, tools_uri} from 'common/tools'
+import {toolsVerify, toolsUri} from 'common/tools'
 
 /**
  * cookies操作类
@@ -24,7 +16,7 @@ export default new class Cookie {
   constructor() {
     this.defaults = {}
     this.expiresMultiplier = 60 * 60 * 24
-    this.prefix = storage_prefix
+    this.prefix = storagePrefix
   }
 
 
@@ -60,7 +52,7 @@ export default new class Cookie {
    * @returns {Cookie}
    */
   set(key, value, options) {
-    options = tools_verify.isObject(options) ? options : {expires: options}
+    options = toolsVerify.isObject(options) ? options : {expires: options}
     // 如果expires为空的话那么就设置为session.
     let expires = options.expires !== undefined ? options.expires : (this.defaults.expires || ''),
       expiresType = typeof(expires)
@@ -82,7 +74,7 @@ export default new class Cookie {
     let secure = options.secure || this.defaults.secure ? ';secure' : ''
     if (options.secure === false) secure = ''
     //设置cookie
-    document.cookie = tools_uri.encode(this.prefix + key) + '=' + tools_uri.encode(JSON.stringify(value)) + expires + path + domain + secure
+    document.cookie = toolsUri.encode(this.prefix + key) + '=' + toolsUri.encode(JSON.stringify(value)) + expires + path + domain + secure
     return this
   }
 
@@ -92,7 +84,7 @@ export default new class Cookie {
    * @returns {Cookie}
    */
   remove(keys) {
-    keys = tools_verify.isArray(keys) ? keys : [keys]
+    keys = toolsVerify.isArray(keys) ? keys : [keys]
     for (let i = 0, l = keys.length; i < l; i++) {
       this.set(keys[i], '', -1);
     }
@@ -111,8 +103,8 @@ export default new class Cookie {
     for (let i = 0, l = cookieArr.length; i < l; i++) {
       let item = cookieArr[i].split('=');
       //arr.shift()把第一个数组删除并得到删除的值
-      let key = tools_uri.decode(item.shift())
-      let value = tools_uri.decode(item.join(''))
+      let key = toolsUri.decode(item.shift())
+      let value = toolsUri.decode(item.join(''))
       result[key] = value
     }
     return result

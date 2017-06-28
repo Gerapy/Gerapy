@@ -46,17 +46,9 @@
     data(){
       return {
         nav_menu_data: [{
-          title: "任务添加",
-          path: "/task/add",
+          title: "主机管理",
+          path: "/client",
           icon: "fa-plus",
-        }, {
-          title: "任务管理",
-          path: "/task",
-          icon: "fa-tasks",
-        }, {
-          title: "规则管理",
-          path: "/pattern",
-          icon: "fa-magic",
         }]
       }
     }

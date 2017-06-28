@@ -1,2 +1,1 @@
-exports.base_url = 'http://localhost:8000'
-
+exports.baseUrl = 'http://localhost:8000'

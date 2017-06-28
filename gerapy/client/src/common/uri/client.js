@@ -1,0 +1,1 @@
+exports.index = "/api/client"
