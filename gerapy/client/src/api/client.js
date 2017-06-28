@@ -7,3 +7,10 @@ export function index(params) {
     params
   })
 }
+export function show(params) {
+  return fetch({
+    url: client.show,
+    method: 'get',
+    params
+  })
+}

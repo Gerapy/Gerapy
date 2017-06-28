@@ -1,1 +1,2 @@
-exports.index = "/api/client"
+exports.index = '/api/client'
+exports.show = '/api/client'

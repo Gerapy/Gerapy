@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer" v-once>Copyright &copy; {{getYear}} zzmhot All Rights Reserved</footer>
+  <footer class="footer" v-once>Copyright &copy; {{getYear}} Gerapy All Rights Reserved</footer>
 </template>
 <script type="text/javascript">
   export default {

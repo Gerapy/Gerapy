@@ -12,6 +12,7 @@ import homeComponent from 'pages/home'
 import noPageComponent from 'pages/error/404'
 //client
 import clientIndexComponent from 'pages/client/index'
+import clientEditComponent from 'pages/client/edit'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -35,11 +36,19 @@ const routes = [{
     }
   }, {
     path: '/client',
-    name: 'client',
+    name: 'clientIndex',
     component: clientIndexComponent,
     meta: {
       title: "主机管理",
       auth: false
+    }
+  },{
+    path: '/client/:id',
+    name: 'clientEdit',
+    component: clientEditComponent,
+    meta: {
+      title: "修改主机",
+      auth: true
     }
   }]
 }]
