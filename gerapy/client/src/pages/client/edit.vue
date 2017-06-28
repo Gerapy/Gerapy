@@ -8,17 +8,17 @@
         <el-col :span="8">
           <el-form ref="form" :model="form" :rules="rules" label-width="100px">
             <el-form-item label="名称:" prop="name">
-              {{ form.fields.name }}
+              {{ form.name }}
             </el-form-item>
             <el-form-item label="IP:" prop="ip">
-              <el-input v-model="form.fields.ip" placeholder="请输入IP"></el-input>
+              <el-input v-model="form.ip" placeholder="请输入IP"></el-input>
             </el-form-item>
             <el-form-item label="端口:" prop="port">
-              <el-input v-model="form.fields.port" placeholder="请输入端口"></el-input>
+              <el-input v-model="form.port" placeholder="请输入端口"></el-input>
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="on_submit_form" :loading="onSubmitLoading">立即提交</el-button>
+              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">立即提交</el-button>
               <el-button @click="$router.back()">取消</el-button>
             </el-form-item>
           </el-form>
@@ -33,12 +33,10 @@
     data(){
       return {
         form: {
-          fields: {
-            name: '',
-            ip: '',
-            port: '',
-            description: ''
-          }
+          name: '',
+          ip: '',
+          port: '',
+          description: ''
         },
         routeId: this.$route.params.id,
         loadData: false,
@@ -54,21 +52,19 @@
       this.routeId !== null && this.getFormData()
     },
     methods: {
-      //获取数据
       getFormData(){
         this.loadData = true
         this.$fetch.apiClient.show({
-          pk: this.routeId
-        }).then(({data}) => {
+          id: this.routeId
+        }).then(({data: data}) => {
           this.form = data
-          this.form.envTag = this.form.envTag.toString()
           this.loadData = false
         }).catch(() => {
           this.loadData = false
         })
       },
       //提交
-      on_submit_form(){
+      onSubmitForm(){
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
