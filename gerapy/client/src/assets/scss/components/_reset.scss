@@ -1,0 +1,42 @@
+* {
+  word-break: break-all;
+  word-wrap: break-word;
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+a {
+  font-weight: 300;
+  text-decoration: none;
+  &:active, &:hover {
+    outline: 0;
+  }
+}
+
+i {
+  font-style: normal;
+}
+
+img {
+  width: auto;
+  height: auto;
+  max-width: 100% !important;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+  &:not([src*="/"]) {
+    display: none !important;
+  }
+}
+
+ol, ul, li {
+  list-style-type: none;
+  list-style: none;
+}
+
+input, textarea, button {
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+}

@@ -1,0 +1,15 @@
+mainbody{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #50cf77;
+  background-image: url(~assets/images/start_loading.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80px 80px;
+  z-index: 9999;
+}
