@@ -1,10 +1,13 @@
 import json
 
 from django.shortcuts import render
+
+from .utils import scrapyd_url
 from .models import Client
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
+from scrapyd_api import ScrapydAPI
 
 
 def index(request):
@@ -26,3 +29,14 @@ def client_update(request, id):
         data = json.loads(request.body)
         client.update(**data)
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
+
+
+def client_projects(request, id):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        ip = client.ip
+        print(ip)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        projects = scrapyd.list_projects()
+        print(projects)
+        return HttpResponse(json.dumps(projects))
