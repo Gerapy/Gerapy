@@ -65,3 +65,11 @@ export function getLog(params) {
   })
 }
 
+export function cancelJob(params) {
+  return fetch({
+    url: client.cancelJob,
+    method: 'get',
+    params,
+  })
+}
+

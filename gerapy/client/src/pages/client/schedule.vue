@@ -25,7 +25,9 @@
           <el-table-column
             label="操作">
             <template scope="props">
-              <el-button type="success" size="small" icon="arrow-right" @click="startSpider(project, props.row.name)">运行
+              <el-button type="success" size="mini" @click="startSpider(project, props.row.name)">
+                <i class="fa fa-caret-right"></i>
+                新任务
               </el-button>
             </template>
           </el-table-column>
@@ -33,11 +35,6 @@
         <el-collapse accordion @change="getLog">
           <el-collapse-item v-for="job in jobs[project]" :name="job.id">
             <template slot="title">
-              <span class="wrapper">
-                <el-button :type="jobStatusClass[job.status]" size="mini">
-                  {{ jobStatusText[job.status] }}
-                </el-button>
-              </span>
               <span v-if="job.spider">
                 <i class="fa fa-bug"></i>
                 爬虫名称：
@@ -56,6 +53,21 @@
                 <i class="el-icon-time"></i>
                 结束时间：
                 {{ job.end_time.substring(0, 16) }}
+              </span>
+              <span class="wrapper">
+                <el-button :type="jobStatusClass[job.status]" size="mini" class="pull-right m-t-sm m-r-md">
+                  {{ jobStatusText[job.status] }}
+                </el-button>
+                <el-button type="danger" size="mini" class="pull-right m-t-sm m-r-md"
+                           v-if="['pending', 'running'].includes(job.status)" @click.stop="cancelJob(job.id)">
+                  <i class="fa fa-remove"></i>
+                  <span v-if="['pending'].includes(job.status)">
+                    取消
+                  </span>
+                  <span v-if="['running'].includes(job.status)">
+                    停止
+                  </span>
+                </el-button>
               </span>
             </template>
             <div v-loading="logLoadData" :element-loading-text="logLoadDataText">
@@ -176,7 +188,7 @@
         // 定时刷新任务
         setTimeout(() => {
           this.getJobs()
-        }, 1000)
+        }, 2000)
       },
       // 启动任务
       startSpider(project, spider){
@@ -227,6 +239,20 @@
           clearInterval(this.logLoadDataInterval)
           this.logLoadDataInterval = null
         }
+      },
+      cancelJob(job) {
+        console.log(job)
+        console.log(this.jobsInfo[job])
+        this.$fetch.apiClient.cancelJob({
+          id: this.routeId,
+          project: this.jobsInfo[job]['project'],
+          job: job,
+        }).then(() => {
+          this.$message.success('正在取消，请稍后')
+        }).catch(() => {
+          //如果错误
+          this.$message.success('取消失败')
+        })
       }
     }
   }

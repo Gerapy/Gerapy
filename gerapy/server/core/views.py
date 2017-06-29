@@ -67,16 +67,13 @@ def list_jobs(request, id, project):
             for job in result.get(status):
                 job['status'] = status
                 jobs.append(job)
-        print(jobs)
         return HttpResponse(json.dumps(jobs))
 
 
 def job_log(request, id, project, spider, job):
-    print(id, project, spider, job)
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         url = log_url(client.ip, client.port, project, spider, job)
-        print(url)
         try:
             response = requests.get(url, timeout=5)
             if response.status_code == 200:
@@ -87,3 +84,9 @@ def job_log(request, id, project, spider, job):
         except requests.ConnectionError:
             return HttpResponse('日志加载失败')
             
+def cancel_job(request, id, project, job):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.cancel(project, job)
+        return HttpResponse(json.dumps(result))

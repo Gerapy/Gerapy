@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^api/client/(\d+)/project/(\S+)/spider/(\S+)/job/(\S+)/log', views.job_log, name='job_log'),
     url(r'^api/client/(\d+)/project/(\S+)/spider/(\S+)/$', views.start_spider, name='start_spider'),
     url(r'^api/client/(\d+)/project/(\S+)/jobs/$', views.list_jobs, name='list_jobs'),
+    url(r'^api/client/(\d+)/project/(\S+)/job/(\S+)/cancel$', views.cancel_job, name='cancel_job'),
 ]
