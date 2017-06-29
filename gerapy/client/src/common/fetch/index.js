@@ -25,21 +25,12 @@ export default function fetch(options) {
       delete options.params
     }
     console.log(options)
-    //请求处理
     instance(options)
       .then((data) => {
-        //请求成功时,根据业务判断状态
         resolve(data);
       })
       .catch((error) => {
-        //请求失败时,根据业务判断状态
-        if (error.response) {
-          let resError = error.response
-          let resCode = resError.status
-          let resMsg = error.message
-          Message.error('操作失败！错误原因 ' + resMsg)
-          reject({code: resCode, msg: resMsg})
-        }
+        reject(error)
       })
   })
 }

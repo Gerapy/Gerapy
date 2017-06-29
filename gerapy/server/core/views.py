@@ -1,8 +1,8 @@
 import json
 
 from django.shortcuts import render
-
-from .utils import scrapyd_url
+import requests
+from .utils import scrapyd_url, log_url
 from .models import Client
 from django.core.serializers import serialize
 from django.http import HttpResponse
@@ -61,7 +61,6 @@ def list_jobs(request, id, project):
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         result = scrapyd.list_jobs(project)
-        print(result)
         jobs = []
         statuses = ['pending', 'running', 'finished']
         for status in statuses:
@@ -70,3 +69,21 @@ def list_jobs(request, id, project):
                 jobs.append(job)
         print(jobs)
         return HttpResponse(json.dumps(jobs))
+
+
+def job_log(request, id, project, spider, job):
+    print(id, project, spider, job)
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        url = log_url(client.ip, client.port, project, spider, job)
+        print(url)
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                text = response.text
+                return HttpResponse(text[-5000:-1])
+            if response.status_code == 404:
+                return HttpResponse('日志不存在')
+        except requests.ConnectionError:
+            return HttpResponse('日志加载失败')
+            

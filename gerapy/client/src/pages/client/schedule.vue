@@ -31,14 +31,22 @@
           </el-table-column>
         </el-table>
         <el-collapse accordion @change="getLog">
-          <el-collapse-item :name="job.id" v-for="job in jobs[project]">
+          <el-collapse-item v-for="job in jobs[project]" :name="job.id">
             <template slot="title">
-                <span class="wrapper">
-                  <el-button :type="jobStatusClass[job.status]" size="mini">
-                    {{ jobStatusText[job.status] }}
-                  </el-button>
-                </span>
-              <span>{{ job.id }}</span>
+              <span class="wrapper">
+                <el-button :type="jobStatusClass[job.status]" size="mini">
+                  {{ jobStatusText[job.status] }}
+                </el-button>
+              </span>
+              <span v-if="job.spider">
+                <i class="fa fa-bug"></i>
+                爬虫名称：
+                {{ job.spider }}
+              </span>
+              <span v-if="job.spider" class="m-l-md">
+                <i class="fa fa-key"></i>
+                任务代号：{{ job.id }}
+              </span>
               <span v-if="job.start_time" class="m-l-md">
                 <i class="el-icon-time"></i>
                 开始时间：
@@ -50,10 +58,11 @@
                 {{ job.end_time.substring(0, 16) }}
               </span>
             </template>
-            <div>{{ logs[job.id] }}</div>
+            <div v-loading="logLoadData" :element-loading-text="logLoadDataText">
+              <pre>{{ logs[job.id] }}</pre>
+            </div>
           </el-collapse-item>
         </el-collapse>
-
       </div>
     </div>
   </div>
@@ -68,6 +77,10 @@
         jobs: {},
         projectsLoadData: true,
         spidersLoadData: {},
+        logLoadData: true,
+        logLoadDataText: '日志加载中',
+        logLoadDataInterval: null,
+        logLoadDataActive: null,
         jobStatuses: ['finished', 'running', 'pending'],
         jobStatusClass: {
           finished: 'info',
@@ -79,7 +92,8 @@
           running: '运行中',
           pending: '等待中'
         },
-        logs:{},
+        jobsInfo: {},
+        logs: {},
         routeId: this.$route.params.id,
       }
     },
@@ -123,6 +137,15 @@
           project: project
         }).then(({data: data}) => {
           this.$set(this.jobs, project, data)
+          console.log('JJJJJobs', this.jobs)
+          for (let project in this.jobs) {
+            let jobs = this.jobs[project]
+            console.log(jobs)
+            jobs.forEach((job) => {
+              console.log(job)
+              this.$set(this.jobsInfo, job.id, {project: project, spider: job['spider']})
+            })
+          }
         }).catch(() => {
         })
       },
@@ -137,9 +160,48 @@
         }).catch(() => {
         })
       },
-      getLog(activeName){
-        console.log(activeName)
+
+      getLog(job){
+        // 如果展开日志
+        if (job) {
+          //设置活跃日志
+          this.logLoadDataActive = job
+          // 正在加载
+          this.logLoadData = true
+          // 请求日志
+          this.$fetch.apiClient.getLog({
+            id: this.routeId,
+            project: this.jobsInfo[this.logLoadDataActive]['project'],
+            spider: this.jobsInfo[this.logLoadDataActive]['spider'],
+            job: this.logLoadDataActive,
+            random: Math.random()
+          }).then(({data: data}) => {
+            //设置日志字典
+            this.$set(this.logs, this.logLoadDataActive, data)
+            // 加载日志完成
+            this.logLoadData = false
+            // 如果不存在定时任务
+            if (!this.logLoadDataInterval) {
+              // 设置定时任务，调度当前活跃日志
+              this.logLoadDataInterval = setInterval(() => {
+                this.getLog(this.logLoadDataActive)
+              }, 2000)
+            }
+          }).catch(() => {
+            //如果错误
+            this.logLoadData = false
+          })
+        } else {
+          //闭合之后停止加载日志
+          clearInterval(this.logLoadDataInterval)
+          this.logLoadDataInterval = null
+        }
       }
     }
   }
 </script>
+<style>
+  .el-collapse-item__content {
+    padding: 15px 15px;
+  }
+</style>

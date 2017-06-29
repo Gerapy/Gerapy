@@ -56,3 +56,12 @@ export function listJobs(params) {
   })
 }
 
+
+export function getLog(params) {
+  return fetch({
+    url: client.getLog,
+    method: 'get',
+    params,
+  })
+}
+
