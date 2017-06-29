@@ -31,17 +31,42 @@ def client_update(request, id):
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
 
 
-def client_projects(request, id):
+def list_projects(request, id):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         projects = scrapyd.list_projects()
         return HttpResponse(json.dumps(projects))
-    
-def project_spiders(request, id, project):
+
+
+def list_spiders(request, id, project):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         spiders = scrapyd.list_spiders(project)
-        spiders = [{'name': spider} for spider in spiders]
+        spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
         return HttpResponse(json.dumps(spiders))
+
+
+def start_spider(request, id, project, spider):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.schedule(project, spider)
+        return HttpResponse(json.dumps({'job': result}))
+
+
+def list_jobs(request, id, project):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.list_jobs(project)
+        print(result)
+        jobs = []
+        statuses = ['pending', 'running', 'finished']
+        for status in statuses:
+            for job in result.get(status):
+                job['status'] = status
+                jobs.append(job)
+        print(jobs)
+        return HttpResponse(json.dumps(jobs))

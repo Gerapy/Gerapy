@@ -32,10 +32,27 @@ export function projects(params) {
   })
 }
 
-export function projectSpiders(params) {
+export function listSpiders(params) {
   return fetch({
-    url: client.projectSpiders,
+    url: client.listSpiders,
     method: 'get',
     params,
   })
 }
+
+export function startSpider(params) {
+  return fetch({
+    url: client.startSpider,
+    method: 'post',
+    params,
+  })
+}
+
+export function listJobs(params) {
+  return fetch({
+    url: client.listJobs,
+    method: 'get',
+    params,
+  })
+}
+
