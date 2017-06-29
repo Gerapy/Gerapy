@@ -69,7 +69,9 @@
           if (!valid)
             return false
           this.onSubmitLoading = true
-          this.$fetch.api_pattern.update(this.form).then(() => {
+          this.$fetch.apiClient.update({
+            id: this.form.id
+          }, this.form).then(() => {
             this.$message.success('修改成功')
             this.onSubmitLoading = false
           }).catch(() => {

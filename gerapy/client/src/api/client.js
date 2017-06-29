@@ -14,3 +14,12 @@ export function show(params) {
     params
   })
 }
+
+export function update(params, data) {
+  return fetch({
+    url: client.update,
+    method: 'post',
+    params,
+    data,
+  })
+}

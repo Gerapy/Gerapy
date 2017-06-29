@@ -7,7 +7,7 @@ apiRouter.all(/api/, function(req, res) {
   axios({
     method: req.method,
     url: base.baseUrl + req.url,
-    data: req.body
+    data: req.body,
   })
     .then(function(response) {
       res.json(response.data)

@@ -23,6 +23,8 @@ def client_show(request, id):
 def client_update(request, id):
     if request.method == 'POST':
         client = Client.objects.filter(id=id)
+        print(request.raw_post_data)
         data = request.POST.dict()
+        print(data)
         client.update(**data)
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
