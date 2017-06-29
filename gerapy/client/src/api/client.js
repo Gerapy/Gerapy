@@ -43,7 +43,7 @@ export function listSpiders(params) {
 export function startSpider(params) {
   return fetch({
     url: client.startSpider,
-    method: 'post',
+    method: 'get',
     params,
   })
 }
