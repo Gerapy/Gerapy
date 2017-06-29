@@ -1,74 +1,14 @@
 <template>
-  <div class="panel">
-    <panel-title :title="$route.meta.title">
-      <el-button @click.stop="onRefresh" size="small">
-        <i class="fa fa-refresh"></i>
-      </el-button>
-      <router-link :to="{name: 'taskAdd'}" tag="span">
-        <el-button type="primary" icon="plus" size="small"></el-button>
-      </router-link>
-    </panel-title>
-    <div class="panel-body">
-      <el-table
-        :data="clientData"
-        v-loading="loadData"
-        element-loading-text="拼命加载中"
-        border
-        @selection-change="onBatchSelect"
-        style="width: 100%;">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
-        <el-table-column
-          prop="pk"
-          label="id"
-          width="50">
-        </el-table-column>
-        <el-table-column
-          prop="fields.name"
-          label="名称"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          prop="fields.ip"
-          label="IP"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          prop="fields.port"
-          label="端口"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          prop="fields.port"
-          label="描述"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="180">
-          <template scope="props">
-            <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
-              <el-button type="info" size="small" icon="edit">修改</el-button>
-            </router-link>
-            <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
-              <el-button type="success" size="small" icon="edit">调度</el-button>
-            </router-link>
-          </template>
-        </el-table-column>
-      </el-table>
-      <bottom-tool-bar>
-        <el-button
-          type="danger"
-          icon="delete"
-          size="small"
-          :disabled="batchSelect.length === 0"
-          @click="onBatchDel"
-          slot="handler">
-          <span>批量删除</span>
+  <div>
+    <div class="panel" v-for="project in projects">
+      <panel-title :title="project">
+        <el-button @click.stop="onRefresh" size="small">
+          <i class="fa fa-refresh"></i>
         </el-button>
-      </bottom-tool-bar>
+      </panel-title>
+      <div class="panel-body">
+
+      </div>
     </div>
   </div>
 </template>
@@ -77,11 +17,10 @@
   export default{
     data(){
       return {
-        clientData: null,
+        projects: [],
         //请求时的loading效果
         loadData: true,
-        //批量选择数组
-        batchSelect: [],
+        routeId: this.$route.params.id,
       }
     },
     components: {
@@ -89,54 +28,18 @@
       bottomToolBar
     },
     created(){
-      this.getTaskData()
+      this.getProjects()
     },
     methods: {
-      onBatchSelect(val){
-        this.batchSelect = val
-      },
-      onRefresh(){
-        this.getTaskData()
-      },
-      changeFilter () {
-        this.lastIds = {}
-        this.getTaskData()
-      },
-      //获取数据
-      getTaskData(){
-        this.loadData = true
-        this.$fetch.apiClient.index()
-          .then(({data: clientData}) => {
-            console.log(clientData)
-            this.clientData = clientData
-            this.loadData = false
-          })
-          .catch(() => {
-            this.loadData = false
-          })
-      },
-      //批量删除
-      onBatchDel(){
-        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      getProjects() {
+        this.$fetch.apiClient.projects({
+          id: this.routeId
+        }).then(({data: data}) => {
+          this.projects = data
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
         })
-          .then(() => {
-            this.loadData = true
-            console.log(this.batchSelect)
-            this.batchSelect.forEach((item) => {
-              this.$fetch.api_pattern.del(item)
-                .then(({msg}) => {
-                  this.getPatternData()
-                  this.$message.success(msg)
-                })
-                .catch(() => {
-                })
-            })
-          })
-          .catch(() => {
-          })
       }
     }
   }

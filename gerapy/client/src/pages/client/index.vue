@@ -52,7 +52,7 @@
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
               <el-button type="info" size="small" icon="edit">修改</el-button>
             </router-link>
-            <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
+            <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk}}" tag="span">
               <el-button type="success" size="small" icon="edit">调度</el-button>
             </router-link>
           </template>

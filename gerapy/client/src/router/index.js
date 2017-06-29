@@ -13,6 +13,7 @@ import noPageComponent from 'pages/error/404'
 //client
 import clientIndexComponent from 'pages/client/index'
 import clientEditComponent from 'pages/client/edit'
+import clientScheduleComponent from 'pages/client/schedule'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -48,6 +49,14 @@ const routes = [{
     component: clientEditComponent,
     meta: {
       title: "修改主机",
+      auth: true
+    }
+  },{
+    path: '/client/:id/schedule',
+    name: 'clientSchedule',
+    component: clientScheduleComponent,
+    meta: {
+      title: "调度主机",
       auth: true
     }
   }]

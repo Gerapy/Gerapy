@@ -23,3 +23,11 @@ export function update(params, data) {
     data,
   })
 }
+
+export function projects(params) {
+  return fetch({
+    url: client.projects,
+    method: 'get',
+    params,
+  })
+}

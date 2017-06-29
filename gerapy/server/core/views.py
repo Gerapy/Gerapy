@@ -34,9 +34,13 @@ def client_update(request, id):
 def client_projects(request, id):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
-        ip = client.ip
-        print(ip)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         projects = scrapyd.list_projects()
-        print(projects)
         return HttpResponse(json.dumps(projects))
+    
+def project_spiders(request, id, project):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        spiders = scrapyd.list_spiders(project)
+        return HttpResponse(json.dumps(spiders))
