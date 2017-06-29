@@ -46,8 +46,7 @@
           width="200">
         </el-table-column>
         <el-table-column
-          label="操作"
-          width="180">
+          label="操作">
           <template scope="props">
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
               <el-button type="info" size="small" icon="edit">修改</el-button>

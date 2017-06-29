@@ -31,3 +31,11 @@ export function projects(params) {
     params,
   })
 }
+
+export function projectSpiders(params) {
+  return fetch({
+    url: client.projectSpiders,
+    method: 'get',
+    params,
+  })
+}

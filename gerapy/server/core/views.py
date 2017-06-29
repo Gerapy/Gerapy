@@ -43,4 +43,5 @@ def project_spiders(request, id, project):
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         spiders = scrapyd.list_spiders(project)
+        spiders = [{'name': spider} for spider in spiders]
         return HttpResponse(json.dumps(spiders))
