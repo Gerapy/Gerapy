@@ -8,7 +8,7 @@
         <el-col :span="8">
           <el-form ref="form" :model="form" :rules="rules" label-width="100px">
             <el-form-item label="名称:" prop="name">
-              {{ form.name }}
+              <el-input v-model="form.name" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="IP:" prop="ip">
               <el-input v-model="form.ip" placeholder="请输入IP"></el-input>
@@ -18,7 +18,7 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">立即提交</el-button>
+              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">修改</el-button>
               <el-button @click="$router.back()">取消</el-button>
             </el-form-item>
           </el-form>
