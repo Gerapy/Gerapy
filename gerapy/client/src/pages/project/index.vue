@@ -5,7 +5,7 @@
         <panel-title title="项目目录">
         </panel-title>
         <div class="panel-body">
-          <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          <el-tree :data="tree" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
         </div>
       </div>
     </el-col>
@@ -68,45 +68,12 @@
         loadData: true,
         //批量选择数组
         batchSelect: [],
-        data: [{
-          label: '一级 1',
-          children: [{
-            label: '二级 1-1',
-            children: [{
-              label: '三级 1-1-1'
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          children: [{
-            label: '二级 2-1',
-            children: [{
-              label: '三级 2-1-1'
-            }]
-          }, {
-            label: '二级 2-2',
-            children: [{
-              label: '三级 2-2-1'
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          children: [{
-            label: '二级 3-1',
-            children: [{
-              label: '三级 3-1-1'
-            }]
-          }, {
-            label: '二级 3-2',
-            children: [{
-              label: '三级 3-2-1'
-            }]
-          }]
-        }],
+        tree: [],
         defaultProps: {
           children: 'children',
           label: 'label'
         },
+        activeNode: null,
         code: 'const a = 10',
         editorOptions: {
           tabSize: 4,
@@ -141,14 +108,37 @@
       codemirror
     },
     created(){
-
+      this.getProjectTree()
     },
     methods: {
+      getProjectTree() {
+        this.$fetch.apiProject.projectTree()
+          .then(({data: tree}) => {
+            console.log(tree)
+            this.tree = tree
+          })
+          .catch(() => {
+          })
+      },
       handleNodeClick(data) {
-        console.log(data);
+        this.activeNode = data
+
+        this.$fetch.apiProject.projectFile(
+          data
+        ).then(({data: code}) => {
+          this.code = code
+        }).catch(() => {
+        })
       },
       onEditorCodeChange(newCode) {
-        console.log('this is new code', newCode)
+        this.$fetch.apiProject.projectFileUpdate({
+          code: newCode,
+          path: this.activeNode['path'],
+          label: this.activeNode['label']
+        }).then(({data: result}) => {
+          console.log(result)
+        }).catch(() => {
+        })
       }
     }
   }

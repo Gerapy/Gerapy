@@ -3,7 +3,7 @@ import os
 
 from django.shortcuts import render
 import requests
-from .utils import scrapyd_url, log_url, get_tree
+from .utils import scrapyd_url, log_url, get_tree, merge
 from .models import Client
 from django.core.serializers import serialize
 from django.http import HttpResponse
@@ -96,6 +96,27 @@ def cancel_job(request, id, project, job):
 
 def project_tree(request, path):
     if request.method == 'GET':
-        path = os.path.abspath(os.curdir)
+        path = os.path.abspath('/var/py/abcd')
         tree = get_tree(path)
         return HttpResponse(json.dumps(tree))
+
+
+def project_file(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = merge(data['path'], data['label'])
+        print(path)
+        with open(path, 'r') as f:
+            return HttpResponse(f.read())
+
+
+def project_file_update(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = merge(data['path'], data['label'])
+        code = data['code']
+        print(code)
+        print(path)
+        with open(path, 'w') as f:
+            f.write(code)
+            return HttpResponse(json.dumps('1'))
