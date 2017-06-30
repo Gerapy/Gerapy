@@ -60,6 +60,19 @@
   import 'codemirror/addon/fold/markdown-fold'
   import 'codemirror/addon/fold/xml-fold'
 
+  // Mode
+
+  import 'codemirror/mode/css/css'
+  import 'codemirror/mode/dockerfile/dockerfile'
+  import 'codemirror/mode/htmlmixed/htmlmixed'
+  import 'codemirror/mode/markdown/markdown'
+  import 'codemirror/mode/php/php'
+  import 'codemirror/mode/python/python'
+  import 'codemirror/mode/sass/sass'
+  import 'codemirror/mode/javascript/javascript'
+  import 'codemirror/mode/sql/sql'
+  import 'codemirror/mode/vue/vue'
+
   export default{
     data(){
       return {
@@ -75,9 +88,19 @@
         },
         activeNode: null,
         code: 'const a = 10',
+        modeMap: {
+          'py': 'text/x-python',
+          'js': 'text/javascript',
+          'html': 'text/html',
+          'vue': 'text/x-vue',
+          'md': 'text/x-markdown',
+          'scss': 'text/x-sass',
+          'css': 'text/x-css',
+          'php': 'application/x-httpd-php',
+        },
         editorOptions: {
           tabSize: 4,
-          mode: 'text/x-python',
+          mode: 'text/javascript',
           theme: 'monokai',
           lineNumbers: true,
           styleActiveLine: true,
@@ -112,6 +135,7 @@
     },
     methods: {
       getProjectTree() {
+        // 获取目录树
         this.$fetch.apiProject.projectTree()
           .then(({data: tree}) => {
             console.log(tree)
@@ -122,15 +146,24 @@
       },
       handleNodeClick(data) {
         this.activeNode = data
-
-        this.$fetch.apiProject.projectFile(
-          data
-        ).then(({data: code}) => {
-          this.code = code
-        }).catch(() => {
-        })
+        // 获取后缀
+        let group = this.activeNode.label.split('.')
+        let extension = group[group.length - 1]
+        // 设置Mode
+        this.editorOptions.mode = this.modeMap[extension]
+        // 加载文件
+        if (!data.children) {
+          this.$fetch.apiProject.projectFile(
+            data
+          ).then(({data: code}) => {
+            this.code = code
+          }).catch(() => {
+            this.$message.error('加载失败')
+          })
+        }
       },
       onEditorCodeChange(newCode) {
+        //更新文件
         this.$fetch.apiProject.projectFileUpdate({
           code: newCode,
           path: this.activeNode['path'],
@@ -138,6 +171,7 @@
         }).then(({data: result}) => {
           console.log(result)
         }).catch(() => {
+          console.log('修改失败')
         })
       }
     }

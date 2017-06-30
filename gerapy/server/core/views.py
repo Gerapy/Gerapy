@@ -115,8 +115,6 @@ def project_file_update(request):
         data = json.loads(request.body)
         path = merge(data['path'], data['label'])
         code = data['code']
-        print(code)
-        print(path)
         with open(path, 'w') as f:
             f.write(code)
             return HttpResponse(json.dumps('1'))

@@ -15,7 +15,7 @@ def log_url(ip, port, project, spider, job):
 
 path = '/var/py/sinaapi'
 
-IGNORES = ['.git/', '*.pyc', '.DS_Store']
+IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
 
 
 def merge(path, file):
