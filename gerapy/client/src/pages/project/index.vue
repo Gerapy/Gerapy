@@ -50,18 +50,6 @@
   import 'codemirror/addon/hint/show-hint.css'
   import 'codemirror/addon/hint/anyword-hint'
 
-
-  // Mode
-  import 'codemirror/mode/python/python'
-  import 'codemirror/mode/javascript/javascript'
-  import 'codemirror/mode/dockerfile/dockerfile'
-  import 'codemirror/mode/sass/sass'
-  import 'codemirror/mode/css/css'
-  import 'codemirror/mode/htmlmixed/htmlmixed'
-  import 'codemirror/mode/php/php'
-  import 'codemirror/mode/xml/xml'
-
-
   // foldGutter
   import 'codemirror/addon/fold/foldgutter.css'
   import 'codemirror/addon/fold/brace-fold'
@@ -122,7 +110,7 @@
         code: 'const a = 10',
         editorOptions: {
           tabSize: 4,
-          mode: 'text/javascript',
+          mode: 'text/x-python',
           theme: 'monokai',
           lineNumbers: true,
           styleActiveLine: true,
