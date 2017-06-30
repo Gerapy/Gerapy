@@ -118,3 +118,12 @@ def project_file_update(request):
         with open(path, 'w') as f:
             f.write(code)
             return HttpResponse(json.dumps('1'))
+
+
+def project_file_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = merge(data['path'], data['label'])
+        result = os.remove(path)
+        print(result)
+        return HttpResponse(json.dumps(result))

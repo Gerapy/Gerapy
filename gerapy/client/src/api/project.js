@@ -97,5 +97,12 @@ export function projectFileUpdate(data) {
   })
 }
 
+export function projectFileDelete(data) {
+  return fetch({
+    url: project.projectFileDelete,
+    method: 'post',
+    data,
+  })
+}
 
 

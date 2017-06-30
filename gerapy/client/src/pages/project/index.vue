@@ -12,6 +12,14 @@
     <el-col :span="21">
       <div class="panel m-l-md">
         <panel-title title="代码">
+          <el-button @click="saveCode" size="small" type="success">
+            <i class="fa fa-check"></i>
+            保存
+          </el-button>
+          <el-button @click="deleteFile" size="small" type="danger">
+            <i class="fa fa-close"></i>
+            删除
+          </el-button>
         </panel-title>
         <div class="panel-body">
           <codemirror v-model="code" :options="editorOptions" @change="onEditorCodeChange">
@@ -87,7 +95,7 @@
           label: 'label'
         },
         activeNode: null,
-        code: 'const a = 10',
+        code: '',
         modeMap: {
           'py': 'text/x-python',
           'js': 'text/javascript',
@@ -146,6 +154,10 @@
       },
       handleNodeClick(data) {
         this.activeNode = data
+        this.changeCode(data)
+      },
+      // 呈现代码
+      changeCode(data) {
         // 获取后缀
         let group = this.activeNode.label.split('.')
         let extension = group[group.length - 1]
@@ -162,16 +174,44 @@
           })
         }
       },
-      onEditorCodeChange(newCode) {
+      // 保存代码
+      saveCode(){
+        this.onEditorCodeChange(this.code, () => {
+          this.$message.success('保存成功')
+        })
+      },
+      deleteFile() {
+        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 删除文件
+          this.$fetch.apiProject.projectFileDelete({
+            path: this.activeNode['path'],
+            label: this.activeNode['label']
+          }).then(() => {
+            this.$message.success('删除成功')
+            this.getProjectTree()
+          }).catch(() => {
+            this.$message.error('删除失败')
+          })
+        }).catch(() => {
+
+        })
+      },
+      onEditorCodeChange(code, callback) {
         //更新文件
         this.$fetch.apiProject.projectFileUpdate({
-          code: newCode,
+          code: code,
           path: this.activeNode['path'],
           label: this.activeNode['label']
         }).then(({data: result}) => {
-          console.log(result)
+          if (callback) {
+            callback()
+          }
         }).catch(() => {
-          console.log('修改失败')
+          this.$message.error('修改失败')
         })
       }
     }
