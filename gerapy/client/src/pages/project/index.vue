@@ -196,8 +196,8 @@
           }).catch(() => {
             this.$message.error('删除失败')
           })
-        }).catch(() => {
-
+        }).catch((error) => {
+          console.log(error)
         })
       },
       onEditorCodeChange(code, callback) {
@@ -206,7 +206,7 @@
           code: code,
           path: this.activeNode['path'],
           label: this.activeNode['label']
-        }).then(({data: result}) => {
+        }).then(() => {
           if (callback) {
             callback()
           }
