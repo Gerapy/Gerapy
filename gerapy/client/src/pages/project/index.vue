@@ -157,5 +157,6 @@
 <style lang="scss" type="text/scss" rel="stylesheet/scss">
   .CodeMirror {
     font-size: 16px;
+    min-height: 600px;
   }
 </style>

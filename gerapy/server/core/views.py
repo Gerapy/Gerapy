@@ -1,8 +1,9 @@
 import json
+import os
 
 from django.shortcuts import render
 import requests
-from .utils import scrapyd_url, log_url
+from .utils import scrapyd_url, log_url, get_tree
 from .models import Client
 from django.core.serializers import serialize
 from django.http import HttpResponse
@@ -83,10 +84,18 @@ def job_log(request, id, project, spider, job):
                 return HttpResponse('日志不存在')
         except requests.ConnectionError:
             return HttpResponse('日志加载失败')
-            
+
+
 def cancel_job(request, id, project, job):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         result = scrapyd.cancel(project, job)
         return HttpResponse(json.dumps(result))
+
+
+def project_tree(request, path):
+    if request.method == 'GET':
+        path = '.'
+        tree = get_tree(path)
+        return HttpResponse(json.dumps(tree))

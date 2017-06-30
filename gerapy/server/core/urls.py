@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^api/client/(\d+)/project/(\S+)/spider/(\S+)/$', views.start_spider, name='start_spider'),
     url(r'^api/client/(\d+)/project/(\S+)/jobs/$', views.list_jobs, name='list_jobs'),
     url(r'^api/client/(\d+)/project/(\S+)/job/(\S+)/cancel$', views.cancel_job, name='cancel_job'),
+    url(r'^api/project/tree/(\S+)/$', views.project_tree, name='project_tree'),
 ]
