@@ -14,6 +14,10 @@ import noPageComponent from 'pages/error/404'
 import clientIndexComponent from 'pages/client/index'
 import clientEditComponent from 'pages/client/edit'
 import clientScheduleComponent from 'pages/client/schedule'
+// project
+import projectIndexComponent from 'pages/project/index'
+
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -58,6 +62,14 @@ const routes = [{
     meta: {
       title: "调度主机",
       auth: true
+    }
+  }, {
+    path: '/project',
+    name: 'projectIndex',
+    component: projectIndexComponent,
+    meta: {
+      title: "项目管理",
+      auth: false
     }
   }]
 }]

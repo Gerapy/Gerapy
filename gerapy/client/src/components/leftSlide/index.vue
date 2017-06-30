@@ -48,7 +48,11 @@
         nav_menu_data: [{
           title: "主机管理",
           path: "/client",
-          icon: "fa-plus",
+          icon: "fa-television",
+        }, {
+          title: "项目管理",
+          path: "/project",
+          icon: "fa-folder-o",
         }]
       }
     }
