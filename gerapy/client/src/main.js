@@ -16,12 +16,18 @@ import store from 'store'
 import api from './api'
 //导入主视图文件
 import App from './App'
+//导入CodeMirror
+import VueCodeMirror from 'vue-codemirror'
+
 
 //使用element-ui
 Vue.use(ElementUI)
 
 //使用api
 Vue.use(api)
+
+//使用CodeMirror
+Vue.use(VueCodeMirror)
 
 //发布后是否显示提示
 Vue.config.productionTip = false
