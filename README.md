@@ -1,2 +1,3 @@
 # Gerapy
-A Distributed Web Spider Based on Scrapy
+
+Distributed Management Framework Based on Scrapy and Scrapyd
