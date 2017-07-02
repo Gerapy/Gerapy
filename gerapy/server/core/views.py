@@ -96,7 +96,7 @@ def cancel_job(request, id, project, job):
 
 def project_tree(request, path):
     if request.method == 'GET':
-        path = os.path.abspath('/var/py/abcd')
+        path = os.path.abspath(os.getcwd())
         tree = get_tree(path)
         return HttpResponse(json.dumps(tree))
 

@@ -1,6 +1,8 @@
 import os
 import fnmatch
 
+IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
+
 
 def scrapyd_url(ip, port):
     url = 'http://{ip}:{port}'.format(ip=ip, port=port)
@@ -11,11 +13,6 @@ def log_url(ip, port, project, spider, job):
     url = 'http://{ip}:{port}/logs/{project}/{spider}/{job}.log'.format(ip=ip, port=port, project=project,
                                                                         spider=spider, job=job)
     return url
-
-
-path = '/var/py/sinaapi'
-
-IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
 
 
 def merge(path, file):
