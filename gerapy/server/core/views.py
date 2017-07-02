@@ -3,8 +3,8 @@ import os
 
 from django.shortcuts import render
 import requests
-from .utils import scrapyd_url, log_url, get_tree, merge
-from .models import Client
+from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
+from gerapy.server.core.models import Client
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict

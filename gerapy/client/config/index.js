@@ -1,7 +1,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 
-var base_path = '../../CallScheduler.RestApi/wwwroot'
+var base_path = '../../server/core/templates/'
 
 module.exports = {
   build: {

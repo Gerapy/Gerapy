@@ -30,7 +30,11 @@ setup(
         'gerapy': [
             'server/static/**/*.*',
             'server/core/templates/*.*',
-            'server/core/templates/**/*.*'
+            'server/core/templates/**/*.*',
+            'server/core/templates/static/css/*.*',
+            'server/core/templates/static/fonts/*.*',
+            'server/core/templates/static/images/*.*',
+            'server/core/templates/static/js/*.*'
         ],
     },
 )

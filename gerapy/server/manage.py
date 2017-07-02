@@ -2,8 +2,9 @@
 import os
 import sys
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
+
+def manage():
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gerapy.server.server.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
@@ -19,4 +20,10 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+    print('ARGV')
+    print(sys.argv)
     execute_from_command_line(sys.argv)
+
+
+if __name__ == "__main__":
+    manage()
