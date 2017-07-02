@@ -1,9 +1,9 @@
 """
 Usage:
-  gerapy.py init [--folder=<folder>]
-  gerapy.py migrate
-  gerapy.py createsuperuser
-  gerapy.py runserver
+  gerapy init [--folder=<folder>]
+  gerapy migrate
+  gerapy createsuperuser
+  gerapy runserver
 
 Options:
   -h --help
@@ -17,7 +17,6 @@ from gerapy.cmd.server import server
 
 def cmd():
     arguments = docopt(__doc__, version=version())
-    print(arguments)
     
     if arguments.get('init'):
         init(arguments.get('--folder'))
