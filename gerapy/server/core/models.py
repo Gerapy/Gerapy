@@ -14,3 +14,9 @@ class Client(Model):
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     
+class Project(Model):
+    name = CharField(max_length=255, default=None)
+    description = CharField(max_length=255, default='', blank=True)
+    built_at = DateTimeField(auto_now=True)
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)

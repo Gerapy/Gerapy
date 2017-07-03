@@ -4,11 +4,12 @@ import requests
 import shutil
 import time
 from django.shortcuts import render
-from gerapy.server.core.build import build_project
+
+from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
-from gerapy.server.core.models import Client
+from gerapy.server.core.models import Client, Project
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
@@ -179,3 +180,29 @@ def project_deploy(request, id, project):
         result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
         print(result)
         return HttpResponse(result)
+
+
+def project_build(request, project):
+    if request.method == 'GET':
+        print(project)
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        project_path = merge(path, project)
+        egg = find_egg(project_path)
+        if egg:
+            built_at = os.path.getmtime(merge(project_path, egg))
+            print(built_at)
+            if not Project.objects.filter(name=project):
+                Project(name=project, built_at=built_at).save()
+            else:
+                model = Project.objects.get(name=project)
+                model.built_at = built_at
+                model.save()
+                print(model)
+            dict = model_to_dict(model)
+            print(dict)
+            localtime = time.localtime(int(built_at))
+            dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+            return HttpResponse(json.dumps(dict))
+        else:
+            return HttpResponse(json.dumps({'name': project}))
+    

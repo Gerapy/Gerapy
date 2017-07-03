@@ -4,6 +4,7 @@ Usage:
   gerapy migrate
   gerapy createsuperuser
   gerapy runserver
+  gerapy makemigrations
 
 Options:
   -h --help
