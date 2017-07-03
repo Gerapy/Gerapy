@@ -64,7 +64,6 @@
       </div>
     </div>
   </div>
-
 </template>
 <script type="text/javascript">
   import {panelTitle, bottomToolBar} from 'components'
