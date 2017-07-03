@@ -66,7 +66,6 @@
           this.clients = clients
           this.loadData = false
           this.clients.forEach(({pk: id}) => {
-            console.log(id)
             this.getProjectVersions(id)
           })
         }).catch(() => {
@@ -90,10 +89,11 @@
           id: id,
           name: this.projectName,
         }).then(() => {
-          this.$message('部署成功')
+          this.$message.success('部署成功')
+          this.getProjectVersions(id)
           this.loadData = false
         }).catch(() => {
-          this.$message('部署失败')
+          this.$message.error('部署失败')
           this.loadData = false
         })
       }
