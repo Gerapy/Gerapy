@@ -4,12 +4,13 @@ import requests
 import shutil
 import time
 from django.shortcuts import render
+from django.utils.dateformat import format
 
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
-from gerapy.server.core.models import Client, Project
+from gerapy.server.core.models import Client, Project, Deploy
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
@@ -155,16 +156,28 @@ def project_delete(request):
 def project_versions(request, id, project):
     if request.method == 'GET':
         print(project)
-        client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        versions = scrapyd.list_versions(project)
-        print(versions)
-        if len(versions) > 0:
-            version = versions[-1]
-            localtime = time.localtime(int(version))
-            version = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
-            return HttpResponse(json.dumps(version))
-        return HttpResponse(None)
+        client_model = Client.objects.get(id=id)
+        project_model = Project.objects.get(name=project)
+        scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
+        if Deploy.objects.filter(client=client_model, project=project_model):
+            deploy = Deploy.objects.get(client=client_model, project=project_model)
+            print(deploy.description)
+            print(deploy.deployed_at)
+            print(deploy.deployed_at.timestamp())
+            timestamp = deploy.deployed_at.timestamp()
+            localtime = time.localtime(timestamp)
+            datetime = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+            return HttpResponse(json.dumps({'datetime': datetime, 'description': deploy.description}))
+        else:
+            versions = scrapyd.list_versions(project)
+            print(versions)
+            if len(versions) > 0:
+                version = versions[-1]
+                localtime = time.localtime(int(version))
+                datetime = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+            else:
+                datetime = None
+        return HttpResponse(json.dumps({'datetime': datetime}))
 
 
 def project_deploy(request, id, project):
@@ -177,8 +190,16 @@ def project_deploy(request, id, project):
         egg_file = open(merge(project_path, egg), 'rb')
         deploy_version = time.time()
         print(deploy_version)
-        client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        
+        client_model = Client.objects.get(id=id)
+        print(client_model)
+        project_model = Project.objects.get(name=project)
+        print(project_model)
+        Deploy.objects.filter(client=client_model, project=project_model).delete()
+        deploy = Deploy.objects.update_or_create(client=client_model, project=project_model,
+                                                 description=project_model.description)
+        print(deploy)
+        scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
         result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
         print(result)
         return HttpResponse(result)
@@ -205,6 +226,7 @@ def project_build(request, project):
                 print(model)
             dict = model_to_dict(model)
             print(dict)
+            del dict['clients']
             localtime = time.localtime(int(built_at))
             dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
             return HttpResponse(json.dumps(dict))
@@ -230,6 +252,7 @@ def project_build(request, project):
             print(model)
         dict = model_to_dict(model)
         print(dict)
+        del dict['clients']
         localtime = time.localtime(int(built_at))
         dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
         return HttpResponse(json.dumps(dict))

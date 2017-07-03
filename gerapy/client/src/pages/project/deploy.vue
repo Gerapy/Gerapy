@@ -43,9 +43,15 @@
             width="300">
           </el-table-column>
           <el-table-column
+            label="版本描述">
+            <template scope="props">
+              <span>{{ projectDescriptions[props.row.pk]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="部署时间">
             <template scope="props">
-              <span>{{ projectVersions[props.row.pk]}}</span>
+              <span>{{ projectDateTimes[props.row.pk]}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -73,7 +79,8 @@
         projectName: this.$route.params.name,
         //批量选择数组
         batchSelect: [],
-        projectVersions: {}
+        projectDescriptions: {},
+        projectDateTimes: {}
       }
     },
     components: {
@@ -116,7 +123,8 @@
           id: id,
           name: this.projectName,
         }).then(({data: version}) => {
-          this.$set(this.projectVersions, id, version)
+          this.$set(this.projectDescriptions, id, version['description'])
+          this.$set(this.projectDateTimes, id, version['datetime'])
           this.loadData = false
         }).catch(() => {
           this.loadData = false
