@@ -70,8 +70,9 @@
             return false
           this.onSubmitLoading = true
           this.$fetch.apiClient.update({
-            id: this.form.id
-          }, this.form).then(() => {
+              id: this.form.id
+            }, this.form
+          ).then(() => {
             this.$message.success('修改成功')
             this.onSubmitLoading = false
           }).catch(() => {

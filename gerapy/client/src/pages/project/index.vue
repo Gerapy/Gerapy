@@ -8,6 +8,7 @@
         :data="projects"
         v-loading="loadData"
         element-loading-text="拼命加载中"
+        @selection-change="onBatchSelect"
         style="width: 100%;">
         <el-table-column
           type="selection"
@@ -30,12 +31,21 @@
             <router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">
               <el-button type="info" size="mini">监控</el-button>
             </router-link>
-            <router-link :to="{name: 'projectDelete', params: {name: props.row.name}}" tag="span">
-              <el-button type="danger" size="mini">删除</el-button>
-            </router-link>
+            <el-button type="danger" size="mini" @click="onSingleDel(props.row.name)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <bottom-tool-bar>
+        <el-button
+          type="danger"
+          icon="delete"
+          size="small"
+          :disabled="batchSelect.length === 0"
+          @click="onBatchDel"
+          slot="handler">
+          <span>批量删除</span>
+        </el-button>
+      </bottom-tool-bar>
     </div>
   </div>
 
@@ -60,19 +70,42 @@
       this.getProjectData()
     },
     methods: {
-
+      onBatchSelect(val){
+        this.batchSelect = val
+      },
       //获取数据
       getProjectData(){
         this.loadData = true
-        this.$fetch.apiProject.projectList()
-          .then(({data: projects}) => {
-            console.log(projects)
-            this.projects = projects
-            this.loadData = false
-          })
-          .catch(() => {
-            this.loadData = false
-          })
+        this.$fetch.apiProject.projectList(
+        ).then(({data: projects}) => {
+          this.projects = projects
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
+        })
+      },
+      deleteProject(name) {
+        this.loadData = true
+        this.$fetch.apiProject.projectDelete({
+          name: name
+        }).then(() => {
+          this.$message.success('删除成功')
+          this.loadData = false
+          this.getProjectData()
+        }).catch((error) => {
+          console.log(error)
+          this.loadData = false
+          this.$message.error('删除失败')
+        })
+      },
+      onSingleDel() {
+        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteProject(name)
+        })
       },
       //批量删除
       onBatchDel(){
@@ -80,22 +113,15 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
+        }).then(() => {
+          this.loadData = true
+          console.log(this.batchSelect)
+          this.batchSelect.forEach(({name: name}) => {
+            this.deleteProject(name)
+          })
+        }).catch(() => {
+          this.$message.error('批量删除出错')
         })
-          .then(() => {
-            this.loadData = true
-            console.log(this.batchSelect)
-            this.batchSelect.forEach((item) => {
-              this.$fetch.api_pattern.del(item)
-                .then(({msg}) => {
-                  this.getPatternData()
-                  this.$message.success(msg)
-                })
-                .catch(() => {
-                })
-            })
-          })
-          .catch(() => {
-          })
       }
     }
   }

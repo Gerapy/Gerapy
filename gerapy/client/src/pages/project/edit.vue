@@ -144,13 +144,11 @@
     methods: {
       getProjectTree() {
         // 获取目录树
-        this.$fetch.apiProject.projectTree()
-          .then(({data: tree}) => {
-            console.log(tree)
-            this.tree = tree
-          })
-          .catch(() => {
-          })
+        this.$fetch.apiProject.projectTree(
+        ).then(({data: tree}) => {
+          this.tree = tree
+        }).catch(() => {
+        })
       },
       handleNodeClick(data) {
         this.activeNode = data

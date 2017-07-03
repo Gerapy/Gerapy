@@ -104,15 +104,14 @@
       //获取数据
       getTaskData(){
         this.loadData = true
-        this.$fetch.apiClient.index()
-          .then(({data: clientData}) => {
-            console.log(clientData)
-            this.clientData = clientData
-            this.loadData = false
-          })
-          .catch(() => {
-            this.loadData = false
-          })
+        this.$fetch.apiClient.index(
+        ).then(({data: clientData}) => {
+          console.log(clientData)
+          this.clientData = clientData
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
+        })
       },
       //批量删除
       onBatchDel(){
@@ -120,22 +119,20 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        })
-          .then(() => {
-            this.loadData = true
-            console.log(this.batchSelect)
-            this.batchSelect.forEach((item) => {
-              this.$fetch.api_pattern.del(item)
-                .then(({msg}) => {
-                  this.getPatternData()
-                  this.$message.success(msg)
-                })
-                .catch(() => {
-                })
+        }).then(() => {
+          this.loadData = true
+          console.log(this.batchSelect)
+          this.batchSelect.forEach((item) => {
+            this.$fetch.api_pattern.del(
+              item
+            ).then(({msg}) => {
+              this.getPatternData()
+              this.$message.success(msg)
+            }).catch(() => {
             })
           })
-          .catch(() => {
-          })
+        }).catch(() => {
+        })
       }
     }
   }

@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^api/project/file/delete', views.project_file_delete, name='project_file_delete'),
     url(r'^api/project/file/update', views.project_file_update, name='project_file_update'),
     url(r'^api/project/file', views.project_file, name='project_file'),
+    url(r'^api/project/delete', views.project_delete, name='project_delete'),
 ]

@@ -175,7 +175,6 @@
             console.log('JJJJJobs', this.jobs)
             for (let project in this.jobs) {
               let jobs = this.jobs[project]
-              console.log(jobs)
               jobs.forEach((job) => {
                 console.log(job)
                 this.$set(this.jobsInfo, job.id, {project: project, spider: job['spider']})
@@ -192,7 +191,6 @@
       },
       // 启动任务
       startSpider(project, spider){
-        console.log(project, spider)
         this.$fetch.apiClient.startSpider({
           id: this.routeId,
           project: project,
@@ -241,8 +239,6 @@
         }
       },
       cancelJob(job) {
-        console.log(job)
-        console.log(this.jobsInfo[job])
         this.$fetch.apiClient.cancelJob({
           id: this.routeId,
           project: this.jobsInfo[job]['project'],

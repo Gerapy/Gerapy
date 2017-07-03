@@ -1,6 +1,7 @@
 import json
 import os
 import requests
+import shutil
 
 from django.shortcuts import render
 from gerapy.server.core.utils import IGNORES
@@ -140,3 +141,12 @@ def project_file_delete(request):
         result = os.remove(path)
         print(result)
         return HttpResponse(json.dumps(result))
+    
+def project_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = merge(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
+        print(path)
+        project = data['name']
+        shutil.rmtree(merge(path, project))
+        return HttpResponse(json.dumps('1'))

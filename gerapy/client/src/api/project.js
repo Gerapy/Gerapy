@@ -111,3 +111,11 @@ export function projectList() {
     method: 'get',
   })
 }
+
+export function projectDelete(data) {
+  return fetch({
+    url: project.projectDelete,
+    method: 'post',
+    data
+  })
+}
