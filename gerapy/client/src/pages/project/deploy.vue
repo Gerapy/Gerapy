@@ -8,7 +8,7 @@
           <el-form-item label="项目名称">
             {{ buildInfo.name }}
           </el-form-item>
-          <el-form-item label="打包描述">
+          <el-form-item label="版本描述">
             <el-input v-model="buildInfo.description"></el-input>
           </el-form-item>
           <el-form-item label="包名">
@@ -18,8 +18,7 @@
             {{ buildInfo.built_at || notBuildText }}
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onBuild"><span v-if="buildInfo.egg"></span>打包</el-button>
-            <el-button>取消</el-button>
+            <el-button type="primary" @click="onBuild"><span v-if="buildInfo.egg">重新</span>打包</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -44,7 +43,7 @@
             width="300">
           </el-table-column>
           <el-table-column
-            label="上次部署时间">
+            label="部署时间">
             <template scope="props">
               <span>{{ projectVersions[props.row.pk]}}</span>
             </template>

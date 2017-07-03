@@ -169,10 +169,12 @@ def project_versions(request, id, project):
 
 def project_deploy(request, id, project):
     if request.method == 'GET':
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        project_path = merge(path, project)
         print(id, project)
-        egg = build_project(project)
+        egg = find_egg(project_path)
         print(egg)
-        egg_file = open(egg, 'rb')
+        egg_file = open(merge(project_path, egg), 'rb')
         deploy_version = time.time()
         print(deploy_version)
         client = Client.objects.get(id=id)
