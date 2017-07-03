@@ -84,6 +84,7 @@
   export default{
     data(){
       return {
+        projectName: this.$route.params.name,
         clientData: null,
         //请求时的loading效果
         loadData: true,
@@ -139,13 +140,14 @@
       codemirror
     },
     created(){
-      this.getProjectTree()
+      this.getProjectTree(this.projectName)
     },
     methods: {
-      getProjectTree() {
+      getProjectTree(name) {
         // 获取目录树
-        this.$fetch.apiProject.projectTree(
-        ).then(({data: tree}) => {
+        this.$fetch.apiProject.projectTree({
+          name: name
+        }).then(({data: tree}) => {
           this.tree = tree
         }).catch(() => {
         })

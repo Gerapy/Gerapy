@@ -98,6 +98,7 @@
           this.$message.error('删除失败')
         })
       },
+      // 单个删除
       onSingleDel() {
         this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
           confirmButtonText: '确定',

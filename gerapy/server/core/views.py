@@ -108,10 +108,10 @@ def project_index(request):
         return HttpResponse(json.dumps(project_list))
 
 
-def project_tree(request, path):
+def project_tree(request, name):
     if request.method == 'GET':
-        path = os.path.abspath(os.getcwd())
-        tree = get_tree(path)
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        tree = get_tree(merge(path, name))
         return HttpResponse(json.dumps(tree))
 
 

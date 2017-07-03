@@ -16,6 +16,7 @@ import clientEditComponent from 'pages/client/edit'
 import clientScheduleComponent from 'pages/client/schedule'
 // project
 import projectIndexComponent from 'pages/project/index'
+import projectEditComponent from 'pages/project/edit'
 
 
 Vue.use(VueRouter)
@@ -47,7 +48,7 @@ const routes = [{
       title: "主机管理",
       auth: false
     }
-  },{
+  }, {
     path: '/client/:id',
     name: 'clientEdit',
     component: clientEditComponent,
@@ -55,7 +56,7 @@ const routes = [{
       title: "修改主机",
       auth: true
     }
-  },{
+  }, {
     path: '/client/:id/schedule',
     name: 'clientSchedule',
     component: clientScheduleComponent,
@@ -70,6 +71,14 @@ const routes = [{
     meta: {
       title: "项目管理",
       auth: false
+    }
+  }, {
+    path: '/project/:name/edit',
+    name: 'projectEdit',
+    component: projectEditComponent,
+    meta: {
+      title: "项目编辑",
+      auth: true
     }
   }]
 }]
