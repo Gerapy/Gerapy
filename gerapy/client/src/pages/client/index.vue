@@ -10,7 +10,7 @@
     </panel-title>
     <div class="panel-body">
       <el-table
-        :data="clientData"
+        :data="clients"
         v-loading="loadData"
         element-loading-text="拼命加载中"
         border
@@ -76,7 +76,7 @@
   export default{
     data(){
       return {
-        clientData: null,
+        clients: null,
         //请求时的loading效果
         loadData: true,
         //批量选择数组
@@ -88,26 +88,25 @@
       bottomToolBar
     },
     created(){
-      this.getTaskData()
+      this.getClientData()
     },
     methods: {
       onBatchSelect(val){
         this.batchSelect = val
       },
       onRefresh(){
-        this.getTaskData()
+        this.getClientData()
       },
       changeFilter () {
         this.lastIds = {}
-        this.getTaskData()
+        this.getClientData()
       },
       //获取数据
-      getTaskData(){
+      getClientData(){
         this.loadData = true
         this.$fetch.apiClient.index(
-        ).then(({data: clientData}) => {
-          console.log(clientData)
-          this.clientData = clientData
+        ).then(({data: clients}) => {
+          this.clients = clients
           this.loadData = false
         }).catch(() => {
           this.loadData = false

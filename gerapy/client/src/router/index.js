@@ -17,6 +17,7 @@ import clientScheduleComponent from 'pages/client/schedule'
 // project
 import projectIndexComponent from 'pages/project/index'
 import projectEditComponent from 'pages/project/edit'
+import projectDeployComponent from 'pages/project/deploy'
 
 
 Vue.use(VueRouter)
@@ -78,6 +79,14 @@ const routes = [{
     component: projectEditComponent,
     meta: {
       title: "项目编辑",
+      auth: true
+    }
+  }, {
+    path: '/project/:name/deploy',
+    name: 'projectDeploy',
+    component: projectDeployComponent,
+    meta: {
+      title: "项目部署",
       auth: true
     }
   }]

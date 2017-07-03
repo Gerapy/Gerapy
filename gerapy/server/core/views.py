@@ -119,7 +119,6 @@ def project_file(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = merge(data['path'], data['label'])
-        print(path)
         with open(path, 'r') as f:
             return HttpResponse(f.read())
 
@@ -139,14 +138,12 @@ def project_file_delete(request):
         data = json.loads(request.body)
         path = merge(data['path'], data['label'])
         result = os.remove(path)
-        print(result)
         return HttpResponse(json.dumps(result))
     
 def project_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = merge(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
-        print(path)
         project = data['name']
         shutil.rmtree(merge(path, project))
         return HttpResponse(json.dumps('1'))
