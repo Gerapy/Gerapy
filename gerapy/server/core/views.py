@@ -2,8 +2,9 @@ import json
 import os
 import requests
 import shutil
-
+import time
 from django.shortcuts import render
+from gerapy.server.core.build import build_project
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
@@ -139,7 +140,8 @@ def project_file_delete(request):
         path = merge(data['path'], data['label'])
         result = os.remove(path)
         return HttpResponse(json.dumps(result))
-    
+
+
 def project_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -148,11 +150,32 @@ def project_delete(request):
         shutil.rmtree(merge(path, project))
         return HttpResponse(json.dumps('1'))
 
+
 def project_versions(request, id, project):
     if request.method == 'GET':
         print(project)
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.list_versions(project)
-        return HttpResponse(json.dumps(result))
-    
+        versions = scrapyd.list_versions(project)
+        print(versions)
+        if len(versions) > 0:
+            version = versions[-1]
+            localtime = time.localtime(int(version))
+            version = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+            return HttpResponse(json.dumps(version))
+        return HttpResponse(None)
+
+
+def project_deploy(request, id, project):
+    if request.method == 'GET':
+        print(id, project)
+        egg = build_project(project)
+        print(egg)
+        egg_file = open(egg, 'rb')
+        deploy_version = time.time()
+        print(deploy_version)
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
+        print(result)
+        return HttpResponse(result)

@@ -20,7 +20,7 @@
           width="300">
         </el-table-column>
         <el-table-column
-          label="最新版本">
+          label="上次部署时间">
           <template scope="props">
             <span>{{ projectVersions[props.row.pk]}}</span>
           </template>
@@ -78,12 +78,7 @@
         this.$fetch.apiClient.projectVersions({
           id: id,
           name: this.projectName,
-        }).then(({data: versions}) => {
-          console.log(versions)
-          let version = null
-          if (versions.length > 0) {
-            version = versions[0]
-          }
+        }).then(({data: version}) => {
           this.$set(this.projectVersions, id, version)
           this.loadData = false
         }).catch(() => {
@@ -91,7 +86,15 @@
         })
       },
       onDeploy(id, name) {
-        console.log(name)
+        this.$fetch.apiClient.projectDeploy({
+          id: id,
+          name: this.projectName,
+        }).then(({data: data}) => {
+          console.log(data)
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
+        })
       }
     }
   }

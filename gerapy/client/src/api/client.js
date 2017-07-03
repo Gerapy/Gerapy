@@ -80,3 +80,11 @@ export function projectVersions(params) {
     params,
   })
 }
+
+export function projectDeploy(params) {
+  return fetch({
+    url: client.projectDeploy,
+    method: 'get',
+    params,
+  })
+}
