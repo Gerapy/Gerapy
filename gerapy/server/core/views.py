@@ -1,8 +1,10 @@
 import json
 import os
+import requests
 
 from django.shortcuts import render
-import requests
+from gerapy.server.core.utils import IGNORES
+from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
 from gerapy.server.core.models import Client
 from django.core.serializers import serialize
@@ -92,6 +94,17 @@ def cancel_job(request, id, project, job):
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         result = scrapyd.cancel(project, job)
         return HttpResponse(json.dumps(result))
+
+
+def project_index(request):
+    if request.method == 'GET':
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        files = os.listdir(path)
+        project_list = []
+        for file in files:
+            if os.path.isdir(merge(path, file)) and not file in IGNORES:
+                project_list.append({'name': file})
+        return HttpResponse(json.dumps(project_list))
 
 
 def project_tree(request, path):

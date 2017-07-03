@@ -20,8 +20,6 @@ def manage():
                 "forget to activate a virtual environment?"
             )
         raise
-    print('ARGV')
-    print(sys.argv)
     execute_from_command_line(sys.argv)
 
 

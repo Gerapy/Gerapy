@@ -105,4 +105,9 @@ export function projectFileDelete(data) {
   })
 }
 
-
+export function projectList() {
+  return fetch({
+    url: project.projectList,
+    method: 'get',
+  })
+}
