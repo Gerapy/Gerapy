@@ -28,7 +28,7 @@
         <el-table-column
           label="操作">
           <template scope="props">
-            <el-button type="success" size="mini" @click="onDeploy(props.row.pk, props.row.fields.name)">部署</el-button>
+            <el-button type="success" size="mini" @click="onDeploy(props.row.pk)">部署</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,14 +85,15 @@
           this.loadData = false
         })
       },
-      onDeploy(id, name) {
+      onDeploy(id) {
         this.$fetch.apiClient.projectDeploy({
           id: id,
           name: this.projectName,
-        }).then(({data: data}) => {
-          console.log(data)
+        }).then(() => {
+          this.$message('部署成功')
           this.loadData = false
         }).catch(() => {
+          this.$message('部署失败')
           this.loadData = false
         })
       }
