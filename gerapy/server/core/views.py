@@ -147,3 +147,12 @@ def project_delete(request):
         project = data['name']
         shutil.rmtree(merge(path, project))
         return HttpResponse(json.dumps('1'))
+
+def project_versions(request, id, project):
+    if request.method == 'GET':
+        print(project)
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.list_versions(project)
+        return HttpResponse(json.dumps(result))
+    

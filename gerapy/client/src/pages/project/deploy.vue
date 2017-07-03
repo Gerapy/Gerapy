@@ -20,9 +20,15 @@
           width="300">
         </el-table-column>
         <el-table-column
+          label="最新版本">
+          <template scope="props">
+            <span>{{ projectVersions[props.row.pk]}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作">
           <template scope="props">
-            <el-button type="success" size="mini" @click="onDeploy(props.row.name)">部署</el-button>
+            <el-button type="success" size="mini" @click="onDeploy(props.row.pk, props.row.fields.name)">部署</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -40,6 +46,7 @@
         projectName: this.$route.params.name,
         //批量选择数组
         batchSelect: [],
+        projectVersions: {}
       }
     },
     components: {
@@ -48,6 +55,7 @@
     },
     created(){
       this.getClientData()
+
     },
     methods: {
       //获取数据
@@ -57,11 +65,32 @@
         ).then(({data: clients}) => {
           this.clients = clients
           this.loadData = false
+          this.clients.forEach(({pk: id}) => {
+            console.log(id)
+            this.getProjectVersions(id)
+          })
         }).catch(() => {
           this.loadData = false
         })
       },
-      onDeploy(name) {
+      getProjectVersions(id){
+        this.loadData = true
+        this.$fetch.apiClient.projectVersions({
+          id: id,
+          name: this.projectName,
+        }).then(({data: versions}) => {
+          console.log(versions)
+          let version = null
+          if (versions.length > 0) {
+            version = versions[0]
+          }
+          this.$set(this.projectVersions, id, version)
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
+        })
+      },
+      onDeploy(id, name) {
         console.log(name)
       }
     }

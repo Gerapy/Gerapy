@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^api/client/(\d+)/project/(\S+)/spider/(\S+)/job/(\S+)/log', views.job_log, name='job_log'),
     url(r'^api/client/(\d+)/project/(\S+)/spider/(\S+)/$', views.start_spider, name='start_spider'),
     url(r'^api/client/(\d+)/project/(\S+)/jobs/$', views.list_jobs, name='list_jobs'),
+    url(r'^api/client/(\d+)/project/(\S+)/versions/$', views.project_versions, name='project_versions'),
     url(r'^api/client/(\d+)/project/(\S+)/job/(\S+)/cancel$', views.cancel_job, name='cancel_job'),
     url(r'^api/project/index/$', views.project_index, name='project_index'),
     url(r'^api/project/(\S+)tree/$', views.project_tree, name='project_tree'),

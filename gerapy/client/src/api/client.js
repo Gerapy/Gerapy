@@ -73,3 +73,10 @@ export function cancelJob(params) {
   })
 }
 
+export function projectVersions(params) {
+  return fetch({
+    url: client.projectVersions,
+    method: 'get',
+    params,
+  })
+}
