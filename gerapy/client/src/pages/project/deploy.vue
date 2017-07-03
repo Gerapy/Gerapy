@@ -5,22 +5,21 @@
       </panel-title>
       <div class="panel-body">
         <el-form ref="form" :model="buildInfo" label-width="80px">
-          <el-form-item label="活动名称">
-            <el-input></el-input>
+          <el-form-item label="项目名称">
+            {{ buildInfo.name }}
           </el-form-item>
-          <el-form-item label="活动区域">
-            <el-select placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+          <el-form-item label="打包描述">
+            <el-input v-model="buildInfo.description"></el-input>
           </el-form-item>
-          <el-form-item label="活动性质">
-            <el-checkbox-group>
-              <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-              <el-checkbox label="地推活动" name="type"></el-checkbox>
-              <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-              <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-            </el-checkbox-group>
+          <el-form-item label="包名">
+            {{ buildInfo.egg || notBuildText }}
+          </el-form-item>
+          <el-form-item label="打包时间">
+            {{ buildInfo.built_at || notBuildText }}
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onBuild"><span v-if="buildInfo.egg"></span>打包</el-button>
+            <el-button>取消</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -68,6 +67,7 @@
     data(){
       return {
         buildInfo: {},
+        notBuildText: '未打包',
         clients: [],
         //请求时的loading效果
         loadData: false,
@@ -83,9 +83,21 @@
     },
     created(){
       this.getClientData()
+      this.getBuildInfo()
     },
     methods: {
-      //获取数据
+      getBuildInfo(){
+        this.loadData = true
+        this.$fetch.apiProject.buildInfo({
+          name: this.projectName
+        }).then(({data: data}) => {
+          this.buildInfo = data
+          console.log(data)
+          this.loadData = false
+        }).catch(() => {
+          this.loadData = false
+        })
+      },
       getClientData(){
         this.loadData = true
         this.$fetch.apiClient.index(
@@ -122,6 +134,23 @@
         }).catch(() => {
           this.$message.error('部署失败')
           this.loadData = false
+        })
+      },
+      onBuild() {
+        this.$fetch.apiProject.build({
+          name: this.projectName
+        }, {
+          description: this.buildInfo['description'],
+          egg: this.buildInfo['egg'],
+          built_at: this.buildInfo['built_at']
+        }).then(({data: data}) => {
+          this.buildInfo = data
+          console.log(data)
+          this.loadData = false
+          this.$message.success('打包成功')
+        }).catch(() => {
+          this.loadData = false
+          this.$message.success('打包失败')
         })
       }
     }

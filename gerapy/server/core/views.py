@@ -183,19 +183,22 @@ def project_deploy(request, id, project):
 
 
 def project_build(request, project):
+    print(request.body)
+    path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+    project_path = merge(path, project)
     if request.method == 'GET':
         print(project)
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-        project_path = merge(path, project)
         egg = find_egg(project_path)
         if egg:
             built_at = os.path.getmtime(merge(project_path, egg))
             print(built_at)
             if not Project.objects.filter(name=project):
-                Project(name=project, built_at=built_at).save()
+                Project(name=project, built_at=built_at, egg=egg).save()
+                model = Project.objects.get(name=project)
             else:
                 model = Project.objects.get(name=project)
                 model.built_at = built_at
+                model.egg = egg
                 model.save()
                 print(model)
             dict = model_to_dict(model)
@@ -205,4 +208,26 @@ def project_build(request, project):
             return HttpResponse(json.dumps(dict))
         else:
             return HttpResponse(json.dumps({'name': project}))
-    
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        description = data['description']
+        print(description)
+        build_project(project)
+        egg = find_egg(project_path)
+        built_at = time.time()
+        if not Project.objects.filter(name=project):
+            Project(name=project, description=description, built_at=built_at, egg=egg).save()
+            model = Project.objects.get(name=project)
+        else:
+            model = Project.objects.get(name=project)
+            model.built_at = built_at
+            model.egg = egg
+            model.description = description
+            model.save()
+            print(model)
+        dict = model_to_dict(model)
+        print(dict)
+        localtime = time.localtime(int(built_at))
+        dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+        return HttpResponse(json.dumps(dict))

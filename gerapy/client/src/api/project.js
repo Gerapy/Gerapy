@@ -119,3 +119,20 @@ export function projectDelete(data) {
     data
   })
 }
+
+export function buildInfo(params) {
+  return fetch({
+    url: project.buildInfo,
+    method: 'get',
+    params
+  })
+}
+
+export function build(params, data) {
+  return fetch({
+    url: project.build,
+    method: 'post',
+    params,
+    data
+  })
+}
