@@ -1,11 +1,11 @@
 <template>
   <div class="panel">
     <panel-title :title="$route.meta.title">
-      <el-button @click.stop="onRefresh" size="small">
+      <el-button @click.stop="onRefresh" size="mini">
         <i class="fa fa-refresh"></i>
       </el-button>
       <router-link :to="{name: 'clientCreate'}" tag="span">
-        <el-button type="primary" icon="plus" size="small">添加主机</el-button>
+        <el-button type="primary" icon="plus" size="mini">添加主机</el-button>
       </router-link>
     </panel-title>
     <div class="panel-body">
@@ -48,12 +48,21 @@
           label="操作">
           <template scope="props">
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
-              <el-button type="info" size="small" icon="edit">修改</el-button>
+              <el-button type="info" size="mini">
+                <i class="fa fa-edit"></i>
+                编辑
+              </el-button>
             </router-link>
             <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk}}" tag="span">
-              <el-button type="success" size="small" icon="edit">调度</el-button>
+              <el-button type="success" size="mini">
+                <i class="fa fa-sitemap"></i>
+                调度
+              </el-button>
             </router-link>
-            <el-button type="danger" size="small" icon="edit" @click="onSingleDel(props.row.pk)">删除</el-button>
+            <el-button type="danger" size="mini" @click="onSingleDel(props.row.pk)">
+              <i class="fa fa-remove"></i>
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,7 +70,7 @@
         <el-button
           type="danger"
           icon="delete"
-          size="small"
+          size="mini"
           :disabled="batchSelect.length === 0"
           @click="onBatchDel"
           slot="handler">

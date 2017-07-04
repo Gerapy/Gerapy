@@ -1,9 +1,11 @@
 <template>
   <div class="header-section">
     <div class="search">
-      <search @search="submit_search"></search>
+      <el-input
+        size="small"
+        placeholder="请输入内容">
+      </el-input>
     </div>
-    <menu-right></menu-right>
   </div>
 </template>
 <script type="text/javascript">
@@ -12,8 +14,7 @@
 
   export default{
     components: {
-      menuRight,
-      search
+      menuRight
     },
     methods: {
       submit_search(value) {

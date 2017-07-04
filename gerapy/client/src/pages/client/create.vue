@@ -8,18 +8,23 @@
         <el-col :span="8">
           <el-form ref="form" :model="form" :rules="rules" label-width="100px">
             <el-form-item label="名称:" prop="name">
-              <el-input v-model="form.name" placeholder="请输入名称"></el-input>
+              <el-input v-model="form.name" placeholder="请输入名称" size="small"></el-input>
             </el-form-item>
             <el-form-item label="IP:" prop="ip">
-              <el-input v-model="form.ip" placeholder="请输入IP"></el-input>
+              <el-input v-model="form.ip" placeholder="请输入IP" size="small"></el-input>
             </el-form-item>
             <el-form-item label="端口:" prop="port">
-              <el-input v-model="form.port" placeholder="请输入端口"></el-input>
+              <el-input v-model="form.port" placeholder="请输入端口" size="small"></el-input>
             </el-form-item>
-
             <el-form-item>
-              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">创建</el-button>
-              <el-button @click="$router.back()">返回</el-button>
+              <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
+                <i class="fa fa-check"></i>
+                创建
+              </el-button>
+              <el-button @click="$router.back()" size="small">
+                <i class="fa fa-reply"></i>
+                返回
+              </el-button>
             </el-form-item>
           </el-form>
         </el-col>
