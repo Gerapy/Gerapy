@@ -13,6 +13,7 @@ import noPageComponent from 'pages/error/404'
 //client
 import clientIndexComponent from 'pages/client/index'
 import clientEditComponent from 'pages/client/edit'
+import clientCreateComponent from 'pages/client/create'
 import clientScheduleComponent from 'pages/client/schedule'
 // project
 import projectIndexComponent from 'pages/project/index'
@@ -48,6 +49,14 @@ const routes = [{
     meta: {
       title: "主机管理",
       auth: false
+    }
+  }, {
+    path: '/client/create',
+    name: 'clientCreate',
+    component: clientCreateComponent,
+    meta: {
+      title: "新增主机",
+      auth: true
     }
   }, {
     path: '/client/:id',

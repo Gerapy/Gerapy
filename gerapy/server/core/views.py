@@ -38,6 +38,20 @@ def client_update(request, id):
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
 
 
+def client_create(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        client = Client.objects.create(**data)
+        return HttpResponse(json.dumps(model_to_dict(client)))
+
+
+def client_remove(request, id):
+    if request.method == 'POST':
+        Client.objects.filter(id=id).delete()
+        return HttpResponse(json.dumps('1'))
+
+
 def list_projects(request, id):
     if request.method == 'GET':
         client = Client.objects.get(id=id)

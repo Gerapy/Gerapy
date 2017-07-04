@@ -18,7 +18,7 @@
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">修改</el-button>
+              <el-button type="primary" @click="onSubmitForm" :loading="onSubmitLoading">创建</el-button>
               <el-button @click="$router.back()">返回</el-button>
             </el-form-item>
           </el-form>
@@ -29,6 +29,10 @@
 </template>
 <script type="text/javascript">
   import {panelTitle} from 'components'
+  import {ip, port} from '../../common/tools/regex'
+  import regex from '../../common/tools/regex'
+  console.log(regex)
+  console.log(ip, port)
   export default{
     data(){
       return {
@@ -38,42 +42,34 @@
           port: '',
           description: ''
         },
-        routeId: this.$route.params.id,
         loadData: false,
         onSubmitLoading: false,
         rules: {
           name: [
-            {required: true, message: '名称不能为空', trigger: 'blur'}
+            {required: true, message: '名称不能为空', trigger: 'blur'},
+          ],
+          ip: [
+            {required: true, message: 'IP不能为空', trigger: 'blur'},
+            {pattern: ip, message: 'IP不正确', trigger: 'blur'},
+          ],
+          port: [
+            {required: true, message: '端口不能为空', trigger: 'blur'},
+            {pattern: port, message: '端口不正确', trigger: 'blur'},
           ]
         }
       }
     },
-    created(){
-      this.routeId !== null && this.getFormData()
-    },
     methods: {
-      getFormData(){
-        this.loadData = true
-        this.$fetch.apiClient.show({
-          id: this.routeId
-        }).then(({data: data}) => {
-          this.form = data
-          this.loadData = false
-        }).catch(() => {
-          this.loadData = false
-        })
-      },
       //提交
       onSubmitForm(){
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
           this.onSubmitLoading = true
-          this.$fetch.apiClient.update({
-              id: this.form.id
-            }, this.form
+          this.$fetch.apiClient.create(
+            this.form
           ).then(() => {
-            this.$message.success('修改成功')
+            this.$message.success('创建成功')
             this.onSubmitLoading = false
           }).catch(() => {
             this.onSubmitLoading = false

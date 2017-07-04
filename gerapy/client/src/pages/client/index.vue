@@ -4,7 +4,7 @@
       <el-button @click.stop="onRefresh" size="small">
         <i class="fa fa-refresh"></i>
       </el-button>
-      <router-link :to="{name: 'taskAdd'}" tag="span">
+      <router-link :to="{name: 'clientCreate'}" tag="span">
         <el-button type="primary" icon="plus" size="small">添加主机</el-button>
       </router-link>
     </panel-title>
@@ -13,7 +13,6 @@
         :data="clients"
         v-loading="loadData"
         element-loading-text="拼命加载中"
-        border
         @selection-change="onBatchSelect"
         style="width: 100%;">
         <el-table-column
@@ -22,8 +21,8 @@
         </el-table-column>
         <el-table-column
           prop="pk"
-          label="id"
-          width="50">
+          label="ID"
+          width="60">
         </el-table-column>
         <el-table-column
           prop="fields.name"
@@ -54,6 +53,7 @@
             <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk}}" tag="span">
               <el-button type="success" size="small" icon="edit">调度</el-button>
             </router-link>
+            <el-button type="danger" size="small" icon="edit" @click="onSingleDel(props.row.pk)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,6 +112,27 @@
           this.loadData = false
         })
       },
+      deleteClient(id) {
+        this.$fetch.apiClient.remove({
+          id: id
+        }).then(() => {
+          this.$message.success('删除成功')
+          this.loadData = false
+          this.getClientData()
+        }).catch(() => {
+          this.$message.error('删除失败')
+          this.loadData = false
+        })
+      },
+      onSingleDel(id) {
+        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteClient(id)
+        })
+      },
       //批量删除
       onBatchDel(){
         this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
@@ -122,13 +143,7 @@
           this.loadData = true
           console.log(this.batchSelect)
           this.batchSelect.forEach((item) => {
-            this.$fetch.api_pattern.del(
-              item
-            ).then(({msg}) => {
-              this.getPatternData()
-              this.$message.success(msg)
-            }).catch(() => {
-            })
+            this.deleteClient(item.pk)
           })
         }).catch(() => {
         })

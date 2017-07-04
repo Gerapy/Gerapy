@@ -24,6 +24,22 @@ export function update(params, data) {
   })
 }
 
+export function remove(params) {
+  return fetch({
+    url: client.remove,
+    method: 'post',
+    params,
+  })
+}
+
+export function create(data) {
+  return fetch({
+    url: client.create,
+    method: 'post',
+    data,
+  })
+}
+
 export function projects(params) {
   return fetch({
     url: client.projects,
