@@ -76,7 +76,7 @@
                 调度
               </el-button>
             </router-link>
-            <el-button type="danger" size="mini" @click="onSingleDel(props.row.pk)">
+            <el-button type="danger" size="mini" @click="onSingleDelete(props.row.pk)">
               <i class="fa fa-remove"></i>
               删除
             </el-button>
@@ -89,7 +89,7 @@
           icon="delete"
           size="mini"
           :disabled="batchSelect.length === 0"
-          @click="onBatchDel"
+          @click="onBatchDelete"
           slot="handler">
           <span>批量删除</span>
         </el-button>
@@ -173,7 +173,7 @@
           this.loadData = false
         })
       },
-      onSingleDel(id) {
+      onSingleDelete(id) {
         this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -183,7 +183,7 @@
         })
       },
       //批量删除
-      onBatchDel(){
+      onBatchDelete(){
         this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
