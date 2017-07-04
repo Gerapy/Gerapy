@@ -1,7 +1,7 @@
 <template>
 
   <div class="panel">
-    <panel-title title="项目目录">
+    <panel-title title="项目管理">
     </panel-title>
     <div class="panel-body">
       <el-table
@@ -17,21 +17,69 @@
         <el-table-column
           prop="name"
           label="项目名称"
-          width="300">
+          width="200">
+        </el-table-column>
+        <el-table-column
+          label="项目版本"
+          width="200">
+          <template scope="props">
+            <span v-if="buildInfos[props.row.name]">
+              {{ buildInfos[props.row.name]['description'] }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="已打包"
+          width="100">
+          <template scope="props">
+            <span v-if="buildInfos[props.row.name]">
+              {{ buildInfos[props.row.name]['egg']?'是':'否' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="打包名称"
+          width="200">
+          <template scope="props">
+            <span v-if="buildInfos[props.row.name]">
+              {{ buildInfos[props.row.name]['egg'] }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="打包时间"
+          width="200">
+          <template scope="props">
+            <span v-if="buildInfos[props.row.name]">
+              {{ buildInfos[props.row.name]['built_at'] }}
+            </span>
+          </template>
         </el-table-column>
         <el-table-column
           label="操作">
           <template scope="props">
             <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span">
-              <el-button type="warning" size="mini">编辑</el-button>
+              <el-button type="warning" size="small">
+                <i class="fa fa-edit"></i>
+                编辑
+              </el-button>
             </router-link>
             <router-link :to="{name: 'projectDeploy', params: {name: props.row.name}}" tag="span">
-              <el-button type="success" size="mini">部署</el-button>
+              <el-button type="success" size="small">
+                <i class="fa fa-cloud-upload"></i>
+                部署
+              </el-button>
             </router-link>
             <router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">
-              <el-button type="info" size="mini">监控</el-button>
+              <el-button type="info" size="small">
+                <i class="fa fa-podcast"></i>
+                监控
+              </el-button>
             </router-link>
-            <el-button type="danger" size="mini" @click="onSingleDel(props.row.name)">删除</el-button>
+            <el-button type="danger" size="small" @click="onSingleDel(props.row.name)">
+              <i class="fa fa-remove"></i>
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,6 +108,7 @@
         loadData: false,
         //批量选择数组
         batchSelect: [],
+        buildInfos: {}
       }
     },
     components: {
@@ -73,6 +122,18 @@
       onBatchSelect(val){
         this.batchSelect = val
       },
+      getBuildInfo(name){
+        this.loadData = true
+        this.$fetch.apiProject.buildInfo({
+          name: name
+        }).then(({data: data}) => {
+          this.$set(this.buildInfos, name, data)
+          this.loadData = false
+          console.log('LLLL', this.buildInfos)
+        }).catch(() => {
+          this.loadData = false
+        })
+      },
       //获取数据
       getProjectData(){
         this.loadData = true
@@ -80,13 +141,17 @@
         ).then(({data: projects}) => {
           this.projects = projects
           this.loadData = false
+          this.projects.forEach((project) => {
+            console.log(project)
+            this.getBuildInfo(project.name)
+          })
         }).catch(() => {
           this.loadData = false
         })
       },
       deleteProject(name) {
         this.loadData = true
-        this.$fetch.apiProject.projectDelete({
+        this.$fetch.apiProject.projectRemove({
           name: name
         }).then(() => {
           this.$message.success('删除成功')
@@ -99,7 +164,7 @@
         })
       },
       // 单个删除
-      onSingleDel() {
+      onSingleDel(name) {
         this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

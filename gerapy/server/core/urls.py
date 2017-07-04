@@ -19,8 +19,8 @@ urlpatterns = [
     url(r'^api/project/index/$', views.project_index, name='project_index'),
     url(r'^api/project/(\S+)/build', views.project_build, name='project_build'),
     url(r'^api/project/(\S+)/tree', views.project_tree, name='project_tree'),
+    url(r'^api/project/(\S+)/remove', views.project_remove, name='project_remove'),
     url(r'^api/project/file/delete', views.project_file_delete, name='project_file_delete'),
     url(r'^api/project/file/update', views.project_file_update, name='project_file_update'),
     url(r'^api/project/file', views.project_file, name='project_file'),
-    url(r'^api/project/delete', views.project_delete, name='project_delete'),
 ]

@@ -158,13 +158,13 @@ def project_file_delete(request):
         return HttpResponse(json.dumps(result))
 
 
-def project_delete(request):
+def project_remove(request, project):
     if request.method == 'POST':
-        data = json.loads(request.body)
         path = merge(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
-        project = data['name']
-        shutil.rmtree(merge(path, project))
-        return HttpResponse(json.dumps('1'))
+        if project:
+            project_path = merge(path, project)
+            shutil.rmtree(project_path)
+            return HttpResponse(json.dumps('1'))
 
 
 def project_versions(request, id, project):
@@ -226,6 +226,7 @@ def project_build(request, project):
     if request.method == 'GET':
         print(project)
         egg = find_egg(project_path)
+        print('Egg', egg)
         if egg:
             built_at = os.path.getmtime(merge(project_path, egg))
             print(built_at)

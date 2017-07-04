@@ -130,17 +130,21 @@
         })
       },
       onDeploy(id) {
-        this.$fetch.apiClient.projectDeploy({
-          id: id,
-          name: this.projectName,
-        }).then(() => {
-          this.$message.success('部署成功')
-          this.getProjectVersions(id)
-          this.loadData = false
-        }).catch(() => {
-          this.$message.error('部署失败')
-          this.loadData = false
-        })
+        if (this.buildInfo.egg) {
+          this.$fetch.apiClient.projectDeploy({
+            id: id,
+            name: this.projectName,
+          }).then(() => {
+            this.$message.success('部署成功')
+            this.getProjectVersions(id)
+            this.loadData = false
+          }).catch(() => {
+            this.$message.error('部署失败')
+            this.loadData = false
+          })
+        } else {
+          this.$message.error('请先打包项目')
+        }
       },
       onBuild() {
         this.$fetch.apiProject.build({
@@ -156,13 +160,10 @@
           this.$message.success('打包成功')
         }).catch(() => {
           this.loadData = false
-          this.$message.success('打包失败')
+          this.$message.error('打包失败')
         })
       }
     }
   }
 </script>
 
-<style lang="scss" type="text/scss" rel="stylesheet/scss">
-
-</style>

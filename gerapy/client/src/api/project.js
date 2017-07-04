@@ -32,47 +32,6 @@ export function projects(params) {
   })
 }
 
-export function listSpiders(params) {
-  return fetch({
-    url: project.listSpiders,
-    method: 'get',
-    params,
-  })
-}
-
-export function startSpider(params) {
-  return fetch({
-    url: project.startSpider,
-    method: 'get',
-    params,
-  })
-}
-
-export function listJobs(params) {
-  return fetch({
-    url: project.listJobs,
-    method: 'get',
-    params,
-  })
-}
-
-
-export function getLog(params) {
-  return fetch({
-    url: project.getLog,
-    method: 'get',
-    params,
-  })
-}
-
-export function cancelJob(params) {
-  return fetch({
-    url: project.cancelJob,
-    method: 'get',
-    params,
-  })
-}
-
 export function projectTree(params) {
   return fetch({
     url: project.projectTree,
@@ -112,11 +71,11 @@ export function projectList() {
   })
 }
 
-export function projectDelete(data) {
+export function projectRemove(params) {
   return fetch({
-    url: project.projectDelete,
+    url: project.projectRemove,
     method: 'post',
-    data
+    params
   })
 }
 
