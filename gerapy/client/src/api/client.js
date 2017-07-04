@@ -15,6 +15,14 @@ export function show(params) {
   })
 }
 
+export function status(params) {
+  return fetch({
+    url: client.status,
+    method: 'get',
+    params
+  })
+}
+
 export function update(params, data) {
   return fetch({
     url: client.update,

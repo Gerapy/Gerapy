@@ -12,11 +12,11 @@
     <el-col :span="21">
       <div class="panel m-l-md">
         <panel-title title="代码">
-          <el-button @click="saveCode" size="small" type="success">
+          <el-button @click="saveCode" size="mini" type="success">
             <i class="fa fa-check"></i>
             保存
           </el-button>
-          <el-button @click="deleteFile" size="small" type="danger">
+          <el-button @click="deleteFile" size="mini" type="danger">
             <i class="fa fa-close"></i>
             删除
           </el-button>

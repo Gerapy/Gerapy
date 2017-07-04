@@ -11,15 +11,18 @@
         @selection-change="onBatchSelect"
         style="width: 100%;">
         <el-table-column
+          align="center"
           type="selection"
           width="55">
         </el-table-column>
         <el-table-column
+          align="center"
           prop="name"
           label="项目名称"
           width="200">
         </el-table-column>
         <el-table-column
+          align="center"
           label="项目版本"
           width="200">
           <template scope="props">
@@ -29,15 +32,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="已打包"
           width="100">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
-              {{ buildInfos[props.row.name]['egg']?'是':'否' }}
+              {{ buildInfos[props.row.name]['egg'] ? '是' : '否' }}
             </span>
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="打包名称"
           width="200">
           <template scope="props">
@@ -47,6 +52,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
+
           label="打包时间"
           width="200">
           <template scope="props">
@@ -56,6 +63,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="操作">
           <template scope="props">
             <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span">

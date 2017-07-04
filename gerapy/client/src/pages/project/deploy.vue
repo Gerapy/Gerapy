@@ -39,28 +39,49 @@
             element-loading-text="拼命加载中"
             style="width: 100%;">
             <el-table-column
+              align="center"
+              label="状态"
+              width="100">
+              <template scope="props">
+                <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
+                  {{ statusText[clientsStatus[props.row.pk]] }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
               prop="fields.name"
               label="主机名称"
-              width="300">
+              width="200">
             </el-table-column>
             <el-table-column
+              align="center"
               prop="fields.ip"
               label="主机IP"
-              width="300">
+              width="200">
             </el-table-column>
             <el-table-column
+              align="center"
+              prop="fields.port"
+              label="主机端口"
+              width="200">
+            </el-table-column>
+            <el-table-column
+              align="center"
               label="版本描述">
               <template scope="props">
                 <span>{{ projectDescriptions[props.row.pk]}}</span>
               </template>
             </el-table-column>
             <el-table-column
+              align="center"
               label="部署时间">
               <template scope="props">
                 <span>{{ projectDateTimes[props.row.pk]}}</span>
               </template>
             </el-table-column>
             <el-table-column
+              align="center"
               label="操作">
               <template scope="props">
                 <el-button type="success" size="mini" @click="onDeploy(props.row.pk)">
@@ -89,7 +110,16 @@
         //批量选择数组
         batchSelect: [],
         projectDescriptions: {},
-        projectDateTimes: {}
+        projectDateTimes: {},
+        clientsStatus: {},
+        statusClass: {
+          '1': 'success',
+          '0': 'danger'
+        },
+        statusText: {
+          '1': '运行正常',
+          '0': '连接失败'
+        }
       }
     },
     components: {
@@ -113,6 +143,14 @@
           this.loadData = false
         })
       },
+      getClientStatus(id) {
+        this.$fetch.apiClient.status({
+          id: id
+        }).then(({data: data}) => {
+          console.log(data)
+          this.$set(this.clientsStatus, id, data)
+        })
+      },
       getClientData(){
         this.loadData = true
         this.$fetch.apiClient.index(
@@ -121,6 +159,7 @@
           this.loadData = false
           this.clients.forEach(({pk: id}) => {
             this.getProjectVersions(id)
+            this.getClientStatus(id)
           })
         }).catch(() => {
           this.loadData = false

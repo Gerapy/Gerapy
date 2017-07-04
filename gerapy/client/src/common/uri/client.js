@@ -1,5 +1,6 @@
 exports.index = '/api/client'
 exports.show = '/api/client/:id'
+exports.status = '/api/client/:id/status'
 exports.update = '/api/client/:id/update'
 exports.remove = '/api/client/:id/remove'
 exports.create = '/api/client/create'

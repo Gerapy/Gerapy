@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^api/client/$', views.client_index, name='client_index'),
     url(r'^api/client/create', views.client_create, name='client_create'),
     url(r'^api/client/(\d+)/$', views.client_show, name='client_show'),
+    url(r'^api/client/(\d+)/status', views.client_status, name='client_status'),
     url(r'^api/client/(\d+)/update', views.client_update, name='client_update'),
     url(r'^api/client/(\d+)/remove', views.client_remove, name='client_remove'),
     url(r'^api/client/(\d+)/projects/$', views.list_projects, name='list_projects'),

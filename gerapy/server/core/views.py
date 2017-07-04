@@ -30,6 +30,17 @@ def client_show(request, id):
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
 
 
+def client_status(request, id):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        try:
+            scrapyd.list_projects()
+            return HttpResponse('1')
+        except:
+            return HttpResponse('0')
+
+
 def client_update(request, id):
     if request.method == 'POST':
         client = Client.objects.filter(id=id)

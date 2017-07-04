@@ -16,35 +16,52 @@
         @selection-change="onBatchSelect"
         style="width: 100%;">
         <el-table-column
+          align="center"
           type="selection"
           width="55">
         </el-table-column>
         <el-table-column
+          align="center"
+          label="状态"
+          width="100">
+          <template scope="props">
+            <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
+              {{ statusText[clientsStatus[props.row.pk]] }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           prop="pk"
           label="ID"
           width="60">
         </el-table-column>
         <el-table-column
+          align="center"
           prop="fields.name"
           label="名称"
           width="200">
         </el-table-column>
         <el-table-column
+          align="center"
           prop="fields.ip"
           label="IP"
           width="200">
         </el-table-column>
         <el-table-column
+          align="center"
           prop="fields.port"
           label="端口"
           width="200">
         </el-table-column>
         <el-table-column
+          align="center"
           prop="fields.port"
           label="描述"
           width="200">
         </el-table-column>
         <el-table-column
+          align="center"
           label="操作">
           <template scope="props">
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
@@ -90,6 +107,15 @@
         loadData: true,
         //批量选择数组
         batchSelect: [],
+        clientsStatus: {},
+        statusClass: {
+          '1': 'success',
+          '0': 'danger'
+        },
+        statusText: {
+          '1': '运行正常',
+          '0': '连接失败'
+        }
       }
     },
     components: {
@@ -110,6 +136,19 @@
         this.lastIds = {}
         this.getClientData()
       },
+      getClientsStatus() {
+        this.clients.forEach((client) => {
+          this.getClientStatus(client.pk)
+        })
+      },
+      getClientStatus(id) {
+        this.$fetch.apiClient.status({
+          id: id
+        }).then(({data: data}) => {
+          console.log(data)
+          this.$set(this.clientsStatus, id, data)
+        })
+      },
       //获取数据
       getClientData(){
         this.loadData = true
@@ -117,6 +156,7 @@
         ).then(({data: clients}) => {
           this.clients = clients
           this.loadData = false
+          this.getClientsStatus()
         }).catch(() => {
           this.loadData = false
         })
