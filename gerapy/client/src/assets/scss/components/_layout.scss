@@ -40,7 +40,7 @@
 .main-content {
   position: relative;
   margin-left: 220px;
-  padding-top: 50px;
+  height: 100%;
   .header-section {
     position: fixed;
     top: 0;
@@ -109,13 +109,19 @@
     }
   }
   .wrapper {
-    padding: 15px;
+    padding: 20px;
+    margin-top: 50px;
+    height: 100%;
+    overflow-y: auto;
   }
   .panel {
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    border-color: #65cea7;
+    border-style: solid solid none;
+    border-width: 4px 0 0;
     .panel-title {
       padding: 0 15px;
       color: #535351;
@@ -147,7 +153,7 @@
     padding: 15px;
     color: #7A7676;
     font-size: 12px;
-    position: static;
+    position: absolute;
     bottom: 0;
     width: 100%;
     border-top: 1px solid #eff0f4;

@@ -59,24 +59,24 @@
           label="操作">
           <template scope="props">
             <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span">
-              <el-button type="warning" size="small">
+              <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
                 编辑
               </el-button>
             </router-link>
             <router-link :to="{name: 'projectDeploy', params: {name: props.row.name}}" tag="span">
-              <el-button type="success" size="small">
+              <el-button type="success" size="mini">
                 <i class="fa fa-cloud-upload"></i>
                 部署
               </el-button>
             </router-link>
             <router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">
-              <el-button type="info" size="small">
+              <el-button type="info" size="mini">
                 <i class="fa fa-podcast"></i>
                 监控
               </el-button>
             </router-link>
-            <el-button type="danger" size="small" @click="onSingleDel(props.row.name)">
+            <el-button type="danger" size="mini" @click="onSingleDel(props.row.name)">
               <i class="fa fa-remove"></i>
               删除
             </el-button>
@@ -87,7 +87,7 @@
         <el-button
           type="danger"
           icon="delete"
-          size="small"
+          size="mini"
           :disabled="batchSelect.length === 0"
           @click="onBatchDel"
           slot="handler">

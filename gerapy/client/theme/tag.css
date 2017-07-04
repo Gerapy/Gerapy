@@ -1,0 +1,290 @@
+@charset "UTF-8";
+:root{
+    /* Transition
+  -------------------------- */
+    /* Colors
+  -------------------------- */
+    /* Link
+  -------------------------- */
+    /* Border
+  -------------------------- */
+    /* Box-shadow
+  -------------------------- */
+    /* Fill
+  -------------------------- */
+    /* Font
+  -------------------------- */
+    /* Size
+  -------------------------- */
+    /* z-index
+  -------------------------- */
+    /* Disable base
+  -------------------------- */
+    /* Icon
+  -------------------------- */
+    /* Checkbox
+  -------------------------- */
+    /* Radio
+  -------------------------- */
+    /* Select
+  -------------------------- */
+    /* Alert
+  -------------------------- */
+    /* Message Box
+  -------------------------- */
+    /* Message
+  -------------------------- */
+    /* Notification
+  -------------------------- */
+    /* Input
+  -------------------------- */
+    /* Cascader
+  -------------------------- */
+    /* Group
+  -------------------------- */
+    /* Tab
+  -------------------------- */
+    /* Button
+  -------------------------- */
+    /* cascader
+  -------------------------- */
+    /* Switch
+ -------------------------- */
+    /* Dialog
+ -------------------------- */
+    /* Table
+ -------------------------- */
+    /* Pagination
+ -------------------------- */
+    /* Popover
+ -------------------------- */
+    /* Tooltip
+  -------------------------- */
+    /* Tag
+  -------------------------- */
+    /* Dropdown
+  -------------------------- */
+    /* Badge
+  -------------------------- */
+    /* Card
+  --------------------------*/
+    /* Slider
+  --------------------------*/
+    /* Steps
+  --------------------------*/
+    /* Menu
+  --------------------------*/
+    /* Rate
+  --------------------------*/
+    /* DatePicker
+  --------------------------*/
+    /* Loading
+  --------------------------*/
+    /* Scrollbar
+  --------------------------*/
+    /* Carousel
+  --------------------------*/
+    /* Collapse
+  --------------------------*/
+    /* Transfer
+  --------------------------*/
+}
+
+.el-tag{
+    background-color: rgb(131, 145, 165);
+    display: inline-block;
+    padding: 0 5px;
+    height: 24px;
+    line-height: 22px;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    white-space: nowrap
+}
+
+.el-tag .el-icon-close{
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    font-size: 12px;
+    transform: scale(.75, .75);
+    height: 18px;
+    width: 18px;
+    line-height: 18px;
+    vertical-align: middle;
+    top: -1px;
+    right: -2px
+}
+
+.el-tag .el-icon-close:hover{
+    background-color: #fff;
+    color: rgb(131, 145, 165)
+}
+
+.el-tag--gray{
+    background-color: rgb(228, 232, 241);
+    border-color: rgb(228, 232, 241);
+    color: rgb(72, 87, 106)
+}
+
+.el-tag--gray .el-tag__close:hover{
+    background-color: rgb(72, 87, 106);
+    color: #fff
+}
+
+.el-tag--gray.is-hit{
+    border-color: rgb(72, 87, 106)
+}
+
+.el-tag--primary{
+    background-color: rgba(40, 204, 170, 0.1);
+    border-color: rgba(40, 204, 170, 0.2);
+    color: #28ccaa
+}
+
+.el-tag--primary .el-tag__close:hover{
+    background-color: #28ccaa;
+    color: #fff
+}
+
+.el-tag--primary.is-hit{
+    border-color: #28ccaa
+}
+
+.el-tag--success{
+    background-color: rgba(18,206,102,0.10);
+    border-color: rgba(18,206,102,0.20);
+    color: #28ccaa
+}
+
+.el-tag--success .el-tag__close:hover{
+    background-color: #28ccaa;
+    color: #fff
+}
+
+.el-tag--success.is-hit{
+    border-color: #28ccaa
+}
+
+.el-tag--warning{
+    background-color: rgba(247,186,41,0.10);
+    border-color: rgba(247,186,41,0.20);
+    color: #f7ba2a
+}
+
+.el-tag--warning .el-tag__close:hover{
+    background-color: #f7ba2a;
+    color: #fff
+}
+
+.el-tag--warning.is-hit{
+    border-color: #f7ba2a
+}
+
+.el-tag--danger{
+    background-color: rgba(255,73,73,0.10);
+    border-color: rgba(255,73,73,0.20);
+    color: #f16270
+}
+
+.el-tag--danger .el-tag__close:hover{
+    background-color: #f16270;
+    color: #fff
+}
+
+.el-tag--danger.is-hit{
+    border-color: #f16270
+}
+:root{
+    /* Transition
+  -------------------------- */
+    /* Colors
+  -------------------------- */
+    /* Link
+  -------------------------- */
+    /* Border
+  -------------------------- */
+    /* Box-shadow
+  -------------------------- */
+    /* Fill
+  -------------------------- */
+    /* Font
+  -------------------------- */
+    /* Size
+  -------------------------- */
+    /* z-index
+  -------------------------- */
+    /* Disable base
+  -------------------------- */
+    /* Icon
+  -------------------------- */
+    /* Checkbox
+  -------------------------- */
+    /* Radio
+  -------------------------- */
+    /* Select
+  -------------------------- */
+    /* Alert
+  -------------------------- */
+    /* Message Box
+  -------------------------- */
+    /* Message
+  -------------------------- */
+    /* Notification
+  -------------------------- */
+    /* Input
+  -------------------------- */
+    /* Cascader
+  -------------------------- */
+    /* Group
+  -------------------------- */
+    /* Tab
+  -------------------------- */
+    /* Button
+  -------------------------- */
+    /* cascader
+  -------------------------- */
+    /* Switch
+ -------------------------- */
+    /* Dialog
+ -------------------------- */
+    /* Table
+ -------------------------- */
+    /* Pagination
+ -------------------------- */
+    /* Popover
+ -------------------------- */
+    /* Tooltip
+  -------------------------- */
+    /* Tag
+  -------------------------- */
+    /* Dropdown
+  -------------------------- */
+    /* Badge
+  -------------------------- */
+    /* Card
+  --------------------------*/
+    /* Slider
+  --------------------------*/
+    /* Steps
+  --------------------------*/
+    /* Menu
+  --------------------------*/
+    /* Rate
+  --------------------------*/
+    /* DatePicker
+  --------------------------*/
+    /* Loading
+  --------------------------*/
+    /* Scrollbar
+  --------------------------*/
+    /* Carousel
+  --------------------------*/
+    /* Collapse
+  --------------------------*/
+    /* Transfer
+  --------------------------*/
+}

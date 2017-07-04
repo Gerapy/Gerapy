@@ -1,24 +1,20 @@
 <template>
   <div class="main-content ofh">
-    <el-row>
-      <el-col :span="24">
-        <h-section></h-section>
-        <div class="wrapper">
-          <div class="pageContent">
-            <el-row>
-              <el-col :span="24">
-                <el-breadcrumb separator="/" class="m-b-md m-t-sm">
-                  <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                  <el-breadcrumb-item>{{ $route.meta.title }}</el-breadcrumb-item>
-                </el-breadcrumb>
-                <slot></slot>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
-        <v-footer></v-footer>
-      </el-col>
-    </el-row>
+    <h-section></h-section>
+    <div class="wrapper">
+      <div class="pageContent">
+        <el-row>
+          <el-col :span="24">
+            <el-breadcrumb separator="/" class="m-b-md m-t-sm">
+              <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item>{{ $route.meta.title }}</el-breadcrumb-item>
+            </el-breadcrumb>
+            <slot></slot>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+    <v-footer></v-footer>
   </div>
 </template>
 <script type="text/javascript">

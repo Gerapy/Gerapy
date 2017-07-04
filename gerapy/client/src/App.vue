@@ -1,5 +1,5 @@
 <template>
-  <section class="body-warp">
+  <section class="body-wrap">
     <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
@@ -21,5 +21,8 @@
   .fade-enter,
   .fade-leave-active {
     opacity: 0;
+  }
+  .body-wrap {
+    height: 100%;
   }
 </style>

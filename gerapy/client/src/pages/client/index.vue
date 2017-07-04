@@ -5,7 +5,7 @@
         <i class="fa fa-refresh"></i>
       </el-button>
       <router-link :to="{name: 'clientCreate'}" tag="span">
-        <el-button type="primary" icon="plus" size="mini">添加主机</el-button>
+        <el-button type="success" icon="plus" size="mini">添加</el-button>
       </router-link>
     </panel-title>
     <div class="panel-body">

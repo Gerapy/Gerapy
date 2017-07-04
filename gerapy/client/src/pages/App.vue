@@ -17,3 +17,8 @@
     }
   }
 </script>
+<style>
+  .view-page {
+    height: 100%;
+  }
+</style>

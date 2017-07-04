@@ -7,6 +7,8 @@ import 'element-ui/lib/theme-default/index.css'
 //导入Vue框架
 import Vue from 'vue'
 //导入element组件
+import '../theme/index.css'
+
 import ElementUI from 'element-ui'
 //导入组件
 import router from './router'
