@@ -1,3 +1,0 @@
-[scrapy]
-settings = zhihusite.settings
-
