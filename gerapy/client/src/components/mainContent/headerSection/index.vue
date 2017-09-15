@@ -9,12 +9,10 @@
   </div>
 </template>
 <script type="text/javascript">
-  import menuRight from './menuRight'
   import search from 'components/search'
 
   export default{
     components: {
-      menuRight
     },
     methods: {
       submit_search(value) {
