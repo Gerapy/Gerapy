@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="5">
       <div class="panel" id="tree">
-        <panel-title title="项目目录">
+        <panel-title :title="projectName">
         </panel-title>
         <div class="panel-body">
           <el-tree :data="tree" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
@@ -12,9 +12,13 @@
     <el-col :span="19">
       <div class="panel m-l-md">
         <panel-title title="代码">
-          <el-button @click="saveCode" size="mini" type="success">
-            <i class="fa fa-check"></i>
-            保存
+          <el-button @click="renameFile" size="mini" type="primary" v-if="activeFile">
+            <i class="fa fa-edit"></i>
+            重命名
+          </el-button>
+          <el-button @click="createFile" size="mini" type="info" v-if="activeFile">
+            <i class="fa fa-plus"></i>
+            新建
           </el-button>
           <el-button @click="deleteFile" size="mini" type="danger">
             <i class="fa fa-close"></i>
@@ -95,6 +99,7 @@
           children: 'children',
           label: 'label'
         },
+        activeFile: null,
         activeNode: null,
         code: '',
         modeMap: {
@@ -153,8 +158,10 @@
         })
       },
       handleNodeClick(data) {
+        console.log('Data', data)
         this.activeNode = data
         this.changeCode(data)
+        this.activeFile = this.activeNode.path + '/' + this.activeNode.label
       },
       // 呈现代码
       changeCode(data) {
@@ -174,25 +181,60 @@
           })
         }
       },
-      // 保存代码
-      saveCode(){
-        this.onEditorCodeChange(this.code, () => {
-          this.$message.success('保存成功')
+      renameFile() {
+        this.$prompt('修改文件', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: this.activeNode.label,
+          inputPattern: /[^\/\s]/,
+          inputErrorMessage: '格式不正确'
+        }).then(({value}) => {
+          // 删除文件
+          this.$fetch.apiProject.projectFileRename({
+            path: this.activeNode.path,
+            pre: this.activeNode.label,
+            new: value
+          }).then(() => {
+            this.$message.success('修改成功')
+            this.getProjectTree(this.projectName)
+          }).catch(() => {
+            this.$message.error('修改失败')
+          })
+        })
+      },
+      createFile() {
+        this.$prompt('请输入文件名', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: this.activeNode.label,
+          inputPattern: /[^\/\s]/,
+          inputErrorMessage: '格式不正确'
+        }).then(({value}) => {
+          // 删除文件
+          this.$fetch.apiProject.projectFileCreate({
+            path: this.activeNode.path,
+            name: value
+          }).then(() => {
+            this.$message.success('创建成功')
+            this.getProjectTree(this.projectName)
+          }).catch(() => {
+            this.$message.error('创建失败')
+          })
         })
       },
       deleteFile() {
-        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
+        this.$confirm('确定要删除吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           // 删除文件
           this.$fetch.apiProject.projectFileDelete({
-            path: this.activeNode['path'],
-            label: this.activeNode['label']
+            path: this.activeNode.path,
+            label: this.activeNode.label
           }).then(() => {
             this.$message.success('删除成功')
-            this.getProjectTree()
+            this.getProjectTree(this.projectName)
           }).catch(() => {
             this.$message.error('删除失败')
           })
@@ -233,5 +275,9 @@
       min-height: 590px;
       border: none;
     }
+  }
+
+  .el-tree-node.is-current {
+    background: #EEE;
   }
 </style>

@@ -150,7 +150,7 @@
           // 获取所有任务
           this.getJobs()
         }).catch(() => {
-          this.$message.error('获取项目失败，正在重试')
+          //this.$message.error('获取项目失败，正在重试')
           this.projectsLoadData = false
           this.getProjects()
         })

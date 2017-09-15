@@ -5,16 +5,16 @@ import shutil
 import time
 from django.shortcuts import render
 from django.utils.dateformat import format
-
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
 from gerapy.server.core.models import Client, Project, Deploy
 from django.core.serializers import serialize
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
+from requests.exceptions import ConnectionError
 
 
 def index(request):
@@ -33,11 +33,10 @@ def client_show(request, id):
 def client_status(request, id):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         try:
-            scrapyd.list_projects()
+            requests.get(scrapyd_url(client.ip, client.port), timeout=3)
             return HttpResponse('1')
-        except:
+        except ConnectionError:
             return HttpResponse('0')
 
 
@@ -52,7 +51,6 @@ def client_update(request, id):
 def client_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
         client = Client.objects.create(**data)
         return HttpResponse(json.dumps(model_to_dict(client)))
 
@@ -124,12 +122,29 @@ def project_file_update(request):
             return HttpResponse(json.dumps('1'))
 
 
+def project_file_create(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = merge(data['path'], data['name'])
+        open(path, 'w').close()
+        return HttpResponse('1')
+
+
 def project_file_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = merge(data['path'], data['label'])
         result = os.remove(path)
         return HttpResponse(json.dumps(result))
+
+
+def project_file_rename(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        pre = merge(data['path'], data['pre'])
+        new = merge(data['path'], data['new'])
+        os.rename(pre, new)
+        return HttpResponse('1')
 
 
 def project_remove(request, project):
@@ -143,22 +158,17 @@ def project_remove(request, project):
 
 def project_versions(request, id, project):
     if request.method == 'GET':
-        print(project)
         client_model = Client.objects.get(id=id)
         project_model = Project.objects.get(name=project)
         scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
         if Deploy.objects.filter(client=client_model, project=project_model):
             deploy = Deploy.objects.get(client=client_model, project=project_model)
-            print(deploy.description)
-            print(deploy.deployed_at)
-            print(deploy.deployed_at.timestamp())
             timestamp = deploy.deployed_at.timestamp()
             localtime = time.localtime(timestamp)
             datetime = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
             return HttpResponse(json.dumps({'datetime': datetime, 'description': deploy.description}))
         else:
             versions = scrapyd.list_versions(project)
-            print(versions)
             if len(versions) > 0:
                 version = versions[-1]
                 localtime = time.localtime(int(version))
@@ -172,38 +182,27 @@ def project_deploy(request, id, project):
     if request.method == 'GET':
         path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
         project_path = merge(path, project)
-        print(id, project)
         egg = find_egg(project_path)
-        print(egg)
         egg_file = open(merge(project_path, egg), 'rb')
         deploy_version = time.time()
-        print(deploy_version)
         
         client_model = Client.objects.get(id=id)
-        print(client_model)
         project_model = Project.objects.get(name=project)
-        print(project_model)
         Deploy.objects.filter(client=client_model, project=project_model).delete()
         deploy = Deploy.objects.update_or_create(client=client_model, project=project_model,
                                                  description=project_model.description)
-        print(deploy)
         scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
         result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
-        print(result)
         return HttpResponse(result)
 
 
 def project_build(request, project):
-    print(request.body)
     path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
     project_path = merge(path, project)
     if request.method == 'GET':
-        print(project)
         egg = find_egg(project_path)
-        print('Egg', egg)
         if egg:
             built_at = os.path.getmtime(merge(project_path, egg))
-            print(built_at)
             if not Project.objects.filter(name=project):
                 Project(name=project, built_at=built_at, egg=egg).save()
                 model = Project.objects.get(name=project)
@@ -212,9 +211,7 @@ def project_build(request, project):
                 model.built_at = built_at
                 model.egg = egg
                 model.save()
-                print(model)
             dict = model_to_dict(model)
-            print(dict)
             del dict['clients']
             localtime = time.localtime(int(built_at))
             dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
@@ -223,9 +220,7 @@ def project_build(request, project):
             return HttpResponse(json.dumps({'name': project}))
     elif request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
         description = data['description']
-        print(description)
         build_project(project)
         egg = find_egg(project_path)
         built_at = time.time()
@@ -238,9 +233,7 @@ def project_build(request, project):
             model.egg = egg
             model.description = description
             model.save()
-            print(model)
         dict = model_to_dict(model)
-        print(dict)
         del dict['clients']
         localtime = time.localtime(int(built_at))
         dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
@@ -275,7 +268,6 @@ def job_log(request, id, project, spider, job):
             return HttpResponse(text)
         except requests.ConnectionError:
             return HttpResponse('日志加载失败')
-
 
 def job_cancel(request, id, project, job):
     if request.method == 'GET':

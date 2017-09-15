@@ -64,6 +64,22 @@ export function projectFileDelete(data) {
   })
 }
 
+export function projectFileCreate(data) {
+  return fetch({
+    url: project.projectFileCreate,
+    method: 'post',
+    data,
+  })
+}
+
+export function projectFileRename(data) {
+  return fetch({
+    url: project.projectFileRename,
+    method: 'post',
+    data,
+  })
+}
+
 export function projectList() {
   return fetch({
     url: project.projectList,
