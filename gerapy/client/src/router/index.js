@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import store from 'store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+
 //import components
 //view page warp component
 import viewPageComponent from 'pages/App'

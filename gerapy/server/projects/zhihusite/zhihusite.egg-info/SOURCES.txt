@@ -1,0 +1,14 @@
+setup.py
+zhihusite/__init__.py
+zhihusite/items.py
+zhihusite/middlewares.py
+zhihusite/pipelines.py
+zhihusite/proxy.py
+zhihusite/settings.py
+zhihusite.egg-info/PKG-INFO
+zhihusite.egg-info/SOURCES.txt
+zhihusite.egg-info/dependency_links.txt
+zhihusite.egg-info/entry_points.txt
+zhihusite.egg-info/top_level.txt
+zhihusite/spiders/__init__.py
+zhihusite/spiders/zhihu.py

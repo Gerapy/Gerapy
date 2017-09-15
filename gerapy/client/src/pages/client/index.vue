@@ -13,12 +13,11 @@
         :data="clients"
         v-loading="loadData"
         element-loading-text="拼命加载中"
-        @selection-change="onBatchSelect"
-        style="width: 100%;">
+        @selection-change="onBatchSelect">
         <el-table-column
           align="center"
           type="selection"
-          width="55">
+          width="50">
         </el-table-column>
         <el-table-column
           align="center"
@@ -51,14 +50,7 @@
         <el-table-column
           align="center"
           prop="fields.port"
-          label="端口"
-          width="200">
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="fields.port"
-          label="描述"
-          width="200">
+          label="端口">
         </el-table-column>
         <el-table-column
           align="center"

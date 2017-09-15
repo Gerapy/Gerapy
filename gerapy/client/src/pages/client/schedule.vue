@@ -172,11 +172,9 @@
             project: project
           }).then(({data: data}) => {
             this.$set(this.jobs, project, data)
-            console.log('JJJJJobs', this.jobs)
             for (let project in this.jobs) {
               let jobs = this.jobs[project]
               jobs.forEach((job) => {
-                console.log(job)
                 this.$set(this.jobsInfo, job.id, {project: project, spider: job['spider']})
               })
             }
