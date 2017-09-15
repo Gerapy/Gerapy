@@ -7,5 +7,14 @@ export default {
   },
   clearTimeout: (state) => {
     clearTimeout(state.timeout)
+  },
+  addInterval: (state, interval) => {
+    state.intervals.push(interval)
+  },
+  clearIntervals: (state) => {
+    state.intervals.forEach(interval => {
+      clearInterval(interval)
+    })
+    state.intervals = []
   }
 }

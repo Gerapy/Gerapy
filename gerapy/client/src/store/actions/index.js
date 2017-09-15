@@ -4,5 +4,11 @@ export default {
   },
   clearTimeout: ({commit}) => {
     commit('clearTimeout')
+  },
+  addInterval: ({commit}, interval) => {
+    commit('addInterval', interval)
+  },
+  clearIntervals: ({commit}) => {
+    commit('clearIntervals')
   }
 }

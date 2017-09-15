@@ -112,9 +112,11 @@ const router = new VueRouter({
     }
   }
 })
+
 //路由完成之后的操作
 router.afterEach(() => {
   console.log('Clear')
+  router.app.$store.dispatch('clearIntervals')
   router.app.$store.dispatch('clearTimeout')
 })
 export default router

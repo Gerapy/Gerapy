@@ -130,9 +130,9 @@
     },
     created(){
       this.getProjects()
-      if (this.$store.getters.getInterval) {
-        console.log(this.$store.getters.getInterval)
-      }
+      this.$store.dispatch('addInterval', setInterval(() => {
+        this.getJobs()
+      }, 3000))
     },
     methods: {
       //获取所有项目
@@ -183,9 +183,6 @@
                 this.$set(this.jobsInfo, job.id, {project: project, spider: job['spider']})
               })
             }
-            this.$store.dispatch('setTimeout', setTimeout(() => {
-              this.getJobs()
-            }, 2000))
           }).catch(() => {
             //this.$message.error('获取任务失败')
           })
