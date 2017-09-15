@@ -43,6 +43,7 @@
 <script type="text/javascript">
   export default{
     name: 'slide',
+
     data(){
       return {
         nav_menu_data: [{

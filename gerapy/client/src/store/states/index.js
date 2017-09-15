@@ -1,3 +1,3 @@
 export default {
-  timeout: null
+  timeout: null,
 }

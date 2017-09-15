@@ -1,5 +1,8 @@
 export default {
-  setTimeout({commit}, timeout){
+  setTimeout: ({commit}, timeout) => {
     commit('setTimeout', timeout)
+  },
+  clearTimeout: ({commit}) => {
+    commit('clearTimeout')
   }
 }

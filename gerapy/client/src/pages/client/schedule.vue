@@ -130,6 +130,9 @@
     },
     created(){
       this.getProjects()
+      if (this.$store.getters.getInterval) {
+        console.log(this.$store.getters.getInterval)
+      }
     },
     methods: {
       //获取所有项目
@@ -147,7 +150,9 @@
           // 获取所有任务
           this.getJobs()
         }).catch(() => {
+          this.$message.error('获取项目失败，正在重试')
           this.projectsLoadData = false
+          this.getProjects()
         })
       },
       // 获取所有爬虫
@@ -178,14 +183,13 @@
                 this.$set(this.jobsInfo, job.id, {project: project, spider: job['spider']})
               })
             }
+            this.$store.dispatch('setTimeout', setTimeout(() => {
+              this.getJobs()
+            }, 2000))
           }).catch(() => {
-            this.$message.error('获取任务失败')
+            //this.$message.error('获取任务失败')
           })
         })
-        // 定时刷新任务
-        setTimeout(() => {
-          this.getJobs()
-        }, 2000)
       },
       // 启动任务
       startSpider(project, spider){
@@ -195,6 +199,7 @@
           spider: spider,
         }).then(() => {
           this.$message.success('启动任务成功')
+          this.getJobs()
         }).catch(() => {
           this.$message.error('启动任务失败')
         })
@@ -219,21 +224,17 @@
             this.$set(this.logs, this.logLoadDataActive, data)
             // 加载日志完成
             this.logLoadData = false
-            // 如果不存在定时任务
-            if (!this.logLoadDataInterval) {
-              // 设置定时任务，调度当前活跃日志
-              this.logLoadDataInterval = setInterval(() => {
-                this.getLog(this.logLoadDataActive)
-              }, 2000)
-            }
+            // 定时任务
+            this.$store.dispatch('setTimeout', setTimeout(() => {
+              this.getLog(job)
+            }, 2000))
           }).catch(() => {
             //如果错误
             this.logLoadData = false
           })
         } else {
           //闭合之后停止加载日志
-          clearInterval(this.logLoadDataInterval)
-          this.logLoadDataInterval = null
+          this.$store.dispatch('clearTimeout')
         }
       },
       cancelJob(job) {
@@ -243,6 +244,7 @@
           job: job,
         }).then(() => {
           this.$message.success('正在取消，请稍后')
+          this.getJobs()
         }).catch(() => {
           //如果错误
           this.$message.success('取消失败')
