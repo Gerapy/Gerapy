@@ -132,7 +132,7 @@
       this.getProjects()
       this.$store.dispatch('addInterval', setInterval(() => {
         this.getJobs()
-      }, 3000))
+      }, 5000))
     },
     methods: {
       //获取所有项目

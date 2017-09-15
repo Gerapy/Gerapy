@@ -1,129 +1,148 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="6">
-      <div class="panel">
-        <panel-title title="项目打包">
-        </panel-title>
-        <div class="panel-body">
-          <el-form ref="form" :model="buildInfo" :rules="rules" label-width="80px">
-            <el-form-item label="项目名称">
-              {{ buildInfo.name }}
-            </el-form-item>
-            <el-form-item label="版本描述" prop="description">
-              <el-input v-model="buildInfo.description" size="small"></el-input>
-            </el-form-item>
-            <el-form-item label="包名">
-              {{ buildInfo.egg || notBuildText }}
-            </el-form-item>
-            <el-form-item label="打包时间">
-              {{ buildInfo.built_at || notBuildText }}
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" size="small" @click="onBuild">
-                <i class="fa fa-codepen"></i>
-                <span v-if="buildInfo.egg">重新</span>打包
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-    </el-col>
-    <el-col :span="18">
-      <div class="panel">
-        <panel-title title="项目部署">
-        </panel-title>
-        <div class="panel-body">
-          <el-table
-            :data="clients"
-            v-loading="loadData"
-            element-loading-text="请稍后"
-            @selection-change="onBatchSelect"
-            style="width: 100%;">
-            <el-table-column
-              align="center"
-              type="selection"
-              width="55">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="状态"
-              width="100">
-              <template scope="props">
-                <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
-                  {{ statusText[clientsStatus[props.row.pk]] }}
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="pk"
-              label="ID"
-              width="50">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="fields.name"
-              label="主机名称"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="fields.ip"
-              label="主机IP"
-              width="150">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="fields.port"
-              label="主机端口"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="部署版本">
-              <template scope="props">
-                <span>{{ projectDescriptions[props.row.pk]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="部署时间">
-              <template scope="props">
-                <span>{{ projectDateTimes[props.row.pk]}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="操作">
-              <template scope="props">
-                <el-button type="success" size="mini" @click="onDeploy(props.row.pk)"
-                           v-if="clientsStatus[props.row.pk]">
-                  <i class="fa fa-cloud-upload"></i>
-                  部署
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <bottom-tool-bar>
-            <el-button
-              type="info"
-              size="mini"
-              :disabled="batchSelect.length === 0"
-              @click="onBatchDeploy"
-              slot="handler">
+  <div>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <div class="panel">
+          <panel-title title="项目部署">
+          </panel-title>
+          <div class="panel-body">
+            <el-table
+              :data="clients"
+              v-loading="loadData"
+              element-loading-text="请稍后"
+              @selection-change="onBatchSelect"
+              style="width: 100%;">
+              <el-table-column
+                align="center"
+                type="selection"
+                width="55">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="状态"
+                width="100">
+                <template scope="props">
+                  <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
+                    {{ statusText[clientsStatus[props.row.pk]] }}
+                  </el-button>
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="pk"
+                label="ID"
+                width="60">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="fields.name"
+                label="主机名称"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="fields.ip"
+                label="主机IP"
+                width="150">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="fields.port"
+                label="主机端口"
+                width="100">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="部署版本">
+                <template scope="props">
+                  <span>{{ projectDescriptions[props.row.pk]}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="部署时间">
+                <template scope="props">
+                  <span>{{ projectDateTimes[props.row.pk]}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="操作">
+                <template scope="props">
+                  <el-button type="success" size="mini" @click="onDeploy(props.row.pk)"
+                             v-if="clientsStatus[props.row.pk]">
+                    <i class="fa fa-cloud-upload"></i>
+                    部署
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <bottom-tool-bar>
+              <el-button
+                type="info"
+                size="mini"
+                :disabled="batchSelect.length === 0"
+                @click="onBatchDeploy"
+                slot="handler">
               <span>
                 <i class="fa fa-cloud-upload"></i>
                 批量部署
               </span>
-            </el-button>
-          </bottom-tool-bar>
+              </el-button>
+            </bottom-tool-bar>
+          </div>
         </div>
-      </div>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <div class="panel">
+          <panel-title title="项目信息">
+          </panel-title>
+          <div class="panel-body">
+            <el-form :model="buildInfo" label-width="80px">
+              <el-form-item label="项目名称">
+                {{ buildInfo.name }}
+              </el-form-item>
+              <el-form-item label="包名">
+                {{ buildInfo.egg || notBuildText }}
+              </el-form-item>
+              <el-form-item label="打包时间">
+                {{ buildInfo.built_at || notBuildText }}
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="panel">
+          <panel-title title="项目打包">
+          </panel-title>
+          <div class="panel-body">
+            <el-form ref="form" :model="buildInfo" :rules="rules" label-width="80px">
+              <el-form-item label="项目名称">
+                {{ buildInfo.name }}
+              </el-form-item>
+              <el-form-item label="版本描述" prop="description">
+                <el-input v-model="buildInfo.description" size="small"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="small" @click="onBuild">
+                  <i class="fa fa-codepen"></i>
+                  <span v-if="buildInfo.egg">重新</span>打包
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 <script type="text/javascript">
   import {panelTitle, bottomToolBar} from 'components'
+  import ElRow from "element-ui/packages/row/src/row";
+  import ElCol from "element-ui/packages/col/src/col";
   export default{
     data(){
       return {
@@ -154,6 +173,8 @@
       }
     },
     components: {
+      ElCol,
+      ElRow,
       panelTitle,
       bottomToolBar
     },

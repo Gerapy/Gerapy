@@ -63,15 +63,7 @@ def client_remove(request, id):
         return HttpResponse(json.dumps('1'))
 
 
-def list_projects(request, id):
-    if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        projects = scrapyd.list_projects()
-        return HttpResponse(json.dumps(projects))
-
-
-def list_spiders(request, id, project):
+def spider_list(request, id, project):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
@@ -80,7 +72,7 @@ def list_spiders(request, id, project):
         return HttpResponse(json.dumps(spiders))
 
 
-def start_spider(request, id, project, spider):
+def spider_start(request, id, project, spider):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
@@ -88,41 +80,12 @@ def start_spider(request, id, project, spider):
         return HttpResponse(json.dumps({'job': result}))
 
 
-def list_jobs(request, id, project):
+def project_list(request, id):
     if request.method == 'GET':
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.list_jobs(project)
-        jobs = []
-        statuses = ['pending', 'running', 'finished']
-        for status in statuses:
-            for job in result.get(status):
-                job['status'] = status
-                jobs.append(job)
-        return HttpResponse(json.dumps(jobs))
-
-
-def job_log(request, id, project, spider, job):
-    if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        url = log_url(client.ip, client.port, project, spider, job)
-        try:
-            response = requests.get(url, timeout=5)
-            if response.status_code == 200:
-                text = response.text
-                return HttpResponse(text[-5000:-1])
-            if response.status_code == 404:
-                return HttpResponse('日志不存在')
-        except requests.ConnectionError:
-            return HttpResponse('日志加载失败')
-
-
-def cancel_job(request, id, project, job):
-    if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.cancel(project, job)
-        return HttpResponse(json.dumps(result))
+        projects = scrapyd.list_projects()
+        return HttpResponse(json.dumps(projects))
 
 
 def project_index(request):
@@ -282,3 +245,41 @@ def project_build(request, project):
         localtime = time.localtime(int(built_at))
         dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
         return HttpResponse(json.dumps(dict))
+
+
+def job_list(request, id, project):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.list_jobs(project)
+        jobs = []
+        statuses = ['pending', 'running', 'finished']
+        for status in statuses:
+            for job in result.get(status):
+                job['status'] = status
+                jobs.append(job)
+        return HttpResponse(json.dumps(jobs))
+
+
+def job_log(request, id, project, spider, job):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        url = log_url(client.ip, client.port, project, spider, job)
+        try:
+            response = requests.get(url, timeout=5, headers={
+                'Range': 'bytes=-1000'
+            })
+            if response.status_code == 404:
+                return HttpResponse('日志不存在')
+            text = response.text
+            return HttpResponse(text)
+        except requests.ConnectionError:
+            return HttpResponse('日志加载失败')
+
+
+def job_cancel(request, id, project, job):
+    if request.method == 'GET':
+        client = Client.objects.get(id=id)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        result = scrapyd.cancel(project, job)
+        return HttpResponse(json.dumps(result))

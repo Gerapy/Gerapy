@@ -19,12 +19,12 @@
           align="center"
           prop="name"
           label="项目名称"
-          width="200">
+          width="150">
         </el-table-column>
         <el-table-column
           align="center"
           label="项目版本"
-          width="200">
+          width="100">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['description'] }}
@@ -53,7 +53,6 @@
         </el-table-column>
         <el-table-column
           align="center"
-
           label="打包时间"
           width="200">
           <template scope="props">

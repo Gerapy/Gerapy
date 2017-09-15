@@ -1,7 +1,7 @@
 <template>
   <el-row>
-    <el-col :span="3">
-      <div class="panel">
+    <el-col :span="5">
+      <div class="panel" id="tree">
         <panel-title title="项目目录">
         </panel-title>
         <div class="panel-body">
@@ -9,7 +9,7 @@
         </div>
       </div>
     </el-col>
-    <el-col :span="21">
+    <el-col :span="19">
       <div class="panel m-l-md">
         <panel-title title="代码">
           <el-button @click="saveCode" size="mini" type="success">
@@ -222,5 +222,16 @@
   .CodeMirror {
     font-size: 16px;
     min-height: 600px;
+  }
+
+  #tree {
+    .panel-body {
+      overflow: hidden;
+    }
+    .el-tree {
+      overflow-x: scroll;
+      min-height: 590px;
+      border: none;
+    }
   }
 </style>
