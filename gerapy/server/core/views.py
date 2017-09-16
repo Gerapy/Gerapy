@@ -9,7 +9,7 @@ from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
-from gerapy.server.core.models import Client, Project, Deploy
+from gerapy.server.core.models import Client, Project, Deploy, Monitor
 from django.core.serializers import serialize
 from django.http import HttpResponse, JsonResponse
 from django.forms.models import model_to_dict
@@ -323,3 +323,12 @@ def monitor_collection_list(request):
             db = client[db]
             collections = db.collection_names()
             return HttpResponse(json.dumps(collections))
+
+
+def monitor_create(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        data = data['form']
+        data['configuration'] = json.dumps(data['configuration'])
+        monitor = Monitor.objects.create(**data)
+        return HttpResponse(json.dumps(model_to_dict(monitor)))

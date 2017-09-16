@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^api/project/file/create', views.project_file_create, name='project_file_create'),
     url(r'^api/project/file/update', views.project_file_update, name='project_file_update'),
     url(r'^api/project/file', views.project_file, name='project_file'),
+    url(r'^api/monitor/create', views.monitor_create, name='monitor_create'),
     url(r'^api/monitor/db/list', views.monitor_db_list, name='monitor_db_list'),
     url(r'^api/monitor/collection/list', views.monitor_collection_list, name='monitor_collection_list'),
 ]

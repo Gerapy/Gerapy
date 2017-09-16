@@ -44,25 +44,25 @@
     <el-button type="primary" class="float-circle" @click="monitorFormVisible = true">
       <span>+</span>
     </el-button>
-    <el-dialog title="收货地址" :visible.sync="monitorFormVisible">
+    <el-dialog title="添加监控" :visible.sync="monitorFormVisible">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="名称:" prop="name">
           <el-input v-model="form.name" placeholder="请输入名称" size="small"></el-input>
         </el-form-item>
         <el-form-item label="描述:" prop="description">
-          <el-input v-model="form.ip" placeholder="请输入描述" size="small"></el-input>
+          <el-input v-model="form.description" placeholder="请输入描述" size="small"></el-input>
         </el-form-item>
         <el-form-item label="类型:" prop="type">
-          <el-radio class="radio" v-model="form.type" label="MongoDB">MongoDB</el-radio>
-          <el-radio class="radio" v-model="form.type" label="Redis">Redis</el-radio>
+          <el-radio size="small" class="radio" v-model="form.type" label="MongoDB">MongoDB</el-radio>
+          <el-radio size="small" class="radio" v-model="form.type" label="Redis">Redis</el-radio>
         </el-form-item>
         <div v-if="form.type == 'MongoDB'">
-          <el-form-item label="连接信息:" prop="url">
+          <el-form-item label="连接信息:" prop="configuration.url">
             <el-input v-model="form.configuration.url" :placeholder="urlPlaceholder[form.type]" size="small"
                       @change="getMongoDBs"></el-input>
           </el-form-item>
           <el-form-item label="数据库:">
-            <el-select v-model="form.configuration.db" allow-create filterable
+            <el-select size="small" v-model="form.configuration.db" allow-create filterable
                        placeholder="选择数据库" @change="getMongoCollections">
               <el-option
                 v-for="item in mongoDBs"
@@ -73,7 +73,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="集合:">
-            <el-select v-model="form.configuration.collections" allow-create filterable
+            <el-select size="small" v-model="form.configuration.collections" allow-create filterable
                        multiple placeholder="请选择" @visible-change="getMongoDBs" remote
                        :loading="loadingMongoDBs">
               <el-option
@@ -125,7 +125,10 @@
         formLabelWidth: '120px',
         rules: {
           name: [
-            {required: true, message: '名称不能为空', trigger: 'blur'}
+            {required: true, message: '名称不能为空', trigger: 'blur'},
+          ],
+          'configuration.url': [
+            {required: true, message: '连接信息不能为空', trigger: 'blur'},
           ]
         }
       }
@@ -177,7 +180,12 @@
         })
       },
       onCreateMonitor() {
-
+        this.$fetch.apiMonitor.create({
+          'form': this.form
+        }).then(() => {
+          this.$message.success('创建成功')
+          this.monitorFormVisible = false
+        })
       }
     }
   }

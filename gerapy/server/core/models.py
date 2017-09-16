@@ -20,10 +20,11 @@ class Project(Model):
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     clients = ManyToManyField(Client, through='Deploy')
-
+    
     def __str__(self):
         return self.name
-    
+
+
 class Deploy(Model):
     client = ForeignKey(Client)
     project = ForeignKey(Project)
@@ -38,6 +39,6 @@ class Monitor(Model):
     description = CharField(max_length=255, default='', blank=True)
     type = CharField(max_length=255, default='', blank=True)
     configuration = TextField(default='', blank=True)
-    project = ForeignKey(Project)
+    project = ForeignKey(Project, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)

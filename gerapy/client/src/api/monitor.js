@@ -8,6 +8,14 @@ export function index(params) {
   })
 }
 
+export function create(data) {
+  return fetch({
+    url: monitor.create,
+    method: 'post',
+    data
+  })
+}
+
 export function getDBList(data) {
   return fetch({
     url: monitor.getDBList,
