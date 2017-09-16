@@ -48,6 +48,28 @@ def client_update(request, id):
         return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
 
 
+def index_status(request):
+    if request.method == 'GET':
+        clients = Client.objects.all()
+        data = {
+            'success': 0,
+            'error': 0,
+            'project': 0,
+        }
+        for client in clients:
+            try:
+                requests.get(scrapyd_url(client.ip, client.port), timeout=1)
+                data['success'] += 1
+            except ConnectionError:
+                data['error'] += 1
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        files = os.listdir(path)
+        for file in files:
+            if os.path.isdir(merge(path, file)) and not file in IGNORES:
+                data['project'] += 1
+        return HttpResponse(json.dumps(data))
+
+
 def client_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -268,6 +290,7 @@ def job_log(request, id, project, spider, job):
             return HttpResponse(text)
         except requests.ConnectionError:
             return HttpResponse('日志加载失败')
+
 
 def job_cancel(request, id, project, job):
     if request.method == 'GET':

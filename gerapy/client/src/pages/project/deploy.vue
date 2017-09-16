@@ -114,7 +114,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="16">
         <div class="panel">
           <panel-title title="项目打包">
           </panel-title>
@@ -123,7 +123,7 @@
               <el-form-item label="项目名称">
                 {{ buildInfo.name }}
               </el-form-item>
-              <el-form-item label="版本描述" prop="description">
+              <el-form-item label="版本描述" prop="description" class="description">
                 <el-input v-model="buildInfo.description" size="small"></el-input>
               </el-form-item>
               <el-form-item>
@@ -299,3 +299,8 @@
   }
 </script>
 
+<style>
+  .description input {
+    max-width: 200px;
+  }
+</style>

@@ -1,10 +1,12 @@
 import * as apiClient from './client'
 import * as apiProject from './project'
+import * as apiHome from './home'
 const apiObj = {
   apiClient,
-  apiProject
+  apiProject,
+  apiHome
 }
-const install = function(Vue) {
+const install = function (Vue) {
   if (install.installed) return
   install.installed = true
   Object.defineProperties(Vue.prototype, {
