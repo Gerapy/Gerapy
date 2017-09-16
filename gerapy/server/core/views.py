@@ -15,6 +15,7 @@ from django.http import HttpResponse, JsonResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
+import pymongo
 
 
 def index(request):
@@ -298,3 +299,27 @@ def job_cancel(request, id, project, job):
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         result = scrapyd.cancel(project, job)
         return HttpResponse(json.dumps(result))
+
+
+def monitor_db_list(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        url = data['url']
+        type = data['type']
+        if type == 'MongoDB':
+            client = pymongo.MongoClient(url)
+            dbs = client.database_names()
+            return HttpResponse(json.dumps(dbs))
+
+
+def monitor_collection_list(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        url = data['url']
+        db = data['db']
+        type = data['type']
+        if type == 'MongoDB':
+            client = pymongo.MongoClient(url)
+            db = client[db]
+            collections = db.collection_names()
+            return HttpResponse(json.dumps(collections))
