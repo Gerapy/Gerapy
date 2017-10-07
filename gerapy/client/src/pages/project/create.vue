@@ -54,6 +54,7 @@
               </el-button>
               <el-collapse accordion>
                 <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in configuration.rules">
+                  <!-- 每条规则标题及操作配置 -->
                   <template slot="title">
                     <span>
                       规则{{ ruleKey + 1 }}
@@ -71,6 +72,8 @@
                       </el-button>
                     </span>
                   </template>
+                  <!-- 每条规则标题及操作配置 -->
+                  <!-- 每条规则配置选项 -->
                   <div v-for="(value, key, index) in rule" :key="value">
                     <h5 class="inline m-v-sm">{{ key }}</h5>
                     <el-button type="primary" size="mini" class="inline" v-if="value instanceof Array"
@@ -79,6 +82,7 @@
                       添加
                     </el-button>
                     <el-form-item>
+                      <!-- 列表类型，如 allow, deny -->
                       <div v-if="value instanceof Array">
                         <div v-for="(v, k, i) in value">
                           <el-input
@@ -91,6 +95,8 @@
                           </el-button>
                         </div>
                       </div>
+                      <!-- 列表类型 -->
+                      <!-- 字符串类型，如 callback, process_request -->
                       <div v-if="typeof value == 'string'">
                         <el-input
                           v-model="configuration.rules[ruleKey][key]" class="inline"
@@ -100,6 +106,8 @@
                           删除
                         </el-button>
                       </div>
+                      <!-- 字符串类型 -->
+                      <!-- 布尔类型，如 follow -->
                       <div v-if="typeof value == 'boolean'">
                         <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="true">True
                         </el-radio>
@@ -111,12 +119,13 @@
                           删除
                         </el-button>
                       </div>
+                      <!-- 布尔类型 -->
                     </el-form-item>
                   </div>
+                  <!-- 每条规则配置选项 -->
                 </el-collapse-item>
               </el-collapse>
             </el-form-item>
-
 
             Extractors:
             <div v-for="(extractor, extractorKey, extractorIndex) in configuration.extractors" :key="extractorKey">
