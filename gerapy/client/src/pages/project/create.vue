@@ -7,12 +7,89 @@
       <el-row>
         <el-col :span="24">
           <el-form ref="form" :model="configuration" label-width="100px">
+
+            <!-- 提取对象 -->
+            <el-form-item>
+              <h4 class="inline">提取对象</h4>
+              <!-- 添加规则配置浮窗 -->
+              <el-dialog :visible.sync="addItem" size="tiny">
+                <el-form>
+                  <el-form-item label="字段名称">
+                    <el-input size="small" v-model="item" class="inline" placeholder="字段名称">
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer">
+                  <el-button @click="addItem=false" size="small">取消</el-button>
+                  <el-button @click="onAddItem()"
+                             type="primary" size="small">添加
+                  </el-button>
+                </div>
+              </el-dialog>
+              <!-- 添加规则配置浮窗 -->
+              <el-button type="primary" class="inline" size="mini"
+                         @click="onAddInput(configuration.items, {name:'', attrs:{}})">
+                <i class="fa fa-plus"></i>
+                添加对象
+              </el-button>
+              <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)">
+                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey">
+                  <!-- 每个对象配置 -->
+                  <template slot="title">
+                    <span>
+                      对象{{ itemKey + 1 }}
+                    </span>
+                    <span class="pull-right">
+                      <el-button type="primary" class="inline" size="mini"
+                                 @click.stop="addItem=true,activeItem=itemKey">
+                        <i class="fa fa-plus"></i>
+                        添加字段
+                      </el-button>
+                      <el-button type="danger" size="mini" class="m-r-md"
+                                 @click="onDeleteInput(configuration.items, itemKey)">
+                          <i class="fa fa-remove"></i>
+                          删除
+                      </el-button>
+                    </span>
+                  </template>
+                  <!-- 每个对象配置 -->
+                  <el-form-item>
+                    名称
+                    <el-input
+                      v-model="item['name']" class="inline" placeholder="名称"
+                      size="small"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey" class="item">
+                      <el-button class="inline inline-first m-r-sm" type="primary" size="mini">
+                        {{ attrIndex + 1 }}
+                      </el-button>
+                      <span class="inline inline-second">{{ attrKey }}</span>
+                      <el-input
+                        v-model="attr['inProcessor']" class="inline inline-third" placeholder="输入处理"
+                        size="small"></el-input>
+                      <el-input
+                        v-model="attr['outProcessor']" class="inline inline-fourth" placeholder="输出处理"
+                        size="small"></el-input>
+                      <el-button type="danger" size="mini" class="m-r-md"
+                                 @click="onDeleteInput(item.attrs, attrKey)">
+                        <i class="fa fa-remove"></i>
+                        删除
+                      </el-button>
+                    </div>
+                  </el-form-item>
+                </el-collapse-item>
+              </el-collapse>
+            </el-form-item>
+            <!-- 提取对象结束 -->
+
+
             <!-- 起始链接开始 -->
             <el-form-item>
               <h4 class="inline">起始链接</h4>
               <el-button type="primary" class="inline" size="mini" @click="onAddInput(configuration.startUrls)">
                 <i class="fa fa-plus"></i>
-                添加
+                添加链接
               </el-button>
               <div v-for="(value, key, index) in configuration.startUrls" :key="key">
                 <el-input
@@ -54,10 +131,10 @@
               <!-- 添加规则配置浮窗 -->
               <el-button type="primary" class="inline" size="mini" @click="onAddInput(configuration.rules, {})">
                 <i class="fa fa-plus"></i>
-                添加
+                添加规则
               </el-button>
-              <el-collapse accordion>
-                <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in configuration.rules">
+              <el-collapse :accordion="accordion" :value="parseInt(configuration.rules.length-1)">
+                <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in configuration.rules" :name="ruleKey">
                   <!-- 每条规则标题及操作配置 -->
                   <template slot="title">
                     <span>
@@ -67,7 +144,7 @@
                       <el-button type="primary" class="inline" size="mini"
                                  @click.stop="addRuleItem=true,activeRule=ruleKey">
                         <i class="fa fa-plus"></i>
-                        添加
+                        添加字段
                       </el-button>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(configuration.rules, ruleKey)">
@@ -113,11 +190,13 @@
                       <!-- 字符串类型 -->
                       <!-- 布尔类型，如 follow -->
                       <div v-if="typeof value == 'boolean'">
-                        <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="true">True
-                        </el-radio>
-                        <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="false">False
-                        </el-radio>
-                        <el-button type="danger" size="mini" class="pull-right m-r-lg"
+                        <span class="inline">
+                          <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="true">True
+                          </el-radio>
+                          <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="false">False
+                          </el-radio>
+                        </span>
+                        <el-button type="danger" size="mini"
                                    @click="onDeleteInput(configuration.rules[ruleKey], key)">
                           <i class="fa fa-remove"></i>
                           删除
@@ -134,94 +213,22 @@
 
             <div class="hr-line-dashed"></div>
 
-            <!-- 提取对象 -->
-            <el-form-item>
-              <h4 class="inline">提取对象</h4>
-              <!-- 添加规则配置浮窗 -->
-              <el-dialog :visible.sync="addItem" size="tiny">
-                <el-form>
-                  <el-form-item label="字段名称">
-                    <el-input size="small" v-model="item" class="inline" placeholder="字段名称">
-                    </el-input>
-                  </el-form-item>
-                </el-form>
-                <div slot="footer">
-                  <el-button @click="addItem=false" size="small">取消</el-button>
-                  <el-button @click="onAddItem()"
-                             type="primary" size="small">添加
-                  </el-button>
-                </div>
-              </el-dialog>
-              <!-- 添加规则配置浮窗 -->
-              <el-collapse accordion>
-                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items">
-                  <!-- 每个对象配置 -->
-                  <template slot="title">
-                    <span>
-                      对象{{ itemKey + 1 }}
-                    </span>
-                    <span class="pull-right">
-                      <el-button type="primary" class="inline" size="mini"
-                                 @click.stop="addItem=true,activeItem=itemKey">
-                        <i class="fa fa-plus"></i>
-                        添加
-                      </el-button>
-                      <el-button type="danger" size="mini" class="m-r-md"
-                                 @click="onDeleteInput(configuration.items, itemKey)">
-                          <i class="fa fa-remove"></i>
-                          删除
-                      </el-button>
-                    </span>
-                  </template>
-                  <!-- 每个对象配置 -->
-                  <el-form-item>
-                    名称
-                    <el-input
-                      v-model="item['name']" class="inline" placeholder="名称"
-                      size="small"></el-input>
-                  </el-form-item>
-                  <el-form-item>
-                    <div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey" class="item">
-                      <el-button class="inline inline-first m-r-sm" type="primary" size="mini">
-                        {{ attrIndex + 1 }}
-                      </el-button>
-                      <span class="inline inline-second">{{ attrKey }}</span>
-                      <el-input
-                        v-model="attr['inProcessor']" class="inline inline-third" placeholder="输入处理"
-                        size="small"></el-input>
-                      <el-input
-                        v-model="attr['outProcessor']" class="inline inline-fourth" placeholder="输出处理"
-                        size="small"></el-input>
-                      <el-button type="danger" size="mini" class="m-r-md"
-                                 @click="onDeleteInput(item.attrs, attrKey)">
-                        <i class="fa fa-remove"></i>
-                        删除
-                      </el-button>
-                    </div>
-                  </el-form-item>
-                </el-collapse-item>
-              </el-collapse>
-            </el-form-item>
-            <!-- 提取对象结束 -->
 
             <div class="hr-line-dashed"></div>
 
 
             <!-- 提取规则开始 -->
             <el-form-item>
-              <h4 class="inline">提取规则</h4>
+              <h4 class="inline">解析器</h4>
               <!-- 添加规则配置浮窗 -->
               <el-dialog :visible.sync="addExtractorItem" size="tiny">
                 <el-form>
                   <el-form-item label="选择规则配置">
-                    <el-select v-model="extractorItem" placeholder="请选择" size="small">
-                      <el-option
-                        v-for="item in extractorItemOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
+                    <el-cascader
+                      expand-trigger="hover"
+                      :options="extractorItemOptions"
+                      v-model="extractorItem">
+                    </el-cascader>
                   </el-form-item>
                 </el-form>
                 <div slot="footer">
@@ -232,14 +239,25 @@
                 </div>
               </el-dialog>
               <!-- 添加规则配置浮窗 -->
-              <el-collapse accordion>
-                <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in configuration.extractors">
+              <el-button type="primary" class="inline" size="mini"
+                         @click="onAddInput(configuration.extractors, {callback:'', item: '', attrs:{}})">
+                <i class="fa fa-plus"></i>
+                添加解析器
+              </el-button>
+              <el-collapse :accordion="accordion" :value="parseInt(configuration.extractors.length-1)">
+                <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in configuration.extractors"
+                                  :name="extractorKey">
                   <!-- 每条规则标题及操作配置 -->
                   <template slot="title">
                     <span>
                       规则{{ extractorKey + 1 }}
                     </span>
                     <span class="pull-right">
+                      <el-button type="primary" class="inline" size="mini"
+                                 @click.stop="addExtractorItem=true,activeExtractorItem=extractorKey">
+                        <i class="fa fa-plus"></i>
+                        添加字段
+                      </el-button>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(configuration.extractors, extractorKey)">
                           <i class="fa fa-remove"></i>
@@ -254,6 +272,17 @@
                       v-model="extractor.callback" class="inline" placeholder="处理函数名称"
                       size="small">
                     </el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <h5 class="inline m-v-sm">提取对象</h5>
+                    <el-select v-model="extractor.item" placeholder="提取对象" size="small" class="inline inline-first">
+                      <el-option
+                        v-for="item in extractorItemOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item>
                     <div v-for="(value, key, index) in extractor.attrs" :key="key">
@@ -290,8 +319,6 @@
               </el-collapse>
             </el-form-item>
             <!-- 提取规则结束 -->
-
-
           </el-form>
         </el-col>
       </el-row>
@@ -307,6 +334,7 @@
   export default{
     data(){
       return {
+        accordion: false,
         // 规则配置
         ruleItem: null,
         ruleItemOptions: [
@@ -385,6 +413,11 @@
         },
         addRuleItem: false,
         activeRule: null,
+
+        // 提取规则
+        addExtractorItem: false,
+        extractorItem: null,
+        activeExtractorItem: null,
         extractorMethods: [
           {
             value: 'xpath',
@@ -397,6 +430,7 @@
             label: 'Attr'
           }],
 
+        // 提取对象
         addItem: false,
         activeItem: null,
         item: null,
@@ -411,26 +445,20 @@
               allow: ['/subject/', '/allow'],
               deny: ['/subjects/', 'sd', 'vvv'],
             },
-//            {
-//              allow: ['/subject/', '/allow'],
-//              deny: ['/subjects/', 'sd', 'vvv'],
-//              allow_domains: ['www.baidu.com'],
-//              deny_domains: ['www.bing.com'],
-//              deny_extensions: ['s'],
-//              restrict_xpaths: ['s'],
-//              restrict_css: ['ddd'],
-//              callback: 'xc',
-//              cb_kwargs: ['sd'],
-//              follow: ['s'],
-//              process_links: 'sd',
-//              process_request: ['sd'],
-//              tags: ['sdds'],
-//              attrs: ['ssddsds'],
-//              canonicalize: ['sd'],
-//              unique: ['sd'],
-//              process_value: ['sd'],
-//              strip: ['s'],
-//            }
+            {
+              allow: ['/subject/', '/allow'],
+              deny: ['/subjects/', 'sd', 'vvv'],
+              allow_domains: ['www.baidu.com'],
+              deny_domains: ['www.bing.com'],
+              deny_extensions: ['s'],
+              restrict_xpaths: ['s'],
+              restrict_css: ['ddd'],
+              callback: 'xc',
+              cb_kwargs: ['sd'],
+              follow: ['s'],
+              process_links: 'sd',
+              process_request: ['sd']
+            }
           ],
           extractors: [
             {
@@ -473,17 +501,43 @@
         projects: [],
       }
     },
+    computed: {
+      extractorItemOptions: function () {
+        let array = []
+        this.configuration.items.forEach((item) => {
+          let attrs = []
+          for (let attr in item['attrs']) {
+            attrs.push({
+              value: attr,
+              label: attr
+            })
+          }
+          array.push({
+            value: item['name'],
+            label: item['name'],
+            children: attrs
+          })
+        })
+        return array
+      }
+      ,
+    }
+    ,
     components: {
       ElInput,
       ElFormItem,
       ElCollapseItem,
       panelTitle,
       bottomToolBar
-    },
-    created(){
-    },
+    }
+    ,
+    created()
+    {
+    }
+    ,
     methods: {
-      onDeleteInput(array, ...keys) {
+      onDeleteInput(array, ...keys)
+      {
         if (keys.length == 2) {
           // 二维字典
           this.$delete(array[keys[0]], keys[1])
@@ -494,17 +548,29 @@
           // 一维字典
           this.$delete(array, keys[0])
         }
-      },
-      onAddInput(array, arg = '') {
+      }
+      ,
+      onAddInput(array, arg = '')
+      {
         array.push(arg)
-      },
-      onAddRuleItem() {
+      }
+      ,
+      onAddRuleItem()
+      {
         this.$set(this.configuration.rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
         this.addRuleItem = false
-      },
-      onAddItem() {
+      }
+      ,
+      onAddItem()
+      {
         this.$set(this.configuration.items[this.activeItem]['attrs'], this.item, {})
         this.addItem = false
+      }
+      ,
+      onAddExtractorItem()
+      {
+        this.$set(this.configuration.extractors[this.activeExtractorItem]['attrs'], this.extractorItem.slice(-1), [])
+        this.addExtractorItem = false
       }
     }
   }
@@ -522,6 +588,9 @@
   }
 
   #project-create {
+    .inline {
+      max-width: 200px;
+    }
     .el-form-item__content {
       margin-left: 10px !important;
     }
