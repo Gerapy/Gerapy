@@ -100,11 +100,23 @@
                           删除
                         </el-button>
                       </div>
+                      <div v-if="typeof value == 'boolean'">
+                        <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="true">True
+                        </el-radio>
+                        <el-radio class="radio" v-model="configuration.rules[ruleKey][key]" :label="false">False
+                        </el-radio>
+                        <el-button type="danger" size="mini" class="pull-right m-r-lg"
+                                   @click="onDeleteInput(configuration.rules[ruleKey], key)">
+                          <i class="fa fa-remove"></i>
+                          删除
+                        </el-button>
+                      </div>
                     </el-form-item>
                   </div>
                 </el-collapse-item>
               </el-collapse>
             </el-form-item>
+
 
             Extractors:
             <div v-for="(extractor, extractorKey, extractorIndex) in configuration.extractors" :key="extractorKey">
@@ -126,7 +138,7 @@
                 <div v-for="(v, k, i) in value" :key="k">
                   <el-select v-model="v['method']" placeholder="请选择" size="small" class="inline">
                     <el-option
-                      v-for="item in methods"
+                      v-for="item in extractorMethods"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
@@ -177,6 +189,7 @@
   export default{
     data(){
       return {
+        // 规则配置
         ruleItem: null,
         ruleItemOptions: [
           {
@@ -233,18 +246,38 @@
           },
 
         ],
+        ruleItemInit: {
+          callback: '',
+          allow: [],
+          deny: [],
+          allow_domains: [],
+          deny_domains: [],
+          deny_extensions: [],
+          restrict_xpaths: [],
+          restrict_css: [],
+          tags: [],
+          attrs: [],
+          canonicalize: false,
+          unique: false,
+          strip: false,
+          follow: false,
+          process_value: '',
+          process_links: '',
+          process_request: '',
+        },
         addRuleItem: false,
         activeRule: null,
-        methods: [{
-          value: 'xpath',
-          label: 'XPath'
-        }, {
-          value: 'css',
-          label: 'CSS'
-        }, {
-          value: 'attr',
-          label: 'Attr'
-        }],
+        extractorMethods: [
+          {
+            value: 'xpath',
+            label: 'XPath'
+          }, {
+            value: 'css',
+            label: 'CSS'
+          }, {
+            value: 'attr',
+            label: 'Attr'
+          }],
         configuration: {
           startUrls: [
             "http://www.baidu.com",
@@ -317,11 +350,6 @@
           ]
         },
         projects: [],
-        //请求时的loading效果
-        loadData: false,
-        //批量选择数组
-        batchSelect: [],
-        buildInfos: {}
       }
     },
     components: {
@@ -330,7 +358,6 @@
       bottomToolBar
     },
     created(){
-      this.getProjectData()
     },
     methods: {
       onDeleteInput(array, ...keys) {
@@ -346,11 +373,10 @@
         }
       },
       onAddInput(array, arg = '') {
-        console.log(array)
         array.push(arg)
       },
       onAddRuleItem() {
-        this.$set(this.configuration.rules[this.activeRule], this.ruleItem, [])
+        this.$set(this.configuration.rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
         this.addRuleItem = false
       }
     }
