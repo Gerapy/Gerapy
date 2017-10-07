@@ -19,6 +19,7 @@ import clientScheduleComponent from 'pages/client/schedule'
 // project
 import projectIndexComponent from 'pages/project/index'
 import projectEditComponent from 'pages/project/edit'
+import projectCreateComponent from 'pages/project/create'
 import projectDeployComponent from 'pages/project/deploy'
 
 
@@ -89,6 +90,14 @@ const routes = [{
     component: projectEditComponent,
     meta: {
       title: "项目编辑",
+      auth: true
+    }
+  }, {
+    path: '/project/create',
+    name: 'projectCreate',
+    component: projectCreateComponent,
+    meta: {
+      title: "项目创建",
       auth: true
     }
   }, {

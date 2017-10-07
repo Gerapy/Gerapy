@@ -2,6 +2,12 @@
 
   <div class="panel">
     <panel-title title="项目管理">
+      <router-link :to="{name: 'projectCreate'}">
+        <el-button type="primary" size="mini">
+          <i class="fa fa-plus"></i>
+          创建
+        </el-button>
+      </router-link>
     </panel-title>
     <div class="panel-body">
       <el-table
@@ -136,7 +142,6 @@
         }).then(({data: data}) => {
           this.$set(this.buildInfos, name, data)
           this.loadData = false
-          console.log('LLLL', this.buildInfos)
         }).catch(() => {
           this.loadData = false
         })
@@ -165,7 +170,6 @@
           this.loadData = false
           this.getProjectData()
         }).catch((error) => {
-          console.log(error)
           this.loadData = false
           this.$message.error('删除失败')
         })
