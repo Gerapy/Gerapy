@@ -76,3 +76,11 @@ html, body {
   flex: 1;
   display: block;
 }
+
+.hr-line-dashed {
+  border-top: 1px dashed #e7eaec;
+  color: #fff;
+  background-color: #fff;
+  height: 1px;
+  margin: 10px 0;
+}
