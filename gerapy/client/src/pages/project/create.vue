@@ -8,6 +8,17 @@
         <el-col :span="24">
           <el-form ref="form" :model="configuration" label-width="100px">
 
+            <el-form-item>
+              <h4 class="inline m-r-sm">项目名称</h4>
+              <el-input v-model="configuration.name" class="inline" size="small" placeholder="项目名称"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+              <h4 class="inline m-r-sm">项目描述</h4>
+              <el-input v-model="configuration.description" class="inline inline-long" size="small"
+                        placeholder="项目描述"></el-input>
+            </el-form-item>
+
             <!-- 提取对象 -->
             <el-form-item>
               <h4 class="inline">提取对象</h4>
@@ -54,7 +65,7 @@
                   </template>
                   <!-- 每个对象配置 -->
                   <el-form-item>
-                    名称
+                    <h4 class="inline m-r-sm">名称</h4>
                     <el-input
                       v-model="item['name']" class="inline" placeholder="名称"
                       size="small"></el-input>
@@ -85,6 +96,14 @@
 
             <div class="hr-line-dashed"></div>
 
+            <h4 class="inline m-b-sm">爬虫列表</h4>
+
+            <el-button type="primary" class="inline" size="mini"
+                       @click="onAddInput(configuration.spiders, {name:null, extractors:[], rules: [], startUrls:[], allowedDomains: []})">
+              <i class="fa fa-plus"></i>
+              添加爬虫
+            </el-button>
+
             <el-collapse v-model="activeSpider" accordion>
               <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey">
                 <template slot="title">
@@ -104,6 +123,12 @@
                     </el-button>
                   </span>
                 </template>
+
+                <el-form-item>
+                  <h4 class="inline m-r-sm">爬虫名称</h4>
+                  <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                </el-form-item>
+
                 <!-- 起始链接开始 -->
                 <el-form-item>
                   <h4 class="inline">起始链接</h4>
@@ -123,7 +148,25 @@
                 </el-form-item>
                 <!-- 起始链接结束 -->
 
-                <div class="hr-line-dashed"></div>
+                <!-- 合法域名 -->
+                <el-form-item>
+                  <h4 class="inline">合法域名</h4>
+                  <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowedDomains)">
+                    <i class="fa fa-plus"></i>
+                    添加域名
+                  </el-button>
+                  <div v-for="(value, key, index) in spider.allowedDomains" :key="key">
+                    <el-input
+                      v-model="spider.allowedDomains[key]" class="inline" placeholder="请输入合法域名"
+                      size="small"></el-input>
+                    <el-button type="danger" size="mini" @click="onDeleteInput(spider.allowedDomains, key)">
+                      <i class="fa fa-remove"></i>
+                      删除
+                    </el-button>
+                  </div>
+                </el-form-item>
+                <!-- 合法域名结束 -->
+
                 <!-- 爬取规则开始 -->
                 <el-form-item>
                   <h4 class="inline">爬取规则</h4>
@@ -153,78 +196,84 @@
                     <i class="fa fa-plus"></i>
                     添加规则
                   </el-button>
-                  <el-collapse :accordion="accordion" :value="parseInt(spider.rules.length-1)">
+                  <el-collapse :accordion="accordion" :value="parseInt(spider.rules.length-1)"
+                               v-if="spider.rules.length">
                     <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in spider.rules" :name="ruleKey">
                       <!-- 每条规则标题及操作配置 -->
                       <template slot="title">
-                    <span>
-                      规则{{ ruleKey + 1 }}
-                    </span>
+                        <span>
+                          规则{{ ruleKey + 1 }}
+                        </span>
                         <span class="pull-right">
-                      <el-button type="primary" class="inline" size="mini"
-                                 @click.stop="addRuleItem=true,activeRule=ruleKey">
-                        <i class="fa fa-plus"></i>
-                        添加字段
-                      </el-button>
-                      <el-button type="danger" size="mini" class="m-r-md"
-                                 @click="onDeleteInput(spider.rules, ruleKey)">
-                          <i class="fa fa-remove"></i>
-                          删除
-                      </el-button>
-                    </span>
+                          <el-button type="primary" class="inline" size="mini"
+                                     @click.stop="addRuleItem=true,activeRule=ruleKey">
+                            <i class="fa fa-plus"></i>
+                            添加字段
+                          </el-button>
+                          <el-button type="danger" size="mini" class="m-r-md"
+                                     @click="onDeleteInput(spider.rules, ruleKey)">
+                              <i class="fa fa-remove"></i>
+                              删除
+                          </el-button>
+                        </span>
                       </template>
                       <!-- 每条规则标题及操作配置 -->
                       <!-- 每条规则配置选项 -->
-                      <div v-for="(value, key, index) in rule" :key="value">
-                        <h5 class="inline m-v-sm">{{ key }}</h5>
-                        <el-button type="primary" size="mini" class="inline" v-if="value instanceof Array"
-                                   @click="onAddInput(spider.rules[ruleKey][key])">
-                          <i class="fa fa-plus"></i>
-                          添加
-                        </el-button>
-                        <el-form-item>
-                          <!-- 列表类型，如 allow, deny -->
-                          <div v-if="value instanceof Array">
-                            <div v-for="(v, k, i) in value">
+                      <div v-if="Object.keys(rule).length">
+                        <div v-for="(value, key, index) in rule" :key="value">
+                          <h5 class="inline m-v-sm">{{ key }}</h5>
+                          <el-button type="primary" size="mini" class="inline" v-if="value instanceof Array"
+                                     @click="onAddInput(spider.rules[ruleKey][key])">
+                            <i class="fa fa-plus"></i>
+                            添加
+                          </el-button>
+                          <el-form-item>
+                            <!-- 列表类型，如 allow, deny -->
+                            <div v-if="value instanceof Array">
+                              <div v-for="(v, k, i) in value">
+                                <el-input
+                                  v-model="spider.rules[ruleKey][key][k]" class="inline"
+                                  size="small"></el-input>
+                                <el-button type="danger" size="mini"
+                                           @click="onDeleteInput(spider.rules[ruleKey], key, k)">
+                                  <i class="fa fa-remove"></i>
+                                  删除
+                                </el-button>
+                              </div>
+                            </div>
+                            <!-- 列表类型 -->
+                            <!-- 字符串类型，如 callback, process_request -->
+                            <div v-if="typeof value == 'string'">
                               <el-input
-                                v-model="spider.rules[ruleKey][key][k]" class="inline"
+                                v-model="spider.rules[ruleKey][key]" class="inline"
                                 size="small"></el-input>
                               <el-button type="danger" size="mini"
-                                         @click="onDeleteInput(spider.rules[ruleKey], key, k)">
+                                         @click="onDeleteInput(spider.rules[ruleKey], key)">
                                 <i class="fa fa-remove"></i>
                                 删除
                               </el-button>
                             </div>
-                          </div>
-                          <!-- 列表类型 -->
-                          <!-- 字符串类型，如 callback, process_request -->
-                          <div v-if="typeof value == 'string'">
-                            <el-input
-                              v-model="spider.rules[ruleKey][key]" class="inline"
-                              size="small"></el-input>
-                            <el-button type="danger" size="mini"
-                                       @click="onDeleteInput(spider.rules[ruleKey], key)">
-                              <i class="fa fa-remove"></i>
-                              删除
-                            </el-button>
-                          </div>
-                          <!-- 字符串类型 -->
-                          <!-- 布尔类型，如 follow -->
-                          <div v-if="typeof value == 'boolean'">
+                            <!-- 字符串类型 -->
+                            <!-- 布尔类型，如 follow -->
+                            <div v-if="typeof value == 'boolean'">
                         <span class="inline">
                           <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="true">True
                           </el-radio>
                           <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="false">False
                           </el-radio>
                         </span>
-                            <el-button type="danger" size="mini"
-                                       @click="onDeleteInput(spider.rules[ruleKey], key)">
-                              <i class="fa fa-remove"></i>
-                              删除
-                            </el-button>
-                          </div>
-                          <!-- 布尔类型 -->
-                        </el-form-item>
+                              <el-button type="danger" size="mini"
+                                         @click="onDeleteInput(spider.rules[ruleKey], key)">
+                                <i class="fa fa-remove"></i>
+                                删除
+                              </el-button>
+                            </div>
+                            <!-- 布尔类型 -->
+                          </el-form-item>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <h5>请添加字段</h5>
                       </div>
                       <!-- 每条规则配置选项 -->
                     </el-collapse-item>
@@ -232,7 +281,6 @@
                 </el-form-item>
                 <!-- 爬取规则结束 -->
 
-                <div class="hr-line-dashed"></div>
 
                 <!-- 提取规则开始 -->
                 <el-form-item>
@@ -261,7 +309,8 @@
                     <i class="fa fa-plus"></i>
                     添加解析器
                   </el-button>
-                  <el-collapse :accordion="accordion" :value="parseInt(spider.extractors.length-1)">
+                  <el-collapse :accordion="accordion" :value="parseInt(spider.extractors.length-1)"
+                               v-if="spider.extractors.length">
                     <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in spider.extractors"
                                       :name="extractorKey">
                       <!-- 每条规则标题及操作配置 -->
@@ -302,44 +351,49 @@
                         </el-select>
                       </el-form-item>
                       <el-form-item>
-                        <div v-for="(value, key, index) in extractor.attrs" :key="key">
-                          {{ key }}
-                          <el-button type="primary" size="mini"
-                                     @click="onAddInput(extractor.attrs[key], {method: 'xpath'})">
-                            <i class="fa fa-plus"></i>
-                            添加规则
-                          </el-button>
-                          <div v-for="(v, k, i) in value" :key="k" class="extractor-rule">
-                            <el-select v-model="v['method']" placeholder="提取方式" size="small"
-                                       class="inline inline-first">
-                              <el-option
-                                v-for="item in extractorMethods"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                              </el-option>
-                            </el-select>
-                            <el-input
-                              v-model="v['arg']" class="inline inline-second" placeholder="提取规则"
-                              size="small"></el-input>
-                            <el-input
-                              v-model="v['re']" class="inline inline-third" placeholder="正则表达式"
-                              size="small"></el-input>
-                            <el-button type="danger" size="mini"
-                                       @click="onDeleteInput(extractor.attrs, key, k)">
-                              <i class="fa fa-remove"></i>
-                              删除
+                        <div v-if="Object.keys(extractor.attrs).length">
+                          <div v-for="(value, key, index) in extractor.attrs" :key="key">
+                            {{ key }}
+                            <el-button type="primary" size="mini"
+                                       @click="onAddInput(extractor.attrs[key], {method: 'xpath'})">
+                              <i class="fa fa-plus"></i>
+                              添加规则
                             </el-button>
+                            <div v-for="(v, k, i) in value" :key="k" class="extractor-rule">
+                              <el-select v-model="v['method']" placeholder="提取方式" size="small"
+                                         class="inline inline-first">
+                                <el-option
+                                  v-for="item in extractorMethods"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                                </el-option>
+                              </el-select>
+                              <el-input
+                                v-model="v['arg']" class="inline inline-second" placeholder="提取规则"
+                                size="small"></el-input>
+                              <el-input
+                                v-model="v['re']" class="inline inline-third" placeholder="正则表达式"
+                                size="small"></el-input>
+                              <el-button type="danger" size="mini"
+                                         @click="onDeleteInput(extractor.attrs, key, k)">
+                                <i class="fa fa-remove"></i>
+                                删除
+                              </el-button>
+                            </div>
                           </div>
+                        </div>
+                        <div v-else>
+                          <h5>请添加字段</h5>
                         </div>
                       </el-form-item>
                     </el-collapse-item>
                   </el-collapse>
                 </el-form-item>
                 <!-- 提取规则结束 -->
+
               </el-collapse-item>
             </el-collapse>
-
           </el-form>
         </el-col>
       </el-row>
@@ -459,12 +513,19 @@
         item: null,
 
         configuration: {
+
+          name: 'baike',
+          description: '',
           spiders: [
             {
               name: 'baidu',
               startUrls: [
                 "http://www.baidu.com",
                 "http://www.bing.com"
+              ],
+              allowedDomains: [
+                "www.baidu.com",
+                "www.bing.com"
               ],
               rules: [
                 {
@@ -547,21 +608,16 @@
         })
         return array
       }
-      ,
-    }
-    ,
+    },
     components: {
       ElInput,
       ElFormItem,
       ElCollapseItem,
       panelTitle,
       bottomToolBar
-    }
-    ,
-    created()
-    {
-    }
-    ,
+    },
+    created() {
+    },
     methods: {
       onDeleteInput(array, ...keys) {
         if (keys.length == 2) {
@@ -598,6 +654,10 @@
   .inline {
     display: inline-block;
     max-width: calc(100% - 80px);
+  }
+
+  .inline-long {
+    max-width: 400px !important;
   }
 
   .wrap {
@@ -643,6 +703,5 @@
       }
     }
   }
-
 
 </style>
