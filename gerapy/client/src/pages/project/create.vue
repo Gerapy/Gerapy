@@ -98,7 +98,15 @@
                   v-model="item['name']" class="inline" placeholder="callback"
                   size="small"></el-input>
                 <div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey">
-                  {{  attrKey }}
+                  {{ attrKey }}
+                  Input:
+                  <el-input
+                    v-model="attr['inProcessor']" class="inline" placeholder="inProcessor"
+                    size="small"></el-input>
+                  Output:
+                  <el-input
+                    v-model="attr['outProcessor']" class="inline" placeholder="outProcessor"
+                    size="small"></el-input>
                 </div>
               </div>
             </el-form-item>
@@ -196,6 +204,12 @@
               name: 'NewsItem',
               attrs: {
                 title: [
+                  {
+                    inProcessor: 'dssdf',
+                    outProcessor: 'sdfsdf',
+                  }
+                ],
+                url: [
                   {
                     inProcessor: 'dssdf',
                     outProcessor: 'sdfsdf',
