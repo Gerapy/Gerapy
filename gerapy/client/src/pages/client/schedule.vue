@@ -226,7 +226,7 @@
               this.getLog(job)
             }, 2000))
           }).catch(() => {
-            //如果错误
+            // 如果错误
             this.logLoadData = false
           })
         } else {

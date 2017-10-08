@@ -372,7 +372,10 @@
                                 v-model="v['arg']" class="inline inline-second" placeholder="提取规则"
                                 size="small"></el-input>
                               <el-input
-                                v-model="v['re']" class="inline inline-third" placeholder="正则表达式"
+                                v-model="v['processor']" class="inline inline-third" placeholder="处理器"
+                                size="small"></el-input>
+                              <el-input
+                                v-model="v['re']" class="inline inline-fourth" placeholder="正则表达式"
                                 size="small"></el-input>
                               <el-button type="danger" size="mini"
                                          @click="onDeleteInput(extractor.attrs, key, k)">
@@ -506,8 +509,11 @@
           }, {
             value: 'attr',
             label: 'Attr'
-          }],
-
+          }, {
+            value: 'value',
+            label: 'Value'
+          }
+        ],
         // 提取对象
         addItem: false,
         activeItem: null,
@@ -649,7 +655,7 @@
       .inline-second {
         width: calc(100% - 380px);
       }
-      .inline-third {
+      .inline-third, .inline-third {
         width: 200px;
       }
     }
@@ -658,7 +664,7 @@
         min-width: 16px;
       }
       .inline-second {
-        width: 60px;
+        width: 80px;
         text-align: center;
       }
       .inline-third, .inline-fourth {
