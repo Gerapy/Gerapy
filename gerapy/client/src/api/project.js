@@ -1,28 +1,5 @@
 import fetch from 'common/fetch'
 import {project} from 'common/uri'
-export function index(params) {
-  return fetch({
-    url: project.index,
-    method: 'get',
-    params
-  })
-}
-export function show(params) {
-  return fetch({
-    url: project.show,
-    method: 'get',
-    params
-  })
-}
-
-export function update(params, data) {
-  return fetch({
-    url: project.update,
-    method: 'post',
-    params,
-    data,
-  })
-}
 
 export function projects(params) {
   return fetch({
@@ -109,5 +86,30 @@ export function build(params, data) {
     method: 'post',
     params,
     data
+  })
+}
+
+export function projectGetConfiguration() {
+  return fetch({
+    url: project.projectConfigure,
+    method: 'get',
+    params,
+  })
+}
+
+export function projectSaveConfiguration() {
+  return fetch({
+    url: project.projectConfigure,
+    method: 'post',
+    params,
+    data
+  })
+}
+
+export function projectCreate(data) {
+  return fetch({
+    url: project.projectCreate,
+    method: 'post',
+    data,
   })
 }

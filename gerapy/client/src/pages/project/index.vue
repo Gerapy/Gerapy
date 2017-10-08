@@ -1,13 +1,26 @@
 <template>
-
   <div class="panel">
-    <panel-title title="项目管理">
-      <router-link :to="{name: 'projectCreate'}">
-        <el-button type="primary" size="mini">
-          <i class="fa fa-plus"></i>
-          创建
+    <el-dialog :visible.sync="createProjectDialog" size="tiny">
+      <el-form>
+        <el-form-item label="项目名称">
+          <el-input
+            v-model="projectName" class="inline" placeholder="项目名称"
+            size="small">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="createProjectDialog=false" size="small">取消</el-button>
+        <el-button @click="onCreateProject()"
+                   type="primary" size="small">添加
         </el-button>
-      </router-link>
+      </div>
+    </el-dialog>
+    <panel-title title="项目管理">
+      <el-button type="primary" size="mini" @click="createProjectDialog=true">
+        <i class="fa fa-plus"></i>
+        创建
+      </el-button>
     </panel-title>
     <div class="panel-body">
       <el-table
@@ -71,6 +84,12 @@
           align="center"
           label="操作">
           <template scope="props">
+            <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span">
+              <el-button type="info" size="mini">
+                <i class="fa fa-edit"></i>
+                配置
+              </el-button>
+            </router-link>
             <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span">
               <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
@@ -83,12 +102,12 @@
                 部署
               </el-button>
             </router-link>
-            <router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">
-              <el-button type="info" size="mini">
-                <i class="fa fa-podcast"></i>
-                监控
-              </el-button>
-            </router-link>
+            <!--<router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">-->
+              <!--<el-button type="info" size="mini">-->
+                <!--<i class="fa fa-podcast"></i>-->
+                <!--监控-->
+              <!--</el-button>-->
+            <!--</router-link>-->
             <el-button type="danger" size="mini" @click="onSingleDelete(props.row.name)">
               <i class="fa fa-remove"></i>
               删除
@@ -116,6 +135,8 @@
   export default{
     data(){
       return {
+        createProjectDialog: false,
+        projectName: null,
         projects: [],
         //请求时的loading效果
         loadData: false,
@@ -198,6 +219,17 @@
           })
         }).catch(() => {
           this.$message.error('批量删除出错')
+        })
+      },
+      onCreateProject() {
+        this.$fetch.apiProject.projectCreate({
+          name: this.projectName
+        }).then((data) => {
+          this.$message.success('创建成功')
+          this.loadData = false
+        }).catch((error) => {
+          this.loadData = false
+          this.$message.error('创建失败')
         })
       }
     }

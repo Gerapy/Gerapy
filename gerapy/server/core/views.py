@@ -5,6 +5,8 @@ import shutil
 import time
 from django.shortcuts import render
 from django.utils.dateformat import format
+from pip import commands
+
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES
 from gerapy.cmd.init import PROJECTS_FOLDER
@@ -118,6 +120,33 @@ def project_index(request):
             if os.path.isdir(merge(path, file)) and not file in IGNORES:
                 project_list.append({'name': file})
         return HttpResponse(json.dumps(project_list))
+
+
+def project_create(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        cmd = 'cd ' + path + '&& scrapy startproject ' + data.get('name')
+        result = os.system(cmd)
+        if result == 0:
+            Project.objects.update_or_create(**data)
+            return HttpResponse(data.get('name'))
+
+
+def project_configure(request, name):
+    if request.method == 'GET':
+        project = Project.objects.get(name=name)
+        project = model_to_dict(project)
+        del project['clients']
+        return HttpResponse(json.dumps(project))
+    elif request.method == 'POST':
+        project = Project.objects.filter(name=name)
+        data = json.loads(request.body)
+        project.update(**data)
+        project = Project.objects.get(name=name)
+        project = model_to_dict(project)
+        del project['clients']
+        return HttpResponse(json.dumps(project))
 
 
 def project_tree(request, name):
