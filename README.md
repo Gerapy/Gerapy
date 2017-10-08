@@ -51,7 +51,7 @@ Spider Monitor:
 
 Project Management:
 
-![](https://ws3.sinaimg.cn/large/006tKfTcly1fkbdyku5ejj31kw0l445w.jpg)
+![](https://ws2.sinaimg.cn/large/006tKfTcly1fkbebgjxguj31kw0l4jyp.jpg)
 
 Project Edit:
 
