@@ -31,11 +31,13 @@ cd gerapy
 gerapy migrate
 ```
 
-Next you can runserver to enjoy it:
+Next you can runserver by this command:
 
 ```bash
 gerapy runserver
 ```
+
+Then you can visit [http://localhost:8000](http://localhost:8000) to enjoy it.
 
 ## Preview
 
