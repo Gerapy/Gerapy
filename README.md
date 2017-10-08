@@ -1,6 +1,6 @@
 # Gerapy
 
-Distributed Management Framework Based on Scrapy and Scrapyd
+Distributed Management Framework Based on Scrapy and Scrapyd.
 
 ## Support
 
