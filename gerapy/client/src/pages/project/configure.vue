@@ -17,9 +17,9 @@
               {{ projectName }}
             </el-form-item>
 
-            <!-- 提取对象 -->
+            <!-- 提取实体 -->
             <el-form-item>
-              <h4 class="inline">提取对象</h4>
+              <h4 class="inline">提取实体</h4>
               <!-- 添加规则配置浮窗 -->
               <el-dialog :visible.sync="addItem" size="tiny">
                 <el-form>
@@ -39,15 +39,15 @@
               <el-button type="primary" class="inline" size="mini"
                          @click="onAddInput(configuration.items, {name:'', attrs:{}})">
                 <i class="fa fa-plus"></i>
-                添加对象
+                添加实体
               </el-button>
               <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
                            v-if="configuration.items.length">
                 <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey">
-                  <!-- 每个对象配置 -->
+                  <!-- 每个实体配置 -->
                   <template slot="title">
                     <span>
-                      对象{{ itemKey + 1 }}
+                      实体{{ itemKey + 1 }}
                     </span>
                     <span class="pull-right">
                       <el-button type="primary" class="inline" size="mini"
@@ -62,7 +62,7 @@
                       </el-button>
                     </span>
                   </template>
-                  <!-- 每个对象配置 -->
+                  <!-- 每个实体配置 -->
                   <el-form-item>
                     <h4 class="inline m-r-sm">名称</h4>
                     <el-input
@@ -76,10 +76,13 @@
                       </el-button>
                       <span class="inline inline-second">{{ attrKey }}</span>
                       <el-input
-                        v-model="attr['inProcessor']" class="inline inline-third" placeholder="输入处理"
+                        v-model="attr['value']" class="inline inline-third" placeholder="值"
                         size="small"></el-input>
                       <el-input
-                        v-model="attr['outProcessor']" class="inline inline-fourth" placeholder="输出处理"
+                        v-model="attr['inProcessor']" class="inline inline-fourth" placeholder="输入处理"
+                        size="small"></el-input>
+                      <el-input
+                        v-model="attr['outProcessor']" class="inline inline-fifth" placeholder="输出处理"
                         size="small"></el-input>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(item.attrs, attrKey)">
@@ -91,14 +94,14 @@
                 </el-collapse-item>
               </el-collapse>
             </el-form-item>
-            <!-- 提取对象结束 -->
+            <!-- 提取实体结束 -->
 
             <div class="hr-line-dashed"></div>
 
             <h4 class="inline m-b-sm">爬虫列表</h4>
 
             <el-button type="primary" class="inline" size="mini"
-                       @click="onAddInput(configuration.spiders, {name:null, extractors:[], rules: [], startUrls:[], allowedDomains: []})">
+                       @click="onAddInput(configuration.spiders, {name:null, customSettings:null, code:null, extractors: [], rules: [], startUrls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowedDomains: []})">
               <i class="fa fa-plus"></i>
               添加爬虫
             </el-button>
@@ -128,21 +131,69 @@
                   <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
                 </el-form-item>
 
+                <el-form-item>
+                  <h4 class="inline m-r-sm m-b-md">爬虫配置</h4>
+                  <el-input type="textarea" v-model="spider.customSettings" class="inline" size="small"
+                            placeholder="爬虫配置"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <h4 class="inline m-r-sm m-b-md">自定代码</h4>
+                  <el-input type="textarea" v-model="spider.code" class="inline" size="small"
+                            placeholder="自定代码"></el-input>
+                </el-form-item>
+
                 <!-- 起始链接开始 -->
                 <el-form-item>
-                  <h4 class="inline">起始链接</h4>
-                  <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.startUrls)">
+                  <h4 class="inline">爬虫类属性</h4>
+                  <el-button type="primary" class="inline" size="mini"
+                             @click="onAddInput(spider.attrs, {'key': null, 'value': null})">
                     <i class="fa fa-plus"></i>
-                    添加链接
+                    添加属性
                   </el-button>
-                  <div v-for="(value, key, index) in spider.startUrls" :key="key">
+                  <div v-for="(value, key, index) in spider.attrs" :key="key">
                     <el-input
-                      v-model="spider.startUrls[key]" class="inline" placeholder="请输入起始链接"
+                      v-model="value['key']" class="inline inline-short" placeholder="属性名"
                       size="small"></el-input>
-                    <el-button type="danger" size="mini" @click="onDeleteInput(spider.startUrls, key)">
+                    <el-input
+                      v-model="value['value']" class="inline inline-long" placeholder="属性值"
+                      size="small"></el-input>
+                    <el-button type="danger" size="mini" @click="onDeleteInput(spider.attrs, key)">
                       <i class="fa fa-remove"></i>
                       删除
                     </el-button>
+                  </div>
+                </el-form-item>
+                <!-- 起始链接结束 -->
+
+                <!-- 起始链接开始 -->
+                <el-form-item>
+                  <h4 class="inline">起始链接</h4>
+                  <el-button type="primary" v-if="spider.startUrls.mode == 'list'" class="inline" size="mini"
+                             @click="onAddInput(spider.startUrls.list)">
+                    <i class="fa fa-plus"></i>
+                    添加链接
+                  </el-button>
+                  <div>
+                    <el-radio class="radio" v-model="spider.startUrls.mode" label="list">列表</el-radio>
+                    <!--<el-radio class="radio" v-model="spider.startUrls.mode" label="file">文件</el-radio>-->
+                    <el-radio class="radio" v-model="spider.startUrls.mode" label="code">代码</el-radio>
+                  </div>
+                  <div v-if="spider.startUrls.mode == 'list'">
+                    <div v-for="(value, key, index) in spider.startUrls.list" :key="key">
+                      <el-input
+                        v-model="spider.startUrls.list[key]" class="inline" placeholder="请输入起始链接"
+                        size="small"></el-input>
+                      <el-button type="danger" size="mini" @click="onDeleteInput(spider.startUrls.list, key)">
+                        <i class="fa fa-remove"></i>
+                        删除
+                      </el-button>
+                    </div>
+                  </div>
+                  <div v-if="spider.startUrls.mode == 'code'">
+                    <el-input type="textarea"
+                              v-model="spider.startUrls.code" class="inline" placeholder="请输入起始链接生成代码"
+                              size="small"></el-input>
                   </div>
                 </el-form-item>
                 <!-- 起始链接结束 -->
@@ -339,8 +390,8 @@
                         </el-input>
                       </el-form-item>
                       <el-form-item>
-                        <h5 class="inline m-v-sm">提取对象</h5>
-                        <el-select v-model="extractor.item" placeholder="提取对象" size="small" class="inline inline-first">
+                        <h5 class="inline m-v-sm">提取实体</h5>
+                        <el-select v-model="extractor.item" placeholder="提取实体" size="small" class="inline inline-first">
                           <el-option
                             v-for="item in extractorItemOptions"
                             :key="item.value"
@@ -514,7 +565,7 @@
             label: 'Value'
           }
         ],
-        // 提取对象
+        // 提取实体
         addItem: false,
         activeItem: null,
         item: null,
@@ -625,6 +676,10 @@
     max-width: calc(100% - 80px);
   }
 
+  .inline-short {
+    max-width: 100px !important;
+  }
+
   .inline-long {
     max-width: 400px !important;
   }
@@ -648,6 +703,11 @@
     h4, h5 {
       font-weight: 200;
     }
+    .el-textarea {
+      textarea {
+        width: 300px;
+      }
+    }
     .extractor-rule {
       .inline-first {
         width: 100px;
@@ -655,7 +715,7 @@
       .inline-second {
         width: calc(100% - 380px);
       }
-      .inline-third, .inline-third {
+      .inline-third, .inline-fourth, .inline-fifth {
         width: 200px;
       }
     }

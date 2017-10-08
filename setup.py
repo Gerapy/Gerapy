@@ -38,4 +38,10 @@ setup(
             'server/core/templates/static/js/*.*'
         ],
     },
+    publish=[
+        'python setup.py bdist_egg',
+        'python setup.py sdist',
+        'python setup.py bdist_egg upload'
+        'python setup.py sdist upload'
+    ]
 )

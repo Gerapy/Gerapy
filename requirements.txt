@@ -4,3 +4,4 @@ docopt
 django
 python-scrapyd-api
 scrapy
+scrapy-splash
