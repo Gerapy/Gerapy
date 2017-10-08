@@ -137,16 +137,18 @@ def project_configure(request, name):
     if request.method == 'GET':
         project = Project.objects.get(name=name)
         project = model_to_dict(project)
+        project['configuration'] = json.loads(project['configuration'])
         del project['clients']
         return HttpResponse(json.dumps(project))
     elif request.method == 'POST':
         project = Project.objects.filter(name=name)
         data = json.loads(request.body)
-        project.update(**data)
+        configuration = json.dumps(data.get('configuration'))
+        project.update(**{'configuration': configuration})
         project = Project.objects.get(name=name)
         project = model_to_dict(project)
         del project['clients']
-        return HttpResponse(json.dumps(project))
+        return HttpResponse('1')
 
 
 def project_tree(request, name):
@@ -205,6 +207,7 @@ def project_remove(request, project):
         if project:
             project_path = merge(path, project)
             shutil.rmtree(project_path)
+            Project.objects.filter(name=project).delete()
             return HttpResponse(json.dumps('1'))
 
 

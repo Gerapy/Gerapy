@@ -89,7 +89,7 @@ export function build(params, data) {
   })
 }
 
-export function projectGetConfiguration() {
+export function projectGetConfiguration(params) {
   return fetch({
     url: project.projectConfigure,
     method: 'get',
@@ -97,7 +97,7 @@ export function projectGetConfiguration() {
   })
 }
 
-export function projectSaveConfiguration() {
+export function projectSaveConfiguration(params, data) {
   return fetch({
     url: project.projectConfigure,
     method: 'post',

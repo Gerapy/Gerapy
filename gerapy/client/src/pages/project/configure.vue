@@ -1,7 +1,11 @@
 <template>
 
   <div class="panel">
-    <panel-title title="项目创建">
+    <panel-title title="项目配置">
+      <el-button type="primary" size="mini" @click="saveProject()">
+        <i class="fa fa-check"></i>
+        保存
+      </el-button>
     </panel-title>
     <div class="panel-body" id="project-create">
       <el-row>
@@ -10,13 +14,7 @@
 
             <el-form-item>
               <h4 class="inline m-r-sm">项目名称</h4>
-              <el-input v-model="configuration.name" class="inline" size="small" placeholder="项目名称"></el-input>
-            </el-form-item>
-
-            <el-form-item>
-              <h4 class="inline m-r-sm">项目描述</h4>
-              <el-input v-model="configuration.description" class="inline inline-long" size="small"
-                        placeholder="项目描述"></el-input>
+              {{ projectName }}
             </el-form-item>
 
             <!-- 提取对象 -->
@@ -43,7 +41,8 @@
                 <i class="fa fa-plus"></i>
                 添加对象
               </el-button>
-              <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)">
+              <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
+                           v-if="configuration.items.length">
                 <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey">
                   <!-- 每个对象配置 -->
                   <template slot="title">
@@ -104,7 +103,7 @@
               添加爬虫
             </el-button>
 
-            <el-collapse v-model="activeSpider" accordion>
+            <el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
               <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey">
                 <template slot="title">
                   <span>
@@ -409,6 +408,8 @@
   export default{
     data(){
       return {
+        projectName: this.$route.params.name,
+        projectDescription: null,
         activeSpider: 0,
 
         accordion: false,
@@ -513,84 +514,13 @@
         item: null,
 
         configuration: {
-
-          name: 'baike',
-          description: '',
-          spiders: [
-            {
-              name: 'baidu',
-              startUrls: [
-                "http://www.baidu.com",
-                "http://www.bing.com"
-              ],
-              allowedDomains: [
-                "www.baidu.com",
-                "www.bing.com"
-              ],
-              rules: [
-                {
-                  allow: ['/subject/', '/allow'],
-                  deny: ['/subjects/', 'sd', 'vvv'],
-                },
-                {
-                  allow: ['/subject/', '/allow'],
-                  deny: ['/subjects/', 'sd', 'vvv'],
-                  allow_domains: ['www.baidu.com'],
-                  deny_domains: ['www.bing.com'],
-                  deny_extensions: ['s'],
-                  restrict_xpaths: ['s'],
-                  restrict_css: ['ddd'],
-                  callback: 'xc',
-                  cb_kwargs: ['sd'],
-                  follow: ['s'],
-                  process_links: 'sd',
-                  process_request: ['sd']
-                }
-              ],
-              extractors: [
-                {
-                  callback: 'parse_item',
-                  item: 'NewsItem',
-                  attrs: {
-                    title: [
-                      {
-                        method: 'xpath',
-                        arg: '//div[@class="h-news"]//div[@class="h-title"]/text()',
-                        re: 'rrrr'
-                      }
-                    ],
-                    url: [
-                      {
-                        method: 'attr',
-                        arg: 'url'
-                      }
-                    ],
-                  }
-                }
-              ],
-            }
-          ],
-          items: [
-            {
-              name: 'NewsItem',
-              attrs: {
-                title: {
-                  inProcessor: 'dssdf',
-                  outProcessor: 'sdfsdf',
-                },
-                url: {
-                  inProcessor: 'dssdf',
-                  outProcessor: 'sdfsdf',
-                }
-
-              }
-            }
-          ]
+          spiders: [],
+          items: []
         }
       }
     },
     computed: {
-      extractorItemOptions: function () {
+      extractorItemOptions() {
         let array = []
         this.configuration.items.forEach((item) => {
           let attrs = []
@@ -617,8 +547,33 @@
       bottomToolBar
     },
     created() {
+      this.getProject()
     },
     methods: {
+      getProject() {
+        this.$fetch.apiProject.projectGetConfiguration({
+          name: this.projectName
+        }).then(({data: data}) => {
+          console.log(data)
+          this.projectDescription = data.description
+          this.configuration = data.configuration || this.configuration
+          this.loadData = false
+        }).catch(() => {
+          this.$message.error('获取配置失败')
+        })
+      },
+      saveProject() {
+        this.$fetch.apiProject.projectSaveConfiguration({
+          name: this.projectName
+        }, {
+          configuration: this.configuration
+        }).then(({data: data}) => {
+          console.log(data.configuration)
+          this.$message.success('保存配置成功')
+        }).catch(() => {
+          this.$message.error('保存配置失败')
+        })
+      },
       onDeleteInput(array, ...keys) {
         if (keys.length == 2) {
           // 二维字典
@@ -645,6 +600,14 @@
       onAddExtractorItem() {
         this.$set(this.configuration.spiders[this.activeSpider].extractors[this.activeExtractorItem]['attrs'], this.extractorItem.slice(-1), [])
         this.addExtractorItem = false
+      }
+    },
+    watch: {
+      configuration: {
+        handler() {
+          this.saveProject()
+        },
+        deep: true
       }
     }
   }
@@ -703,5 +666,4 @@
       }
     }
   }
-
 </style>
