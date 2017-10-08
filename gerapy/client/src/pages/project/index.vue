@@ -53,10 +53,20 @@
         <el-table-column
           align="center"
           label="已打包"
-          width="100">
+          width="80">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['egg'] ? '是' : '否' }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="可配置"
+          width="80">
+          <template scope="props">
+            <span v-if="buildInfos[props.row.name]">
+              {{ buildInfos[props.row.name]['configurable'] ? '是' : '否' }}
             </span>
           </template>
         </el-table-column>
@@ -84,13 +94,14 @@
           align="center"
           label="操作">
           <template scope="props">
-            <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span">
-              <el-button type="info" size="mini">
+            <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span"
+                         v-if="buildInfos[props.row.name]['configurable']">
+              <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
                 配置
               </el-button>
             </router-link>
-            <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span">
+            <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span" v-else>
               <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
                 编辑

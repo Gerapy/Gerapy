@@ -125,6 +125,7 @@ def project_index(request):
 def project_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        data['configurable'] = 1
         path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
         cmd = 'cd ' + path + '&& scrapy startproject ' + data.get('name')
         result = os.system(cmd)
@@ -272,7 +273,10 @@ def project_build(request, project):
             dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
             return HttpResponse(json.dumps(dict))
         else:
-            return HttpResponse(json.dumps({'name': project}))
+            model = Project.objects.get(name=project)
+            dict = model_to_dict(model)
+            del dict['clients']
+            return HttpResponse(json.dumps(dict))
     elif request.method == 'POST':
         data = json.loads(request.body)
         description = data['description']

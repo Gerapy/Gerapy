@@ -20,6 +20,7 @@ class Project(Model):
     built_at = DateTimeField(auto_now=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
+    configurable = IntegerField(default=0, blank=True)
     clients = ManyToManyField(Client, through='Deploy')
 
 class Deploy(Model):
