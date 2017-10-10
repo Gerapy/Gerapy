@@ -1,7 +1,5 @@
 import io
 from setuptools import setup, find_packages
-import gerapy
-
 
 def read_file(filename):
     with io.open(filename) as fp:

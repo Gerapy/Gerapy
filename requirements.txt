@@ -1,7 +1,11 @@
-django-cors-headers
 requests
 docopt
 django
-python-scrapyd-api
+django-cors-headers
 scrapy
+scrapy-redis
 scrapy-splash
+python-scrapyd-api
+redis
+pymongo
+pymysql
