@@ -15,7 +15,7 @@ def read_requirements(filename):
 
 setup(
     name='gerapy',
-    version=gerapy.__version__,
+    version=read_file('VERSION'),
     description='distributed crawler',
     keywords=['gerapy', 'scrapy', 'distributed'],
     author='germey',
