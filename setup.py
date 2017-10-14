@@ -1,14 +1,25 @@
-import io
 from setuptools import setup, find_packages
+from os.path import join
+from os import walk
+
 
 def read_file(filename):
-    with io.open(filename) as fp:
+    with open(filename) as fp:
         return fp.read().strip()
 
 
 def read_requirements(filename):
     return [line.strip() for line in read_file(filename).splitlines()
             if not line.startswith('#')]
+
+
+def package_files(directories):
+    paths = []
+    for directory in directories:
+        for (path, directories, filenames) in walk(directory):
+            for filename in filenames:
+                paths.append(join('..', path, filename))
+    return paths
 
 
 setup(
@@ -26,15 +37,11 @@ setup(
         'console_scripts': ['gerapy = gerapy.cmd:cmd']
     },
     package_data={
-        'gerapy': [
-            'server/static/**/*.*',
-            'server/core/templates/*.*',
-            'server/core/templates/**/*.*',
-            'server/core/templates/static/css/*.*',
-            'server/core/templates/static/fonts/*.*',
-            'server/core/templates/static/images/*.*',
-            'server/core/templates/static/js/*.*'
-        ],
+        '': package_files([
+            'gerapy/server/static',
+            'gerapy/server/core/templates',
+            'gerapy/templates'
+        ])
     },
     publish=[
         'python setup.py bdist_egg',

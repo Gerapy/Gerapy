@@ -2,7 +2,7 @@ import fnmatch
 import re
 import os
 import string
-from os.path import join, abspath
+from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
@@ -24,7 +24,7 @@ def merge(path, file):
 
 
 def ignored(ignores, path, file):
-    file_name = merge(path, file)
+    file_name = join(path, file)
     for ignore in ignores:
         if '/' in ignore and ignore.rstrip('/') in file_name:
             return True
@@ -38,9 +38,9 @@ def ignored(ignores, path, file):
 def get_tree(path, ignores=IGNORES):
     result = []
     for file in os.listdir(path):
-        if os.path.isdir(merge(path, file)):
+        if os.path.isdir(join(path, file)):
             if not ignored(ignores, path, file):
-                children = get_tree(merge(path, file), ignores)
+                children = get_tree(join(path, file), ignores)
                 if children:
                     result.append({
                         'label': file,
@@ -53,7 +53,7 @@ def get_tree(path, ignores=IGNORES):
     return result
 
 
-TEMPLATES_DIR = './templates/project'
+TEMPLATES_DIR = join(dirname(dirname(dirname(abspath(__file__)))), 'templates')
 
 TEMPLATES_TO_RENDER = (
     ('scrapy.cfg',),
@@ -72,10 +72,12 @@ def is_valid_name(project_name):
 
 
 def copytree(src, dst):
-    ignore = ignore_patterns(IGNORES)
+    ignore = ignore_patterns(*IGNORES)
+    print('Ignor Src', src)
     names = os.listdir(src)
+    print('Names', names)
     ignored_names = ignore(src, names)
-    
+    print('Dst', dst, 'Src', src)
     if not os.path.exists(dst):
         os.makedirs(dst)
     

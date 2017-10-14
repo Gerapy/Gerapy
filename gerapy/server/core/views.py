@@ -16,7 +16,7 @@ from django.http import HttpResponse, JsonResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
-from os.path import join, abspath
+from os.path import join, abspath, exists
 from shutil import move
 from scrapy.utils.template import render_templatefile, string_camelcase
 
@@ -66,10 +66,10 @@ def index_status(request):
                 data['success'] += 1
             except ConnectionError:
                 data['error'] += 1
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
         files = os.listdir(path)
         for file in files:
-            if os.path.isdir(merge(path, file)) and not file in IGNORES:
+            if os.path.isdir(join(path, file)) and not file in IGNORES:
                 data['project'] += 1
         return HttpResponse(json.dumps(data))
 
@@ -114,11 +114,11 @@ def project_list(request, id):
 
 def project_index(request):
     if request.method == 'GET':
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
+        path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
         files = os.listdir(path)
         project_list = []
         for file in files:
-            if os.path.isdir(merge(path, file)) and not file in IGNORES:
+            if os.path.isdir(join(path, file)) and not file in IGNORES:
                 project_list.append({'name': file})
         return HttpResponse(json.dumps(project_list))
 
@@ -131,15 +131,15 @@ def project_create(request):
         return HttpResponse(data.get('name'))
 
 
-def project_generate(request):
+def project_generate(request, project_name):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        project_name = data.get('name')
-        project_dir = data.get('dir')
         if not is_valid_name(project_name):
             return HttpResponse('0')
-        copytree(abspath(TEMPLATES_DIR), abspath(project_dir))
-        move(join(project_dir, 'module'), join(project_dir, project_name))
+        project_dir = join(PROJECTS_FOLDER, project_name)
+        if exists(project_dir):
+            shutil.rmtree(project_dir)
+        copytree(join(TEMPLATES_DIR, 'project'), project_dir)
+        move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
         for paths in TEMPLATES_TO_RENDER:
             path = join(*paths)
             tplfile = join(project_dir,
@@ -169,15 +169,15 @@ def project_configure(request, name):
 
 def project_tree(request, name):
     if request.method == 'GET':
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-        tree = get_tree(merge(path, name))
+        path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
+        tree = get_tree(join(path, name))
         return HttpResponse(json.dumps(tree))
 
 
 def project_file(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        path = merge(data['path'], data['label'])
+        path = join(data['path'], data['label'])
         with open(path, 'r') as f:
             return HttpResponse(f.read())
 
@@ -185,7 +185,7 @@ def project_file(request):
 def project_file_update(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        path = merge(data['path'], data['label'])
+        path = join(data['path'], data['label'])
         code = data['code']
         with open(path, 'w') as f:
             f.write(code)
@@ -195,7 +195,7 @@ def project_file_update(request):
 def project_file_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        path = merge(data['path'], data['name'])
+        path = join(data['path'], data['name'])
         open(path, 'w').close()
         return HttpResponse('1')
 
@@ -203,7 +203,7 @@ def project_file_create(request):
 def project_file_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        path = merge(data['path'], data['label'])
+        path = join(data['path'], data['label'])
         result = os.remove(path)
         return HttpResponse(json.dumps(result))
 
@@ -211,17 +211,17 @@ def project_file_delete(request):
 def project_file_rename(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        pre = merge(data['path'], data['pre'])
-        new = merge(data['path'], data['new'])
+        pre = join(data['path'], data['pre'])
+        new = join(data['path'], data['new'])
         os.rename(pre, new)
         return HttpResponse('1')
 
 
 def project_remove(request, project):
     if request.method == 'POST':
-        path = merge(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
+        path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         if project:
-            project_path = merge(path, project)
+            project_path = join(path, project)
             shutil.rmtree(project_path)
             Project.objects.filter(name=project).delete()
             return HttpResponse('1')
@@ -251,10 +251,10 @@ def project_versions(request, id, project):
 
 def project_deploy(request, id, project):
     if request.method == 'GET':
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-        project_path = merge(path, project)
+        path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
+        project_path = join(path, project)
         egg = find_egg(project_path)
-        egg_file = open(merge(project_path, egg), 'rb')
+        egg_file = open(join(project_path, egg), 'rb')
         deploy_version = time.time()
         
         client_model = Client.objects.get(id=id)
@@ -268,12 +268,12 @@ def project_deploy(request, id, project):
 
 
 def project_build(request, project):
-    path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-    project_path = merge(path, project)
+    path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
+    project_path = join(path, project)
     if request.method == 'GET':
         egg = find_egg(project_path)
         if egg:
-            built_at = os.path.getmtime(merge(project_path, egg))
+            built_at = os.path.getmtime(join(project_path, egg))
             if not Project.objects.filter(name=project):
                 Project(name=project, built_at=built_at, egg=egg).save()
                 model = Project.objects.get(name=project)
@@ -288,6 +288,8 @@ def project_build(request, project):
             dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
             return HttpResponse(json.dumps(dict))
         else:
+            if not Project.objects.filter(name=project):
+                Project(name=project).save()
             model = Project.objects.get(name=project)
             dict = model_to_dict(model)
             del dict['clients']
