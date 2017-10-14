@@ -43,7 +43,7 @@
               </el-button>
               <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
                            v-if="configuration.items.length">
-                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey">
+                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey" :key="itemKey">
                   <!-- 每个实体配置 -->
                   <template slot="title">
                     <span>
@@ -107,7 +107,7 @@
             </el-button>
 
             <el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
-              <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey">
+              <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey" :key="spiderKey">
                 <template slot="title">
                   <span>
                     <el-button class="inline m-r-sm" type="primary" size="mini">
@@ -248,7 +248,7 @@
                   </el-button>
                   <el-collapse :accordion="accordion" :value="parseInt(spider.rules.length-1)"
                                v-if="spider.rules.length">
-                    <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in spider.rules" :name="ruleKey">
+                    <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in spider.rules" :name="ruleKey" :key="ruleKey">
                       <!-- 每条规则标题及操作配置 -->
                       <template slot="title">
                         <span>
@@ -362,7 +362,7 @@
                   <el-collapse :accordion="accordion" :value="parseInt(spider.extractors.length-1)"
                                v-if="spider.extractors.length">
                     <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in spider.extractors"
-                                      :name="extractorKey">
+                                      :name="extractorKey" :key="extractorKey">
                       <!-- 每条规则标题及操作配置 -->
                       <template slot="title">
                         <span>
