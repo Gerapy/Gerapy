@@ -73,11 +73,8 @@ def is_valid_name(project_name):
 
 def copytree(src, dst):
     ignore = ignore_patterns(*IGNORES)
-    print('Ignor Src', src)
     names = os.listdir(src)
-    print('Names', names)
     ignored_names = ignore(src, names)
-    print('Dst', dst, 'Src', src)
     if not os.path.exists(dst):
         os.makedirs(dst)
     

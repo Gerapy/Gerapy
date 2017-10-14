@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from scrapy.spiders import CrawlSpider as BaseSpider, signals
 from scrapy_splash import SplashRequest
+from scrapy import Request
 
 
 class CrawlSpider(BaseSpider):
@@ -21,7 +22,8 @@ class CrawlSpider(BaseSpider):
                              meta=meta)
     
     def start(self):
-        raise NotImplementedError
+        for url in self.start_urls:
+            yield Request(url, callback=self.parse_start_url)
     
     def _requests_to_follow(self, response):
         seen = set()

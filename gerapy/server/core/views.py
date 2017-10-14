@@ -146,6 +146,26 @@ def project_generate(request, project_name):
                            string.Template(path).substitute(project_name=project_name))
             render_templatefile(tplfile, project_name=project_name,
                                 ProjectName=string_camelcase(project_name))
+        # Get Configuration
+        configuration = Project.objects.get(name=project_name).configuration
+        print(configuration)
+        configuration = json.loads(configuration)
+        # Generate Spider
+        spiders = configuration.get('spiders')
+        for spider in spiders:
+            print('Spider', spider)
+            spider_name = spider.get('name')
+            template_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
+            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider_name)
+            print('File', template_file, spider_file)
+            shutil.copyfile(template_file, spider_file)
+            vars = {
+                'name': spider_name,
+                'classname': '%sSpider' % string_camelcase(spider_name).capitalize(),
+                'allowed_domains': json.dumps(spider.get('allowedDomains', []))
+            }
+            render_templatefile(spider_file, **vars)
+        
         return HttpResponse('1')
 
 

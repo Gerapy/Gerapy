@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-import scrapy
 from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
+from gerapy.spiders import CrawlSpider
+from scrapy.spiders import Rule
 
 
 class $classname(CrawlSpider):
+
     name = '$name'
-    allowed_domains = ['$domain']
-    start_urls = ['http://$domain/']
 
-    rules = (
-        Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
-    )
+    allowed_domains = $allowed_domains
 
-    def parse_item(self, response):
-        i = {}
-        #i['domain_id'] = response.xpath('//input[@id="sid"]/@value').extract()
-        #i['name'] = response.xpath('//div[@id="name"]').extract()
-        #i['description'] = response.xpath('//div[@id="description"]').extract()
-        return i
+    rules = $rules
+
+    $attrs
+
+    $extra_codes
+
+    $methods
