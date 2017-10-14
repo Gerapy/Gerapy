@@ -1,5 +1,9 @@
-import os
 import fnmatch
+import re
+import os
+import string
+from os.path import join, abspath
+from shutil import ignore_patterns, copy2, copystat
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
 
@@ -47,3 +51,42 @@ def get_tree(path, ignores=IGNORES):
             if not ignored(ignores, path, file):
                 result.append({'label': file, 'path': path})
     return result
+
+
+TEMPLATES_DIR = './templates/project'
+
+TEMPLATES_TO_RENDER = (
+    ('scrapy.cfg',),
+    ('${project_name}', 'settings.py.tmpl'),
+    ('${project_name}', 'items.py.tmpl'),
+    ('${project_name}', 'pipelines.py.tmpl'),
+    ('${project_name}', 'middlewares.py.tmpl'),
+)
+
+
+def is_valid_name(project_name):
+    if not re.search(r'^[_a-zA-Z]\w*$', project_name):
+        print('Error: Project Name must begin with a letter and contain only letters, numbers and underscores')
+        return False
+    return True
+
+
+def copytree(src, dst):
+    ignore = ignore_patterns(IGNORES)
+    names = os.listdir(src)
+    ignored_names = ignore(src, names)
+    
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    
+    for name in names:
+        if name in ignored_names:
+            continue
+        
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        if os.path.isdir(srcname):
+            copytree(srcname, dstname)
+        else:
+            copy2(srcname, dstname)
+    copystat(src, dst)

@@ -10,7 +10,6 @@ from subprocess import check_call
 from scrapy.utils.python import retry_on_eintr
 
 
-# 构建项目
 def build_project(project):
     egg = build_egg(project)
     print('Built %(project)s into %(egg)s' % {'egg': egg, 'project': project})
@@ -33,11 +32,9 @@ def build_egg(project):
     work_path = os.getcwd()
     try:
         path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-        print('Path', path)
         project_path = merge(path, project)
         os.chdir(project_path)
         settings = config(project_path, 'settings', 'default')
-        print('Settings', settings)
         create_default_setup_py(project_path, settings=settings, project=project)
         d = tempfile.mkdtemp(prefix="gerapy-")
         o = open(os.path.join(d, "stdout"), "wb")
@@ -47,7 +44,7 @@ def build_egg(project):
         o.close()
         e.close()
         egg = glob.glob(os.path.join(d, '*.egg'))[0]
-        # 删除原文件
+        # Delete Origin file
         if find_egg(project_path):
             os.remove(merge(project_path, find_egg(project_path)))
         shutil.move(egg, project_path)
@@ -58,7 +55,6 @@ def build_egg(project):
         os.chdir(work_path)
 
 
-# 查找某路径下的Egg文件
 def find_egg(path):
     items = os.listdir(path)
     for name in items:
@@ -67,11 +63,9 @@ def find_egg(path):
     return None
 
 
-# 创建setup.py
 def create_default_setup_py(path, **kwargs):
     with open(merge(path, 'setup.py'), 'w') as f:
         print(kwargs)
         file = _SETUP_PY_TEMPLATE % kwargs
-        print(file)
         f.write(file)
         f.close()

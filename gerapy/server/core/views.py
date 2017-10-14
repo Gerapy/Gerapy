@@ -3,12 +3,11 @@ import os
 import requests
 import shutil
 import time
+import pymongo
+import string
 from django.shortcuts import render
-from django.utils.dateformat import format
-from pip import commands
-
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.utils import IGNORES
+from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
 from gerapy.server.core.models import Client, Project, Deploy, Monitor
@@ -17,7 +16,9 @@ from django.http import HttpResponse, JsonResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
-import pymongo
+from os.path import join, abspath
+from shutil import move
+from scrapy.utils.template import render_templatefile, string_camelcase
 
 
 def index(request):
@@ -126,12 +127,26 @@ def project_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         data['configurable'] = 1
-        path = os.path.abspath(merge(os.getcwd(), PROJECTS_FOLDER))
-        cmd = 'cd ' + path + '&& scrapy startproject ' + data.get('name')
-        result = os.system(cmd)
-        if result == 0:
-            Project.objects.update_or_create(**data)
-            return HttpResponse(data.get('name'))
+        Project.objects.update_or_create(**data)
+        return HttpResponse(data.get('name'))
+
+
+def project_generate(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        project_name = data.get('name')
+        project_dir = data.get('dir')
+        if not is_valid_name(project_name):
+            return HttpResponse('0')
+        copytree(abspath(TEMPLATES_DIR), abspath(project_dir))
+        move(join(project_dir, 'module'), join(project_dir, project_name))
+        for paths in TEMPLATES_TO_RENDER:
+            path = join(*paths)
+            tplfile = join(project_dir,
+                           string.Template(path).substitute(project_name=project_name))
+            render_templatefile(tplfile, project_name=project_name,
+                                ProjectName=string_camelcase(project_name))
+        return HttpResponse('1')
 
 
 def project_configure(request, name):
@@ -209,7 +224,7 @@ def project_remove(request, project):
             project_path = merge(path, project)
             shutil.rmtree(project_path)
             Project.objects.filter(name=project).delete()
-            return HttpResponse(json.dumps('1'))
+            return HttpResponse('1')
 
 
 def project_versions(request, id, project):
