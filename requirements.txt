@@ -9,3 +9,4 @@ python-scrapyd-api
 redis
 pymongo
 pymysql
+jinja2

@@ -1,76 +1,13 @@
-from __future__ import print_function
-import re
-import os
-import string
-from importlib import import_module
-from os.path import join, exists, abspath
-from shutil import ignore_patterns, move, copy2, copystat
+import inspect
 
-import scrapy
-from scrapy.commands import ScrapyCommand
-from scrapy.utils.template import render_templatefile, string_camelcase
-from scrapy.exceptions import UsageError
+from scrapy.spiders import Rule
+from scrapy.linkextractors import LinkExtractor
 
-TEMPLATES_DIR = './templates/project'
+data = {"spiders": [{"name": "china", "attrs": [{"key": "http_user", "value": "admin"}, {"key": "http_pass", "value": "admin"}], "extractors": [{"callback": "parse_item", "item": "NewsItem", "attrs": {"title": [{"method": "xpath", "arg": "//h1[@id=\"chan_newsTitle\"]/text()", "processor": "Compose(TakeFirst(), lambda s: s.strip())"}], "content": [{"method": "xpath", "arg": "//div[@id=\"chan_newsDetail\"]//text()", "processor": "Compose(Join(), lambda s: s.strip())"}], "url": [{"method": "attr", "arg": "url"}], "publish_time": [{"method": "xpath", "arg": "//div[@id=\"chan_newsInfo\"]/text()", "re": "(\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+)"}], "source": [{"method": "xpath", "arg": "//div[@id=\"chan_newsInfo\"]/text()", "re": "\u6765\u6e90\uff1a(.*)", "processor": "Compose(Join(), lambda s: s.strip())"}], "website": [{"method": "value", "arg": "\u4e2d\u534e\u7f51"}]}}], "rules": [{"allow": ["article\\/.*\\.html"], "restrict_xpaths": ["//div[@id=\"pageStyle\"]//a[contains(., \"\u4e0b\u4e00\u9875\")]"], "callback": "parse_item", "follow": False}, {"restrict_xpaths": ["//div[@id=\"pageStyle\"]//a[contains(., \"\u4e0b\u4e00\u9875\")]"]}, {}], "startUrls": {"list": ["http://tech.china.com/articles/"], "mode": "list"}, "allowedDomains": ["tech.china.com"], "code": "", "customSettings": "{\n\"SPLASH_URL\": \"tecent.cuiqingcai.com:8050\"\n}"}], "items": [{"name": "NewsItem", "attrs": {"title": {"outProcessor": ""}, "content": {"outProcessor": ""}, "source": {"outProcessor": ""}, "url": {}, "website": {"outProcessor": ""}, "crawl_time": {"outProcessor": ""}, "publish_time": {}, "table": {"value": "news"}, "collection": {"value": "news"}}}]}
 
-TEMPLATES_TO_RENDER = (
-    ('scrapy.cfg',),
-    ('${project_name}', 'settings.py.tmpl'),
-    ('${project_name}', 'items.py.tmpl'),
-    ('${project_name}', 'pipelines.py.tmpl'),
-    ('${project_name}', 'middlewares.py.tmpl'),
-)
+from jinja2 import Template
 
-IGNORE = ignore_patterns('*.pyc', '.svn', '.git')
-
-
-def is_valid_name(project_name):
-    if not re.search(r'^[_a-zA-Z]\w*$', project_name):
-        print('Error: Project Name must begin with a letter and contain only letters, numbers and underscores')
-        return False
-    return True
-
-
-def copytree(src, dst):
-    ignore = IGNORE
-    names = os.listdir(src)
-    ignored_names = ignore(src, names)
-    
-    if not os.path.exists(dst):
-        os.makedirs(dst)
-    
-    for name in names:
-        if name in ignored_names:
-            continue
-        
-        srcname = os.path.join(src, name)
-        dstname = os.path.join(dst, name)
-        if os.path.isdir(srcname):
-            copytree(srcname, dstname)
-        else:
-            copy2(srcname, dstname)
-    copystat(src, dst)
-
-
-def run(project_name, project_dir):
-    if not is_valid_name(project_name):
-        return
-    print(abspath(TEMPLATES_DIR), abspath(project_dir))
-    copytree(abspath(TEMPLATES_DIR), abspath(project_dir))
-    move(join(project_dir, 'module'), join(project_dir, project_name))
-    for paths in TEMPLATES_TO_RENDER:
-        path = join(*paths)
-        tplfile = join(project_dir,
-                       string.Template(path).substitute(project_name=project_name))
-        render_templatefile(tplfile, project_name=project_name,
-                            ProjectName=string_camelcase(project_name))
-    print("New Scrapy project %r, using template directory:" % \
-          (project_name))
-    print("    %s\n" % abspath(project_dir))
-    print("You can start your first spider with:")
-    print("    cd %s" % project_dir)
-    print("    scrapy genspider example example.com")
-
-
-if __name__ == '__main__':
-    run('news', '.')
+template = Template(open('templates/spiders/crawl.tmpl').read())
+for spider in data.get('spiders'):
+    r = template.render(spider=spider)
+    print('R', r)

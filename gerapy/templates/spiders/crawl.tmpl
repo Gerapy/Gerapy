@@ -4,16 +4,61 @@ from gerapy.spiders import CrawlSpider
 from scrapy.spiders import Rule
 
 
-class $classname(CrawlSpider):
-
-    name = '$name'
-
-    allowed_domains = $allowed_domains
-
-    rules = $rules
-
-    $attrs
-
-    $extra_codes
-
-    $methods
+class {{ spider.name|capitalize }}Spider(CrawlSpider):
+    name = {{ spider.name }}
+    {% if spider.allowedDomains -%}
+    allowed_domains = [
+        {%- for allowed_domain in spider.allowedDomains -%} '{{ allowed_domain }}',{%- endfor -%} 
+    ]
+    {% endif -%}
+    {%- if spider.startUrls -%}
+    start_urls = [
+        {%- for start_url in spider.startUrls -%} '{{ start_url }}',{%- endfor -%} 
+    ]
+    {% endif -%}
+    {%- if spider.attrs %}
+    {%- for attr in spider.attrs -%}
+    {{ attr.key }} = {{ attr.value }}
+    {% endfor -%}
+    {% endif -%}
+    {%- if spider.rules %}
+    rules = (
+        {% for rule in spider.rules %} Rule(
+            LinkExtractor(
+                {%- if rule.allow -%}allow={{rule.allow}}, {% endif -%}
+                {%- if rule.deny -%}deny={{rule.deny}}, {% endif -%}
+                {%- if rule.allow_domains -%}allow_domains={{rule.allow_domains}}, {% endif -%}
+                {%- if rule.deny_domains -%}deny_domains={{rule.deny_domains}}, {% endif -%}
+                {%- if rule.deny_extensions -%}deny_extensions={{rule.deny_extensions}}, {% endif -%}
+                {%- if rule.restrict_xpaths -%}restrict_xpaths={{rule.restrict_xpaths}}, {% endif -%}
+                {%- if rule.restrict_css -%}restrict_css={{rule.restrict_css}}, {% endif -%}
+                {%- if rule.tags -%}tags={{rule.tags}}, {% endif -%}
+                {%- if rule.attrs -%}attrs={{rule.attrs}}, {%- endif -%}
+                {%- if rule.canonicalize -%}canonicalize={{rule.canonicalize}}, {% endif -%}
+                {%- if rule.attrs -%}attrs={{rule.attrs}}, {% endif -%}
+                {%- if rule.unique -%}unique={{rule.unique}}, {% endif -%}
+                {%- if rule.process_value -%}process_value={{rule.process_value}}, {% endif -%}
+                {%- if rule.strip -%}strip={{rule.strip}}, {% endif -%}
+            ),
+            {%- if rule.callback -%}callback='{{rule.callback}}'{% endif -%}
+            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}'{% endif -%}
+            {%- if rule.follow -%}follow='{{rule.follow}}'{% endif -%}
+            {%- if rule.process_links -%}process_links='{{rule.process_links}}'{% endif -%}
+            {%- if rule.process_request -%}process_request='{{rule.process_request}}'{% endif -%}
+        ),
+        {% endfor %}
+    )
+    {% endif %}
+    {% if spider.extractors %}
+    {% for extractor in spider.extractors %}
+    def {{ extractor.callback }}(self, response):
+        loader = Loader(item={{ extractor.item }}(), response=response)
+        {% for attr, items in extractor.attrs.items() -%}
+        {%- for item in items -%}
+        {%- if item.method == 'xpath' or item.method == 'css' -%}
+        loader.add_{{ item.method }}('{{ attr }}', '{{ item.arg }}'{% if item.processor %}, {{ item.processor }}{% endif %}{% if item.re %}, re='{{ item.re }}'{% endif%})
+        {% endif -%}
+        {%- endfor -%}
+        {%- endfor -%}
+    {% endfor %}
+    {% endif %}
