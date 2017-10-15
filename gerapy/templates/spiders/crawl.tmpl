@@ -2,10 +2,12 @@
 from scrapy.linkextractors import LinkExtractor
 from gerapy.spiders import CrawlSpider
 from scrapy.spiders import Rule
-
+from scrapy.loader import ItemLoader
+from ..items import *
+from scrapy.loader.processors import *
 
 class {{ spider.name|capitalize }}Spider(CrawlSpider):
-    name = {{ spider.name }}
+    name = '{{ spider.name }}'
     {% if spider.allowedDomains -%}
     allowed_domains = [
         {%- for allowed_domain in spider.allowedDomains -%} '{{ allowed_domain }}',{%- endfor -%} 
@@ -18,7 +20,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
     {% endif -%}
     {%- if spider.attrs %}
     {%- for attr in spider.attrs -%}
-    {{ attr.key }} = {{ attr.value }}
+    {{ attr.key }} = '{{ attr.value }}'
     {% endfor -%}
     {% endif -%}
     {%- if spider.rules %}
@@ -49,10 +51,10 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% endfor %}
     )
     {% endif %}
-    {% if spider.extractors %}
+    {%- if spider.extractors %}
     {% for extractor in spider.extractors %}
     def {{ extractor.callback }}(self, response):
-        loader = Loader(item={{ extractor.item }}(), response=response)
+        loader = ItemLoader(item={{ extractor.item }}(), response=response)
         {% for attr, items in extractor.attrs.items() -%}
         {%- for item in items -%}
         {%- if item.method == 'xpath' or item.method == 'css' -%}
@@ -60,5 +62,6 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% endif -%}
         {%- endfor -%}
         {%- endfor -%}
+        yield loader.load_item()
     {% endfor %}
     {% endif %}

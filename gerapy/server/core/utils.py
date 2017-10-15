@@ -1,9 +1,9 @@
 import fnmatch
 import re
 import os
-import string
 from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
+from jinja2 import Template
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
 
@@ -90,3 +90,11 @@ def copytree(src, dst):
             copy2(srcname, dstname)
     copystat(src, dst)
 
+
+def render_templatefile(tpl_file, dst_file, *args, **kwargs):
+    vars = dict(*args, **kwargs)
+    template = Template(open(tpl_file).read())
+    os.remove(tpl_file)
+    result = template.render(vars)
+    print('Render Result', result)
+    open(dst_file, 'w').write(result)

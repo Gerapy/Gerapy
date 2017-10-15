@@ -7,7 +7,8 @@ import pymongo
 import string
 from django.shortcuts import render
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER
+from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
+    render_templatefile
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
 from gerapy.server.core.models import Client, Project, Deploy, Monitor
@@ -17,8 +18,8 @@ from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
 from os.path import join, abspath, exists
-from shutil import move
-from scrapy.utils.template import render_templatefile, string_camelcase
+from shutil import move, copy
+from scrapy.utils.template import string_camelcase
 
 
 def index(request):
@@ -133,6 +134,9 @@ def project_create(request):
 
 def project_generate(request, project_name):
     if request.method == 'POST':
+        # Get Configuration
+        configuration = Project.objects.get(name=project_name).configuration
+        configuration = json.loads(configuration)
         if not is_valid_name(project_name):
             return HttpResponse('0')
         project_dir = join(PROJECTS_FOLDER, project_name)
@@ -144,27 +148,34 @@ def project_generate(request, project_name):
             path = join(*paths)
             tplfile = join(project_dir,
                            string.Template(path).substitute(project_name=project_name))
-            render_templatefile(tplfile, project_name=project_name,
-                                ProjectName=string_camelcase(project_name))
-        # Get Configuration
-        configuration = Project.objects.get(name=project_name).configuration
-        print(configuration)
-        configuration = json.loads(configuration)
+            print(tplfile)
+            vars = {
+                'project_name': project_name,
+                'items': configuration.get('items'),
+            }
+            render_templatefile(tplfile, tplfile.rstrip('.tmpl'), **vars)
+        
         # Generate Spider
         spiders = configuration.get('spiders')
         for spider in spiders:
-            print('Spider', spider)
-            spider_name = spider.get('name')
-            template_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider_name)
-            print('File', template_file, spider_file)
-            shutil.copyfile(template_file, spider_file)
-            vars = {
-                'name': spider_name,
-                'classname': '%sSpider' % string_camelcase(spider_name).capitalize(),
-                'allowed_domains': json.dumps(spider.get('allowedDomains', []))
-            }
-            render_templatefile(spider_file, **vars)
+            source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
+            new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
+            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
+            print('SNS', source_tpl_file, new_tpl_file, spider_file)
+            copy(source_tpl_file, new_tpl_file)
+            render_templatefile(new_tpl_file, spider_file, spider=spider, project_name=project_name)
+        # print('Spider', spider)
+        #     spider_name = spider.get('name')
+        #     template_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
+        #     spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider_name)
+        #     print('File', template_file, spider_file)
+        #     shutil.copyfile(template_file, spider_file)
+        #     vars = {
+        #         'name': spider_name,
+        #         'classname': '%sSpider' % string_camelcase(spider_name).capitalize(),
+        #         'allowed_domains': json.dumps(spider.get('allowedDomains', []))
+        #     }
+        #     render_templatefile(spider_file, **vars)
         
         return HttpResponse('1')
 

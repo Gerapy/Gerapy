@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-# Define here the models for your scraped items
-#
-# See documentation in:
-# http://doc.scrapy.org/en/latest/topics/items.html
+from scrapy import Item, Field
+from scrapy.loader.processors import *
 
-import scrapy
-
-
-class ${ProjectName}Item(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+{% for item in items %}
+class {{ item.name }}(Item):
+    {% for attr, definition in item.attrs.items() -%}
+    {% if definition.value -%}
+    {{ attr }} = '{{ definition.value }}'
+    {% else -%}
+    {{ attr }} = Field({%- if definition.inProcessor -%}input_processor={{ definition.inProcessor }}, {% endif -%}{%- if definition.outProcessor -%}output_processor={{ definition.outProcessor }}{%- endif -%})
+    {% endif -%}
+    {%- endfor -%}
+{% endfor %}
