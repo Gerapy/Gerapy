@@ -3,4 +3,3 @@ include *.rst
 include *.tmpl
 
 include LICENSE
-include VERSION

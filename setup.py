@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
-from os.path import join
+from os.path import join, isfile
 from os import walk
+import gerapy
 
 
 def read_file(filename):
@@ -15,16 +16,20 @@ def read_requirements(filename):
 
 def package_files(directories):
     paths = []
-    for directory in directories:
-        for (path, directories, filenames) in walk(directory):
+    for item in directories:
+        if isfile(item):
+            paths.append(join('..', item))
+            continue
+        for (path, directories, filenames) in walk(item):
             for filename in filenames:
                 paths.append(join('..', path, filename))
+    print(paths)
     return paths
 
 
 setup(
     name='gerapy',
-    version=read_file('VERSION'),
+    version=gerapy.version(),
     description='distributed crawler',
     keywords=['gerapy', 'scrapy', 'distributed'],
     author='germey',
@@ -40,7 +45,8 @@ setup(
         '': package_files([
             'gerapy/server/static',
             'gerapy/server/core/templates',
-            'gerapy/templates'
+            'gerapy/templates',
+            'gerapy/VERSION'
         ])
     },
     publish=[
