@@ -113,3 +113,11 @@ export function projectCreate(data) {
     data,
   })
 }
+
+export function projectGenerate(params) {
+  return fetch({
+    url: project.projectGenerate,
+    method: 'post',
+    params,
+  })
+}

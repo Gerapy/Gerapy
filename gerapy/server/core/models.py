@@ -17,17 +17,18 @@ class Project(Model):
     description = CharField(max_length=255, default='', blank=True)
     egg = CharField(max_length=255, default='', blank=True)
     configuration = TextField(default='', blank=True)
-    built_at = DateTimeField(auto_now=True)
+    configurable = IntegerField(default=0, blank=True)
+    built_at = DateTimeField(default=None, blank=True, null=True)
+    generated_at = DateTimeField(default=None, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
-    configurable = IntegerField(default=0, blank=True)
     clients = ManyToManyField(Client, through='Deploy')
 
 class Deploy(Model):
     client = ForeignKey(Client)
     project = ForeignKey(Project)
     description = CharField(max_length=255, default='', blank=True)
-    deployed_at = DateTimeField(auto_now=True)
+    deployed_at = DateTimeField(default=None, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
 

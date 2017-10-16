@@ -16,7 +16,15 @@
               <h4 class="inline m-r-sm">项目名称</h4>
               {{ projectName }}
             </el-form-item>
-
+            <el-form-item>
+              <h4 class="inline m-r-sm">代码生成</h4>
+              {{ projectGeneratedAt ? projectGeneratedAt : '未生成' }}
+              <el-button type="primary" class="inline" size="mini"
+                         @click="onGenerate(projectName)">
+                <i class="fa fa-magic"></i>
+                生成代码
+              </el-button>
+            </el-form-item>
             <!-- 提取实体 -->
             <el-form-item>
               <h4 class="inline">提取实体</h4>
@@ -43,7 +51,8 @@
               </el-button>
               <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
                            v-if="configuration.items.length">
-                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey" :key="itemKey">
+                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey"
+                                  :key="itemKey">
                   <!-- 每个实体配置 -->
                   <template slot="title">
                     <span>
@@ -107,7 +116,8 @@
             </el-button>
 
             <el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
-              <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey" :key="spiderKey">
+              <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey"
+                                :key="spiderKey">
                 <template slot="title">
                   <span>
                     <el-button class="inline m-r-sm" type="primary" size="mini">
@@ -464,6 +474,7 @@
       return {
         projectName: this.$route.params.name,
         projectDescription: null,
+        projectGeneratedAt: null,
         activeSpider: 0,
 
         accordion: false,
@@ -611,8 +622,8 @@
         this.$fetch.apiProject.projectGetConfiguration({
           name: this.projectName
         }).then(({data: data}) => {
-          console.log(data)
           this.projectDescription = data.description
+          this.projectGeneratedAt = data.generated_at
           this.configuration = data.configuration || this.configuration
           this.loadData = false
         }).catch(() => {
@@ -657,6 +668,16 @@
       onAddExtractorItem() {
         this.$set(this.configuration.spiders[this.activeSpider].extractors[this.activeExtractorItem]['attrs'], this.extractorItem.slice(-1), [])
         this.addExtractorItem = false
+      },
+      onGenerate() {
+        this.$fetch.apiProject.projectGenerate({
+          name: this.projectName
+        }).then(({data: data}) => {
+          console.log(data.configuration)
+          this.$message.success('代码生成成功')
+        }).catch(() => {
+          this.$message.error('代码生成失败')
+        })
       }
     },
     watch: {

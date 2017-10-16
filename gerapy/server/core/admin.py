@@ -9,9 +9,9 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'configurable', 'built_at', 'created_at', 'updated_at')
+    list_display = ('name', 'description', 'configurable', 'built_at', 'generated_at')
 
- 
+
 class MonitorAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'project', 'created_at', 'updated_at')
 

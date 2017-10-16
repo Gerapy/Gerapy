@@ -7,6 +7,7 @@ import pymongo
 import string
 from django.shortcuts import render
 from gerapy.server.core.build import build_project, find_egg
+from gerapy.server.core.decoder import JSONEncoder
 from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_templatefile
 from gerapy.cmd.init import PROJECTS_FOLDER
@@ -19,6 +20,7 @@ from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
 from os.path import join, abspath, exists
 from shutil import move, copy
+from datetime import datetime
 from scrapy.utils.template import string_camelcase
 
 
@@ -32,7 +34,7 @@ def client_index(request):
 
 def client_show(request, id):
     if request.method == 'GET':
-        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
+        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id)), cls=JSONEncoder))
 
 
 def client_status(request, id):
@@ -50,7 +52,7 @@ def client_update(request, id):
         client = Client.objects.filter(id=id)
         data = json.loads(request.body)
         client.update(**data)
-        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id))))
+        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id)), cls=JSONEncoder))
 
 
 def index_status(request):
@@ -72,14 +74,14 @@ def index_status(request):
         for file in files:
             if os.path.isdir(join(path, file)) and not file in IGNORES:
                 data['project'] += 1
-        return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps(data, cls=JSONEncoder))
 
 
 def client_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         client = Client.objects.create(**data)
-        return HttpResponse(json.dumps(model_to_dict(client)))
+        return HttpResponse(json.dumps(model_to_dict(client), cls=JSONEncoder))
 
 
 def client_remove(request, id):
@@ -142,13 +144,14 @@ def project_generate(request, project_name):
         project_dir = join(PROJECTS_FOLDER, project_name)
         if exists(project_dir):
             shutil.rmtree(project_dir)
+        
+        # Generate Project
         copytree(join(TEMPLATES_DIR, 'project'), project_dir)
         move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
         for paths in TEMPLATES_TO_RENDER:
             path = join(*paths)
             tplfile = join(project_dir,
                            string.Template(path).substitute(project_name=project_name))
-            print(tplfile)
             vars = {
                 'project_name': project_name,
                 'items': configuration.get('items'),
@@ -161,21 +164,13 @@ def project_generate(request, project_name):
             source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
             new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
             spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
-            print('SNS', source_tpl_file, new_tpl_file, spider_file)
             copy(source_tpl_file, new_tpl_file)
             render_templatefile(new_tpl_file, spider_file, spider=spider, project_name=project_name)
-        # print('Spider', spider)
-        #     spider_name = spider.get('name')
-        #     template_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-        #     spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider_name)
-        #     print('File', template_file, spider_file)
-        #     shutil.copyfile(template_file, spider_file)
-        #     vars = {
-        #         'name': spider_name,
-        #         'classname': '%sSpider' % string_camelcase(spider_name).capitalize(),
-        #         'allowed_domains': json.dumps(spider.get('allowedDomains', []))
-        #     }
-        #     render_templatefile(spider_file, **vars)
+        
+        # Save Generate Time
+        model = Project.objects.get(name=project_name)
+        model.generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        model.save()
         
         return HttpResponse('1')
 
@@ -186,7 +181,7 @@ def project_configure(request, name):
         project = model_to_dict(project)
         project['configuration'] = json.loads(project['configuration'])
         del project['clients']
-        return HttpResponse(json.dumps(project))
+        return HttpResponse(json.dumps(project, cls=JSONEncoder))
     elif request.method == 'POST':
         project = Project.objects.filter(name=name)
         data = json.loads(request.body)
@@ -287,12 +282,13 @@ def project_deploy(request, id, project):
         egg = find_egg(project_path)
         egg_file = open(join(project_path, egg), 'rb')
         deploy_version = time.time()
+        deployed_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
         client_model = Client.objects.get(id=id)
         project_model = Project.objects.get(name=project)
         Deploy.objects.filter(client=client_model, project=project_model).delete()
-        deploy = Deploy.objects.update_or_create(client=client_model, project=project_model,
-                                                 description=project_model.description)
+        Deploy.objects.update_or_create(client=client_model, project=project_model, deployed_at=deployed_at,
+                                        description=project_model.description)
         scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
         result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
         return HttpResponse(result)
@@ -304,7 +300,7 @@ def project_build(request, project):
     if request.method == 'GET':
         egg = find_egg(project_path)
         if egg:
-            built_at = os.path.getmtime(join(project_path, egg))
+            built_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(join(project_path, egg))))
             if not Project.objects.filter(name=project):
                 Project(name=project, built_at=built_at, egg=egg).save()
                 model = Project.objects.get(name=project)
@@ -315,22 +311,20 @@ def project_build(request, project):
                 model.save()
             dict = model_to_dict(model)
             del dict['clients']
-            localtime = time.localtime(int(built_at))
-            dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
-            return HttpResponse(json.dumps(dict))
+            return HttpResponse(json.dumps(dict, cls=JSONEncoder))
         else:
             if not Project.objects.filter(name=project):
                 Project(name=project).save()
             model = Project.objects.get(name=project)
             dict = model_to_dict(model)
             del dict['clients']
-            return HttpResponse(json.dumps(dict))
+            return HttpResponse(json.dumps(dict, cls=JSONEncoder))
     elif request.method == 'POST':
         data = json.loads(request.body)
         description = data['description']
         build_project(project)
         egg = find_egg(project_path)
-        built_at = time.time()
+        built_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if not Project.objects.filter(name=project):
             Project(name=project, description=description, built_at=built_at, egg=egg).save()
             model = Project.objects.get(name=project)
@@ -342,9 +336,7 @@ def project_build(request, project):
             model.save()
         dict = model_to_dict(model)
         del dict['clients']
-        localtime = time.localtime(int(built_at))
-        dict['built_at'] = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
-        return HttpResponse(json.dumps(dict))
+        return HttpResponse(json.dumps(dict, cls=JSONEncoder))
 
 
 def job_list(request, id, project):
@@ -358,7 +350,7 @@ def job_list(request, id, project):
             for job in result.get(status):
                 job['status'] = status
                 jobs.append(job)
-        return HttpResponse(json.dumps(jobs))
+        return HttpResponse(json.dumps(jobs, cls=JSONEncoder))
 
 
 def job_log(request, id, project, spider, job):
@@ -382,7 +374,7 @@ def job_cancel(request, id, project, job):
         client = Client.objects.get(id=id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         result = scrapyd.cancel(project, job)
-        return HttpResponse(json.dumps(result))
+        return HttpResponse(json.dumps(result, cls=JSONEncoder))
 
 
 def monitor_db_list(request):
@@ -393,7 +385,7 @@ def monitor_db_list(request):
         if type == 'MongoDB':
             client = pymongo.MongoClient(url)
             dbs = client.database_names()
-            return HttpResponse(json.dumps(dbs))
+            return HttpResponse(json.dumps(dbs, cls=JSONEncoder))
 
 
 def monitor_collection_list(request):
@@ -406,7 +398,7 @@ def monitor_collection_list(request):
             client = pymongo.MongoClient(url)
             db = client[db]
             collections = db.collection_names()
-            return HttpResponse(json.dumps(collections))
+            return HttpResponse(json.dumps(collections, cls=JSONEncoder))
 
 
 def monitor_create(request):
@@ -415,4 +407,4 @@ def monitor_create(request):
         data = data['form']
         data['configuration'] = json.dumps(data['configuration'])
         monitor = Monitor.objects.create(**data)
-        return HttpResponse(json.dumps(model_to_dict(monitor)))
+        return HttpResponse(json.dumps(model_to_dict(monitor, cls=JSONEncoder)))
