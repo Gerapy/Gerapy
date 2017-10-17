@@ -22,7 +22,7 @@ class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         # See "Date Time String Format" in the ECMA-262 specification.
         if isinstance(o, datetime.datetime):
-            return o.strftime(DATE_TIME_FORMAT)
+            return timezone.localtime(o).strftime(DATE_TIME_FORMAT)
         elif isinstance(o, datetime.date):
             return o.isoformat()
         elif isinstance(o, datetime.time):

@@ -230,7 +230,8 @@
             this.$message.success('主机' + id + '部署成功')
             this.getProjectVersions(id)
             this.loadData = false
-          }).catch(() => {
+          }).catch((data) => {
+            console.log('部署失败', data)
             this.$message.error('主机' + id + '部署失败')
             this.loadData = false
           })
@@ -246,7 +247,7 @@
           name: this.projectName,
         }).then(({data: version}) => {
           this.$set(this.projectDescriptions, id, version['description'])
-          this.$set(this.projectDateTimes, id, version['datetime'])
+          this.$set(this.projectDateTimes, id, version['deployed_at'])
           this.loadData = false
         }).catch(() => {
           this.loadData = false

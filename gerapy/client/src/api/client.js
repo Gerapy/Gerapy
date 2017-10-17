@@ -108,7 +108,7 @@ export function projectVersions(params) {
 export function projectDeploy(params) {
   return fetch({
     url: client.projectDeploy,
-    method: 'get',
+    method: 'post',
     params,
   })
 }

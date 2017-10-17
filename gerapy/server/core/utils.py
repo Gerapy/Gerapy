@@ -96,12 +96,10 @@ def render_templatefile(tpl_file, dst_file, *args, **kwargs):
     template = Template(open(tpl_file).read())
     os.remove(tpl_file)
     result = template.render(vars)
-    print('Render Result', result)
     open(dst_file, 'w').write(result)
 
 
 import traceback
-
 
 def get_traceback():
     info = traceback.format_exc(limit=1)

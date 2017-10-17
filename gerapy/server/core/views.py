@@ -4,6 +4,7 @@ import requests
 import shutil
 import sys
 import time
+import pytz
 import pymongo
 import string
 import traceback
@@ -23,6 +24,7 @@ from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
 from os.path import join, abspath, exists
 from shutil import move, copy
+from gerapy.server.server.settings import TIME_ZONE
 from datetime import datetime
 from scrapy.utils.template import string_camelcase
 from django.utils import timezone
@@ -139,48 +141,6 @@ def project_create(request):
         return HttpResponse(data.get('name'))
 
 
-def project_generate(request, project_name):
-    if request.method == 'POST':
-        # Get Configuration
-        configuration = Project.objects.get(name=project_name).configuration
-        configuration = json.loads(configuration)
-        if not is_valid_name(project_name):
-            return HttpResponse('0')
-        project_dir = join(PROJECTS_FOLDER, project_name)
-        if exists(project_dir):
-            shutil.rmtree(project_dir)
-        
-        # Generate Project
-        copytree(join(TEMPLATES_DIR, 'project'), project_dir)
-        move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
-        for paths in TEMPLATES_TO_RENDER:
-            path = join(*paths)
-            tplfile = join(project_dir,
-                           string.Template(path).substitute(project_name=project_name))
-            vars = {
-                'project_name': project_name,
-                'items': configuration.get('items'),
-            }
-            render_templatefile(tplfile, tplfile.rstrip('.tmpl'), **vars)
-        
-        # Generate Spider
-        spiders = configuration.get('spiders')
-        for spider in spiders:
-            source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-            new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
-            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
-            copy(source_tpl_file, new_tpl_file)
-            render_templatefile(new_tpl_file, spider_file, spider=spider, project_name=project_name)
-        
-        # Save Generate Time
-        model = Project.objects.get(name=project_name)
-        model.generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        model.built_at = None
-        model.save()
-        
-        return HttpResponse('1')
-
-
 def project_configure(request, name):
     if request.method == 'GET':
         project = Project.objects.get(name=name)
@@ -257,78 +217,80 @@ def project_remove(request, project):
             return HttpResponse('1')
 
 
-def project_versions(request, id, project):
+def project_versions(request, client_id, project_name):
     if request.method == 'GET':
-        client_model = Client.objects.get(id=id)
-        project_model = Project.objects.get(name=project)
-        scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
-        if Deploy.objects.filter(client=client_model, project=project_model):
-            deploy = Deploy.objects.get(client=client_model, project=project_model)
-            timestamp = deploy.deployed_at.timestamp()
-            localtime = time.localtime(timestamp)
-            datetime = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
-            return HttpResponse(json.dumps({'datetime': datetime, 'description': deploy.description}))
+        # get client and project model
+        client = Client.objects.get(id=client_id)
+        project = Project.objects.get(name=project_name)
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        # if deploy info exists in db, return it
+        if Deploy.objects.filter(client=client, project=project):
+            deploy = Deploy.objects.get(client=client, project=project)
+        # if deploy info does not exists in db, create deploy info
         else:
-            versions = scrapyd.list_versions(project)
+            try:
+                versions = scrapyd.list_versions(project_name)
+            except requests.exceptions.ConnectionError:
+                return JsonResponse({'message': 'Connect Error'}, status=500)
             if len(versions) > 0:
                 version = versions[-1]
-                localtime = time.localtime(int(version))
-                datetime = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
+                deployed_at = timezone.datetime.fromtimestamp(int(version), tz=pytz.timezone(TIME_ZONE))
             else:
-                datetime = None
-        return HttpResponse(json.dumps({'datetime': datetime}))
+                deployed_at = None
+            deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at)
+        # return deploy json info
+        return JsonResponse(model_to_dict(deploy))
 
 
 def project_deploy(request, client_id, project_name):
     """
-    Deploy project operation.
+    deploy project operation
     :param request: Request object
     :param client_id: Client id
     :param project_name: Project name
     :return: JsonResponse
     """
     if request.method == 'POST':
-        # Get project folder.
+        # get project folder
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
         project_path = join(path, project_name)
-        # Find egg file.
+        # find egg file
         egg = find_egg(project_path)
         egg_file = open(join(project_path, egg), 'rb')
-        # Get client and project model.
+        # get client and project model
         client = Client.objects.get(id=client_id)
         project = Project.objects.get(name=project_name)
-        # Execute deploy operation.
+        # execute deploy operation
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
         try:
             scrapyd.add_version(project_name, int(time.time()), egg_file.read())
-            # Update deploy info.
+            # update deploy info
             deployed_at = timezone.now()
             Deploy.objects.filter(client=client, project=project).delete()
             deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at,
                                                              description=project.description)
             return JsonResponse(model_to_dict(deploy))
         except Exception:
-            # Deploy Exception
             return JsonResponse({'message': get_traceback()}, status=500)
 
 
 def project_build(request, project_name):
     """
-    Get build info or execute build operation.
+    get build info or execute build operation
     :param request: Request object
     :param project_name: Project name
     :return: JsonResponse
     """
-    # Get project folder.
+    # get project folder
     path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
     project_path = join(path, project_name)
-    # Get build version
+    # get build version
     if request.method == 'GET':
         egg = find_egg(project_path)
-        # If built, save or update project to db.
+        # if built, save or update project to db
         if egg:
-            # Got RuntimeWarning: DateTimeField Project.built_at received a naive datetime (2017-10-17 12:01:13) while time zone support is active.
-            built_at = timezone.datetime.fromtimestamp(os.path.getmtime(join(project_path, egg)))
+            built_at = timezone.datetime.fromtimestamp(os.path.getmtime(join(project_path, egg)),
+                                                       tz=pytz.timezone(TIME_ZONE))
             if not Project.objects.filter(name=project_name):
                 Project(name=project_name, built_at=built_at, egg=egg).save()
                 model = Project.objects.get(name=project_name)
@@ -337,36 +299,84 @@ def project_build(request, project_name):
                 model.built_at = built_at
                 model.egg = egg
                 model.save()
-        # If not built, just save project name to db.
+        # if not built, just save project name to db
         else:
             if not Project.objects.filter(name=project_name):
                 Project(name=project_name).save()
             model = Project.objects.get(name=project_name)
-        # Transfer model to dict, then dumps it to json.
+        # transfer model to dict then dumps it to json
         data = model_to_dict(model)
         return JsonResponse(data)
-    # Build operation manually by clicking button.
+    # build operation manually by clicking button
     elif request.method == 'POST':
         data = json.loads(request.body)
         description = data['description']
         build_project(project_name)
         egg = find_egg(project_path)
-        # Update built_at info.
+        # update built_at info
         built_at = timezone.now()
-        # If project does not exists in db, create it.
+        # if project does not exists in db, create it
         if not Project.objects.filter(name=project_name):
             Project(name=project_name, description=description, built_at=built_at, egg=egg).save()
             model = Project.objects.get(name=project_name)
-        # If project exists, update egg, description, built_at info.
+        # if project exists, update egg, description, built_at info
         else:
             model = Project.objects.get(name=project_name)
             model.built_at = built_at
             model.egg = egg
             model.description = description
             model.save()
-        # Transfer model to dict, then dumps it to json.
+        # transfer model to dict then dumps it to json
         data = model_to_dict(model)
         return JsonResponse(data)
+
+
+def project_generate(request, project_name):
+    """
+    generate code of project
+    :param request: Request object
+    :param project_name: Project name
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        # get configuration
+        configuration = Project.objects.get(name=project_name).configuration
+        configuration = json.loads(configuration)
+        
+        if not is_valid_name(project_name):
+            return JsonResponse({'message': 'Invalid project name'}, status=500)
+        # remove original project dir
+        project_dir = join(PROJECTS_FOLDER, project_name)
+        if exists(project_dir):
+            shutil.rmtree(project_dir)
+        # generate project
+        copytree(join(TEMPLATES_DIR, 'project'), project_dir)
+        move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
+        for paths in TEMPLATES_TO_RENDER:
+            path = join(*paths)
+            tplfile = join(project_dir,
+                           string.Template(path).substitute(project_name=project_name))
+            vars = {
+                'project_name': project_name,
+                'items': configuration.get('items'),
+            }
+            render_templatefile(tplfile, tplfile.rstrip('.tmpl'), **vars)
+        # generate spider
+        spiders = configuration.get('spiders')
+        for spider in spiders:
+            source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
+            new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
+            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
+            copy(source_tpl_file, new_tpl_file)
+            render_templatefile(new_tpl_file, spider_file, spider=spider, project_name=project_name)
+        # save generated_at attr
+        model = Project.objects.get(name=project_name)
+        model.generated_at = timezone.now()
+        # clear built_at attr
+        model.built_at = None
+        model.save()
+        # return model
+        return JsonResponse(model_to_dict(model))
 
 
 def job_list(request, id, project):
