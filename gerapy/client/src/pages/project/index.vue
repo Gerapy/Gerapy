@@ -17,6 +17,10 @@
       </div>
     </el-dialog>
     <panel-title title="项目管理">
+      <!--<el-button @click.stop="onRefresh" size="mini">-->
+      <!--<i class="fa fa-refresh"></i>-->
+      <!--刷新-->
+      <!--</el-button>-->
       <el-button type="primary" size="mini" @click="createProjectDialog=true">
         <i class="fa fa-plus"></i>
         创建

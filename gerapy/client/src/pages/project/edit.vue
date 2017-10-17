@@ -20,7 +20,7 @@
             <i class="fa fa-plus"></i>
             新建
           </el-button>
-          <el-button @click="deleteFile" size="mini" type="danger">
+          <el-button @click="deleteFile" size="mini" type="danger" v-if="activeFile">
             <i class="fa fa-close"></i>
             删除
           </el-button>
@@ -101,7 +101,7 @@
         },
         activeFile: null,
         activeNode: null,
-        code: '',
+        code: 'Please Choose File from Left to Edit.',
         modeMap: {
           'py': 'text/x-python',
           'js': 'text/javascript',
@@ -146,6 +146,7 @@
     },
     created(){
       this.getProjectTree(this.projectName)
+
     },
     methods: {
       getProjectTree(name) {
@@ -155,10 +156,10 @@
         }).then(({data: tree}) => {
           this.tree = tree
         }).catch(() => {
+          this.$message.error('加载项目失败')
         })
       },
       handleNodeClick(data) {
-        console.log('Data', data)
         this.activeNode = data
         this.changeCode(data)
         this.activeFile = this.activeNode.path + '/' + this.activeNode.label
@@ -279,5 +280,9 @@
 
   .el-tree-node.is-current {
     background: #EEE;
+  }
+
+  .CodeMirror {
+    z-index: 0;
   }
 </style>

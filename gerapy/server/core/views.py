@@ -18,6 +18,11 @@ from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATE
 
 
 def index(request):
+    """
+    render index page
+    :param request: request object
+    :return: page
+    """
     return render(request, 'index.html')
 
 
@@ -193,6 +198,7 @@ def project_index(request):
         for file in files:
             if os.path.isdir(join(path, file)) and not file in IGNORES:
                 project_list.append({'name': file})
+        print(project_list)
         return JsonResponse(project_list)
 
 
@@ -244,6 +250,9 @@ def project_create(request):
         data = json.loads(request.body)
         data['configurable'] = 1
         project, result = Project.objects.update_or_create(**data)
+        # generate a single project folder
+        path = join(os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER)), data['name'])
+        os.mkdir(path)
         return JsonResponse(model_to_dict(project))
 
 

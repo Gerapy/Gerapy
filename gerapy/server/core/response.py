@@ -19,7 +19,7 @@ class JsonResponse(HttpResponse):
     :param json_dumps_params: A dictionary of kwargs passed to json.dumps().
     """
     
-    def __init__(self, data, encoder=JSONEncoder, safe=True,
+    def __init__(self, data, encoder=JSONEncoder, safe=False,
                  json_dumps_params=None, **kwargs):
         if safe and not isinstance(data, dict):
             raise TypeError(

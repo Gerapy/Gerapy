@@ -1,11 +1,15 @@
 <template>
   <div class="panel">
     <panel-title :title="$route.meta.title">
-      <el-button @click.stop="onRefresh" size="mini">
-        <i class="fa fa-refresh"></i>
-      </el-button>
+      <!--<el-button @click.stop="onRefresh" size="mini">-->
+        <!--<i class="fa fa-refresh"></i>-->
+        <!--刷新-->
+      <!--</el-button>-->
       <router-link :to="{name: 'clientCreate'}" tag="span">
-        <el-button type="success" icon="plus" size="mini">添加</el-button>
+        <el-button type="success" size="mini">
+          <i class="fa fa-plus"></i>
+          添加
+        </el-button>
       </router-link>
     </panel-title>
     <div class="panel-body">
@@ -102,11 +106,13 @@
         clientsStatus: {},
         statusClass: {
           '1': 'success',
-          '0': 'danger'
+          '0': 'warning',
+          '-1': 'danger',
         },
         statusText: {
           '1': '运行正常',
-          '0': '连接失败'
+          '0': '连接中',
+          '-1': '连接失败',
         }
       }
     },
@@ -134,11 +140,13 @@
         })
       },
       getClientStatus(id) {
+        this.$set(this.clientsStatus, id, 0)
         this.$fetch.apiClient.status({
           id: id
-        }).then(({data: data}) => {
-          console.log(data)
-          this.$set(this.clientsStatus, id, data)
+        }).then(({data: {result: result}}) => {
+          this.$set(this.clientsStatus, id, result)
+        }).catch(() => {
+          this.$set(this.clientsStatus, id, -1)
         })
       },
       //获取数据

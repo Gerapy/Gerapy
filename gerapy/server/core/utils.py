@@ -6,7 +6,7 @@ from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
 from jinja2 import Template
 
-IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/']
+IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
 TEMPLATES_DIR = join(dirname(dirname(dirname(abspath(__file__)))), 'templates')
 
