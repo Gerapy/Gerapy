@@ -2,31 +2,25 @@ import json
 import os
 import requests
 import shutil
-import sys
 import time
 import pytz
 import pymongo
 import string
-import traceback
 from django.shortcuts import render
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.encoder import JSONEncoder
-from gerapy.server.core.time import DATE_TIME_FORMAT
 from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_templatefile, get_traceback
 from gerapy.cmd.init import PROJECTS_FOLDER
-from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
+from gerapy.server.core.utils import scrapyd_url, log_url, get_tree
 from gerapy.server.core.models import Client, Project, Deploy, Monitor
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
-from os.path import join, abspath, exists
+from os.path import join, exists
 from shutil import move, copy
 from gerapy.server.server.settings import TIME_ZONE
-from datetime import datetime
-from scrapy.utils.template import string_camelcase
 from django.utils import timezone
 from gerapy.server.core.response import JsonResponse
 
@@ -35,34 +29,12 @@ def index(request):
     return render(request, 'index.html')
 
 
-def client_index(request):
-    return HttpResponse(serialize('json', Client.objects.order_by('-id')))
-
-
-def client_show(request, id):
-    if request.method == 'GET':
-        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id)), cls=JSONEncoder))
-
-
-def client_status(request, id):
-    if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        try:
-            requests.get(scrapyd_url(client.ip, client.port), timeout=3)
-            return HttpResponse('1')
-        except ConnectionError:
-            return HttpResponse('0')
-
-
-def client_update(request, id):
-    if request.method == 'POST':
-        client = Client.objects.filter(id=id)
-        data = json.loads(request.body)
-        client.update(**data)
-        return HttpResponse(json.dumps(model_to_dict(Client.objects.get(id=id)), cls=JSONEncoder))
-
-
 def index_status(request):
+    """
+    index statistics
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'GET':
         clients = Client.objects.all()
         data = {
@@ -70,6 +42,7 @@ def index_status(request):
             'error': 0,
             'project': 0,
         }
+        # clients info
         for client in clients:
             try:
                 requests.get(scrapyd_url(client.ip, client.port), timeout=1)
@@ -78,51 +51,149 @@ def index_status(request):
                 data['error'] += 1
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
         files = os.listdir(path)
+        # projects info
         for file in files:
             if os.path.isdir(join(path, file)) and not file in IGNORES:
                 data['project'] += 1
-        return HttpResponse(json.dumps(data, cls=JSONEncoder))
+        return JsonResponse(data)
+
+
+def client_index(request):
+    """
+    get client list
+    :param request: Request object
+    :return: Client list
+    """
+    return HttpResponse(serialize('json', Client.objects.order_by('-id')))
+
+
+def client_info(request, client_id):
+    """
+    get client info
+    :param request: Request object
+    :param id: Client id
+    :return: JsonResponse
+    """
+    if request.method == 'GET':
+        return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
+
+
+def client_status(request, client_id):
+    """
+    get client status
+    :param request: Request object
+    :param client_id: Client id
+    :return: JsonResponse
+    """
+    if request.method == 'GET':
+        # get client object
+        client = Client.objects.get(id=client_id)
+        try:
+            requests.get(scrapyd_url(client.ip, client.port), timeout=3)
+            return JsonResponse({'result': '1'})
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'}, status=500)
+
+
+def client_update(request, client_id):
+    """
+    update client info
+    :param request: Request object
+    :param client_id: Client id
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        client = Client.objects.filter(id=client_id)
+        data = json.loads(request.body)
+        client.update(**data)
+        return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
 
 
 def client_create(request):
+    """
+    create a client
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         client = Client.objects.create(**data)
-        return HttpResponse(json.dumps(model_to_dict(client), cls=JSONEncoder))
+        return JsonResponse(model_to_dict(client))
 
 
-def client_remove(request, id):
+def client_remove(request, client_id):
+    """
+    remove a client
+    :param request: Request object
+    :param client_id: Client id
+    :return: JsonResponse
+    """
     if request.method == 'POST':
-        Client.objects.filter(id=id).delete()
-        return HttpResponse(json.dumps('1'))
+        Client.objects.filter(id=client_id).delete()
+        return JsonResponse({'result': '1'})
 
 
-def spider_list(request, id, project):
+def spider_list(request, client_id, project_name):
+    """
+    get spider list from one client
+    :param request: Request Object
+    :param client_id: Client id
+    :param project_name: Project name
+    :return: JsonResponse
+    """
     if request.method == 'GET':
-        client = Client.objects.get(id=id)
+        client = Client.objects.get(id=client_id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        spiders = scrapyd.list_spiders(project)
-        spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
-        return HttpResponse(json.dumps(spiders))
+        try:
+            spiders = scrapyd.list_spiders(project_name)
+            spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
+            return JsonResponse(spiders)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'}, status=500)
 
 
-def spider_start(request, id, project, spider):
+def spider_start(request, client_id, project_name, spider_name):
+    """
+    start a spider
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :param spider_name: Spider name
+    :return: JsonResponse
+    """
     if request.method == 'GET':
-        client = Client.objects.get(id=id)
+        client = Client.objects.get(id=client_id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.schedule(project, spider)
-        return HttpResponse(json.dumps({'job': result}))
+        try:
+            job = scrapyd.schedule(project_name, spider_name)
+            return JsonResponse({'job': job})
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'}, status=500)
 
 
-def project_list(request, id):
+def project_list(request, client_id):
+    """
+    project deployed list on one client
+    :param request: Request object
+    :param client_id: Client id
+    :return: JsonResponse
+    """
     if request.method == 'GET':
-        client = Client.objects.get(id=id)
+        client = Client.objects.get(id=client_id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        projects = scrapyd.list_projects()
-        return HttpResponse(json.dumps(projects))
+        try:
+            projects = scrapyd.list_projects()
+            return JsonResponse(projects)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'}, status=500)
 
 
 def project_index(request):
+    """
+    project index list
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'GET':
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
         files = os.listdir(path)
@@ -130,37 +201,31 @@ def project_index(request):
         for file in files:
             if os.path.isdir(join(path, file)) and not file in IGNORES:
                 project_list.append({'name': file})
-        return HttpResponse(json.dumps(project_list))
+        return JsonResponse(project_list)
 
 
-def project_create(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        data['configurable'] = 1
-        Project.objects.update_or_create(**data)
-        return HttpResponse(data.get('name'))
-
-
-def project_configure(request, name):
+def project_configure(request, project_name):
     """
     get or update configuration
-    :param request:
-    :param name:
-    :return:
+    :param request: Request object
+    :param project_name: Project name
+    :return: JsonResponse
     """
+    # get configuration
     if request.method == 'GET':
-        project = Project.objects.get(name=name)
+        project = Project.objects.get(name=project_name)
         project = model_to_dict(project)
-        project['configuration'] = json.loads(project['configuration'])
-        return HttpResponse(json.dumps(project, cls=JSONEncoder))
+        project['configuration'] = json.loads(project['configuration']) if project['configuration'] else None
+        return JsonResponse(project)
+    # update configuration
     elif request.method == 'POST':
-        project = Project.objects.filter(name=name)
+        project = Project.objects.filter(name=project_name)
         data = json.loads(request.body)
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
-        project = Project.objects.get(name=name)
+        project = Project.objects.get(name=project_name)
         project = model_to_dict(project)
-        return HttpResponse('1')
+        return JsonResponse(project)
 
 
 def project_tree(request, project_name):
@@ -175,6 +240,19 @@ def project_tree(request, project_name):
         # get tree data
         tree = get_tree(join(path, project_name))
         return JsonResponse(tree)
+
+
+def project_create(request):
+    """
+    create a configurable project
+    :param request: Request object
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        data['configurable'] = 1
+        project, result = Project.objects.update_or_create(**data)
+        return JsonResponse(model_to_dict(project))
 
 
 def project_remove(request, project_name):
@@ -214,7 +292,7 @@ def project_version(request, client_id, project_name):
         else:
             try:
                 versions = scrapyd.list_versions(project_name)
-            except requests.exceptions.ConnectionError:
+            except ConnectionError:
                 return JsonResponse({'message': 'Connect Error'}, status=500)
             if len(versions) > 0:
                 version = versions[-1]
@@ -431,45 +509,83 @@ def project_file_rename(request):
         return JsonResponse({'result': '1'})
 
 
-def job_list(request, id, project):
+def job_list(request, client_id, project_name):
+    """
+    get job list of project from one client
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :return: JsonResponse
+    """
     if request.method == 'GET':
-        client = Client.objects.get(id=id)
+        client = Client.objects.get(id=client_id)
         scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.list_jobs(project)
-        jobs = []
-        statuses = ['pending', 'running', 'finished']
-        for status in statuses:
-            for job in result.get(status):
-                job['status'] = status
-                jobs.append(job)
-        return HttpResponse(json.dumps(jobs, cls=JSONEncoder))
-
-
-def job_log(request, id, project, spider, job):
-    if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        url = log_url(client.ip, client.port, project, spider, job)
         try:
+            result = scrapyd.list_jobs(project_name)
+            jobs = []
+            statuses = ['pending', 'running', 'finished']
+            for status in statuses:
+                for job in result.get(status):
+                    job['status'] = status
+                    jobs.append(job)
+            return JsonResponse(jobs)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'}, status=500)
+
+
+def job_log(request, client_id, project_name, spider_name, job_id):
+    """
+    get log of jog
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :param spider_name: Spider name
+    :param job_id: Job id
+    :return: JsonResponse
+    """
+    if request.method == 'GET':
+        client = Client.objects.get(id=client_id)
+        # get log url
+        url = log_url(client.ip, client.port, project_name, spider_name, job_id)
+        try:
+            # get last 1000 bytes of log
             response = requests.get(url, timeout=5, headers={
                 'Range': 'bytes=-1000'
             })
+            # log not found
             if response.status_code == 404:
-                return HttpResponse('日志不存在')
+                return JsonResponse({'message': 'Log Not Found'}, status=404)
             text = response.text
             return HttpResponse(text)
         except requests.ConnectionError:
-            return HttpResponse('日志加载失败')
+            return JsonResponse({'message': 'Load Log Error'}, status=500)
 
 
-def job_cancel(request, id, project, job):
+def job_cancel(request, client_id, project_name, job_id):
+    """
+    cancel a job
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :param job_id: Job id
+    :return: JsonResponse
+    """
     if request.method == 'GET':
-        client = Client.objects.get(id=id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
-        result = scrapyd.cancel(project, job)
-        return HttpResponse(json.dumps(result, cls=JSONEncoder))
+        client = Client.objects.get(id=client_id)
+        try:
+            scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+            result = scrapyd.cancel(project_name, job_id)
+            return JsonResponse(result)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'})
 
 
 def monitor_db_list(request):
+    """
+    get monitor db list
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         url = data['url']
@@ -477,10 +593,15 @@ def monitor_db_list(request):
         if type == 'MongoDB':
             client = pymongo.MongoClient(url)
             dbs = client.database_names()
-            return HttpResponse(json.dumps(dbs, cls=JSONEncoder))
+            return JsonResponse(dbs)
 
 
 def monitor_collection_list(request):
+    """
+    get monitor collection list
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         url = data['url']
@@ -490,13 +611,18 @@ def monitor_collection_list(request):
             client = pymongo.MongoClient(url)
             db = client[db]
             collections = db.collection_names()
-            return HttpResponse(json.dumps(collections, cls=JSONEncoder))
+            return JsonResponse(collections)
 
 
 def monitor_create(request):
+    """
+    create a monitor
+    :param request: Request object
+    :return: JsonResponse
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         data = data['form']
         data['configuration'] = json.dumps(data['configuration'])
         monitor = Monitor.objects.create(**data)
-        return HttpResponse(json.dumps(model_to_dict(monitor, cls=JSONEncoder)))
+        return JsonResponse(model_to_dict(monitor))
