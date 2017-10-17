@@ -2,19 +2,22 @@ import json
 import os
 import requests
 import shutil
+import sys
 import time
 import pymongo
 import string
+import traceback
 from django.shortcuts import render
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.decoder import JSONEncoder
+from gerapy.server.core.encoder import JSONEncoder
+from gerapy.server.core.time import DATE_TIME_FORMAT
 from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_templatefile
+    render_templatefile, get_traceback
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.utils import scrapyd_url, log_url, get_tree, merge
 from gerapy.server.core.models import Client, Project, Deploy, Monitor
 from django.core.serializers import serialize
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
@@ -22,6 +25,8 @@ from os.path import join, abspath, exists
 from shutil import move, copy
 from datetime import datetime
 from scrapy.utils.template import string_camelcase
+from django.utils import timezone
+from gerapy.server.core.response import JsonResponse
 
 
 def index(request):
@@ -170,6 +175,7 @@ def project_generate(request, project_name):
         # Save Generate Time
         model = Project.objects.get(name=project_name)
         model.generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        model.built_at = None
         model.save()
         
         return HttpResponse('1')
@@ -180,7 +186,6 @@ def project_configure(request, name):
         project = Project.objects.get(name=name)
         project = model_to_dict(project)
         project['configuration'] = json.loads(project['configuration'])
-        del project['clients']
         return HttpResponse(json.dumps(project, cls=JSONEncoder))
     elif request.method == 'POST':
         project = Project.objects.filter(name=name)
@@ -189,7 +194,6 @@ def project_configure(request, name):
         project.update(**{'configuration': configuration})
         project = Project.objects.get(name=name)
         project = model_to_dict(project)
-        del project['clients']
         return HttpResponse('1')
 
 
@@ -275,68 +279,94 @@ def project_versions(request, id, project):
         return HttpResponse(json.dumps({'datetime': datetime}))
 
 
-def project_deploy(request, id, project):
-    if request.method == 'GET':
+def project_deploy(request, client_id, project_name):
+    """
+    Deploy project operation.
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        # Get project folder.
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
-        project_path = join(path, project)
+        project_path = join(path, project_name)
+        # Find egg file.
         egg = find_egg(project_path)
         egg_file = open(join(project_path, egg), 'rb')
-        deploy_version = time.time()
-        deployed_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
-        client_model = Client.objects.get(id=id)
-        project_model = Project.objects.get(name=project)
-        Deploy.objects.filter(client=client_model, project=project_model).delete()
-        Deploy.objects.update_or_create(client=client_model, project=project_model, deployed_at=deployed_at,
-                                        description=project_model.description)
-        scrapyd = ScrapydAPI(scrapyd_url(client_model.ip, client_model.port))
-        result = scrapyd.add_version(project, int(deploy_version), egg_file.read())
-        return HttpResponse(result)
+        # Get client and project model.
+        client = Client.objects.get(id=client_id)
+        project = Project.objects.get(name=project_name)
+        # Execute deploy operation.
+        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        try:
+            scrapyd.add_version(project_name, int(time.time()), egg_file.read())
+            # Update deploy info.
+            deployed_at = timezone.now()
+            Deploy.objects.filter(client=client, project=project).delete()
+            deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at,
+                                                             description=project.description)
+            return JsonResponse(model_to_dict(deploy))
+        except Exception:
+            # Deploy Exception
+            return JsonResponse({'message': get_traceback()}, status=500)
 
 
-def project_build(request, project):
+def project_build(request, project_name):
+    """
+    Get build info or execute build operation.
+    :param request: Request object
+    :param project_name: Project name
+    :return: JsonResponse
+    """
+    # Get project folder.
     path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
-    project_path = join(path, project)
+    project_path = join(path, project_name)
+    # Get build version
     if request.method == 'GET':
         egg = find_egg(project_path)
+        # If built, save or update project to db.
         if egg:
-            built_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(join(project_path, egg))))
-            if not Project.objects.filter(name=project):
-                Project(name=project, built_at=built_at, egg=egg).save()
-                model = Project.objects.get(name=project)
+            # Got RuntimeWarning: DateTimeField Project.built_at received a naive datetime (2017-10-17 12:01:13) while time zone support is active.
+            built_at = timezone.datetime.fromtimestamp(os.path.getmtime(join(project_path, egg)))
+            if not Project.objects.filter(name=project_name):
+                Project(name=project_name, built_at=built_at, egg=egg).save()
+                model = Project.objects.get(name=project_name)
             else:
-                model = Project.objects.get(name=project)
+                model = Project.objects.get(name=project_name)
                 model.built_at = built_at
                 model.egg = egg
                 model.save()
-            dict = model_to_dict(model)
-            del dict['clients']
-            return HttpResponse(json.dumps(dict, cls=JSONEncoder))
+        # If not built, just save project name to db.
         else:
-            if not Project.objects.filter(name=project):
-                Project(name=project).save()
-            model = Project.objects.get(name=project)
-            dict = model_to_dict(model)
-            del dict['clients']
-            return HttpResponse(json.dumps(dict, cls=JSONEncoder))
+            if not Project.objects.filter(name=project_name):
+                Project(name=project_name).save()
+            model = Project.objects.get(name=project_name)
+        # Transfer model to dict, then dumps it to json.
+        data = model_to_dict(model)
+        return JsonResponse(data)
+    # Build operation manually by clicking button.
     elif request.method == 'POST':
         data = json.loads(request.body)
         description = data['description']
-        build_project(project)
+        build_project(project_name)
         egg = find_egg(project_path)
-        built_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        if not Project.objects.filter(name=project):
-            Project(name=project, description=description, built_at=built_at, egg=egg).save()
-            model = Project.objects.get(name=project)
+        # Update built_at info.
+        built_at = timezone.now()
+        # If project does not exists in db, create it.
+        if not Project.objects.filter(name=project_name):
+            Project(name=project_name, description=description, built_at=built_at, egg=egg).save()
+            model = Project.objects.get(name=project_name)
+        # If project exists, update egg, description, built_at info.
         else:
-            model = Project.objects.get(name=project)
+            model = Project.objects.get(name=project_name)
             model.built_at = built_at
             model.egg = egg
             model.description = description
             model.save()
-        dict = model_to_dict(model)
-        del dict['clients']
-        return HttpResponse(json.dumps(dict, cls=JSONEncoder))
+        # Transfer model to dict, then dumps it to json.
+        data = model_to_dict(model)
+        return JsonResponse(data)
 
 
 def job_list(request, id, project):

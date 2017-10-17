@@ -98,3 +98,17 @@ def render_templatefile(tpl_file, dst_file, *args, **kwargs):
     result = template.render(vars)
     print('Render Result', result)
     open(dst_file, 'w').write(result)
+
+
+import traceback
+
+
+def get_traceback():
+    info = traceback.format_exc(limit=1)
+    if info:
+        info = info.splitlines()
+        info = list(filter(lambda x: x, info))
+        if len(info):
+            return info[-1]
+        return None
+    return info

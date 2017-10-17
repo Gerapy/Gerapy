@@ -475,6 +475,7 @@
         projectName: this.$route.params.name,
         projectDescription: null,
         projectGeneratedAt: null,
+        projectBuiltAt: null,
         activeSpider: 0,
 
         accordion: false,
@@ -624,6 +625,7 @@
         }).then(({data: data}) => {
           this.projectDescription = data.description
           this.projectGeneratedAt = data.generated_at
+          this.projectBuiltAt = data.built_at
           this.configuration = data.configuration || this.configuration
           this.loadData = false
         }).catch(() => {
@@ -636,10 +638,19 @@
         }, {
           configuration: this.configuration
         }).then(({data: data}) => {
-          console.log(data.configuration)
           this.$message.success('保存配置成功')
         }).catch(() => {
           this.$message.error('保存配置失败')
+        })
+      },
+      generateProject() {
+        this.$fetch.apiProject.projectGenerate({
+          name: this.projectName
+        }).then(({data: data}) => {
+          this.$message.success('代码生成成功')
+          this.getProject()
+        }).catch(() => {
+          this.$message.error('代码生成失败')
         })
       },
       onDeleteInput(array, ...keys) {
@@ -670,14 +681,20 @@
         this.addExtractorItem = false
       },
       onGenerate() {
-        this.$fetch.apiProject.projectGenerate({
-          name: this.projectName
-        }).then(({data: data}) => {
-          console.log(data.configuration)
-          this.$message.success('代码生成成功')
-        }).catch(() => {
-          this.$message.error('代码生成失败')
-        })
+        if (this.projectBuiltAt) {
+          this.$confirm('重新生成代码将清空打包的内容, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.generateProject()
+          }).catch(() => {
+            this.$message.error('批量删除出错')
+          })
+        } else {
+          this.generateProject()
+        }
+
       }
     },
     watch: {

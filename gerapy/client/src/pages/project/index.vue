@@ -189,7 +189,8 @@
             console.log(project)
             this.getBuildInfo(project.name)
           })
-        }).catch(() => {
+        }).catch((data) => {
+          console.log(data)
           this.loadData = false
         })
       },

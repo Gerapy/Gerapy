@@ -4,7 +4,6 @@ import datetime
 import decimal
 import json
 import uuid
-
 from django.db.models import QuerySet
 from django.utils import six
 from django.utils.deprecation import CallableBool
@@ -12,6 +11,7 @@ from django.utils.duration import duration_iso_string
 from django.utils.functional import Promise
 from django.utils.timezone import is_aware
 from django.utils import timezone
+from gerapy.server.core.time import DATE_TIME_FORMAT
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -22,7 +22,7 @@ class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         # See "Date Time String Format" in the ECMA-262 specification.
         if isinstance(o, datetime.datetime):
-            return timezone.localtime(o).strftime('%Y-%m-%d %H:%M:%S')
+            return o.strftime(DATE_TIME_FORMAT)
         elif isinstance(o, datetime.date):
             return o.isoformat()
         elif isinstance(o, datetime.time):
@@ -43,7 +43,6 @@ class JSONEncoder(json.JSONEncoder):
         elif isinstance(o, CallableBool):
             return bool(o)
         elif isinstance(o, QuerySet):
-            print('OOOOOO', o)
-            print(list(o.values()))
+            return list(o.values())
         else:
             return super(JSONEncoder, self).default(o)
