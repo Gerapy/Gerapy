@@ -1,6 +1,6 @@
 exports.projects = '/api/client/:id/projects'
 exports.projectTree = '/api/project/:name/tree'
-exports.projectFile = '/api/project/file'
+exports.projectFileRead = '/api/project/file/read'
 exports.projectFileUpdate = '/api/project/file/update'
 exports.projectFileDelete = '/api/project/file/delete'
 exports.projectFileRename = '/api/project/file/rename'

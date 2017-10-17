@@ -17,9 +17,9 @@ export function projectTree(params) {
   })
 }
 
-export function projectFile(data) {
+export function projectFileRead(data) {
   return fetch({
-    url: project.projectFile,
+    url: project.projectFileRead,
     method: 'post',
     data,
   })

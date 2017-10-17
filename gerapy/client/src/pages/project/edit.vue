@@ -172,7 +172,7 @@
         this.editorOptions.mode = this.modeMap[extension]
         // 加载文件
         if (!data.children) {
-          this.$fetch.apiProject.projectFile(
+          this.$fetch.apiProject.projectFileRead(
             data
           ).then(({data: code}) => {
             this.code = code

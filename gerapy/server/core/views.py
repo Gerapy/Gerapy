@@ -142,6 +142,12 @@ def project_create(request):
 
 
 def project_configure(request, name):
+    """
+    get or update configuration
+    :param request:
+    :param name:
+    :return:
+    """
     if request.method == 'GET':
         project = Project.objects.get(name=name)
         project = model_to_dict(project)
@@ -157,67 +163,45 @@ def project_configure(request, name):
         return HttpResponse('1')
 
 
-def project_tree(request, name):
+def project_tree(request, project_name):
+    """
+    get file tree of project
+    :param request: Request object
+    :param project_name: Project name
+    :return: JsonResponse of tree
+    """
     if request.method == 'GET':
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
-        tree = get_tree(join(path, name))
-        return HttpResponse(json.dumps(tree))
+        # get tree data
+        tree = get_tree(join(path, project_name))
+        return JsonResponse(tree)
 
 
-def project_file(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        path = join(data['path'], data['label'])
-        with open(path, 'r') as f:
-            return HttpResponse(f.read())
-
-
-def project_file_update(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        path = join(data['path'], data['label'])
-        code = data['code']
-        with open(path, 'w') as f:
-            f.write(code)
-            return HttpResponse(json.dumps('1'))
-
-
-def project_file_create(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        path = join(data['path'], data['name'])
-        open(path, 'w').close()
-        return HttpResponse('1')
-
-
-def project_file_delete(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        path = join(data['path'], data['label'])
-        result = os.remove(path)
-        return HttpResponse(json.dumps(result))
-
-
-def project_file_rename(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        pre = join(data['path'], data['pre'])
-        new = join(data['path'], data['new'])
-        os.rename(pre, new)
-        return HttpResponse('1')
-
-
-def project_remove(request, project):
+def project_remove(request, project_name):
+    """
+    remove project from disk and db
+    :param request: Request object
+    :param project_name: Project name
+    :return:
+    """
     if request.method == 'POST':
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
-        if project:
-            project_path = join(path, project)
-            shutil.rmtree(project_path)
-            Project.objects.filter(name=project).delete()
-            return HttpResponse('1')
+        project_path = join(path, project_name)
+        # delete project file tree
+        shutil.rmtree(project_path)
+        # delete project
+        result = Project.objects.filter(name=project_name).delete()
+        return JsonResponse({'result': result})
 
 
-def project_versions(request, client_id, project_name):
+def project_version(request, client_id, project_name):
+    """
+    get project deploy version
+    :param request: Request object
+    :param client_id: Client id
+    :param project_name: Project name
+    :return:
+    """
     if request.method == 'GET':
         # get client and project model
         client = Client.objects.get(id=client_id)
@@ -377,6 +361,74 @@ def project_generate(request, project_name):
         model.save()
         # return model
         return JsonResponse(model_to_dict(model))
+
+
+def project_file_read(request):
+    """
+    get content of project file
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = join(data['path'], data['label'])
+        with open(path, 'r') as f:
+            return HttpResponse(f.read())
+
+
+def project_file_update(request):
+    """
+    update project file
+    :param request: Request object
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = join(data['path'], data['label'])
+        code = data['code']
+        with open(path, 'w') as f:
+            f.write(code)
+            return JsonResponse({'result': '1'})
+
+
+def project_file_create(request):
+    """
+    create project file
+    :param request: Request object
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = join(data['path'], data['name'])
+        open(path, 'w').close()
+        return JsonResponse({'result': '1'})
+
+
+def project_file_delete(request):
+    """
+    delete project file
+    :param request: Request object
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        path = join(data['path'], data['label'])
+        result = os.remove(path)
+        return JsonResponse({'result': result})
+
+
+def project_file_rename(request):
+    """
+    rename file name
+    :param request: Request object
+    :return: JsonResponse
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        pre = join(data['path'], data['pre'])
+        new = join(data['path'], data['new'])
+        os.rename(pre, new)
+        return JsonResponse({'result': '1'})
 
 
 def job_list(request, id, project):

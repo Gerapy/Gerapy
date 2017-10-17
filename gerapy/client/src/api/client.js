@@ -97,9 +97,9 @@ export function cancelJob(params) {
   })
 }
 
-export function projectVersions(params) {
+export function projectVersion(params) {
   return fetch({
-    url: client.projectVersions,
+    url: client.projectVersion,
     method: 'get',
     params,
   })

@@ -214,7 +214,7 @@
           this.clients = clients
           this.loadData = false
           this.clients.forEach(({pk: id}) => {
-            this.getProjectVersions(id)
+            this.getProjectVersion(id)
             this.getClientStatus(id)
           })
         }).catch(() => {
@@ -228,7 +228,7 @@
             name: this.projectName,
           }).then(() => {
             this.$message.success('主机' + id + '部署成功')
-            this.getProjectVersions(id)
+            this.getProjectVersion(id)
             this.loadData = false
           }).catch((data) => {
             console.log('部署失败', data)
@@ -240,9 +240,9 @@
           this.loadData = false
         }
       },
-      getProjectVersions(id){
+      getProjectVersion(id){
         this.loadData = true
-        this.$fetch.apiClient.projectVersions({
+        this.$fetch.apiClient.projectVersion({
           id: id,
           name: this.projectName,
         }).then(({data: version}) => {
