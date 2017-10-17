@@ -1,21 +1,20 @@
 import os
-from gerapy.server.core.utils import merge
+from os.path import join
 
 PROJECTS_FOLDER = 'projects'
-
 
 def init(folder):
     if not folder:
         folder = 'gerapy'
-    # 执行路径
+    # execute path
     execute_path = os.getcwd()
-    folder_path = merge(execute_path, folder)
-    # 创建folder，默认gerapy
+    folder_path = join(execute_path, folder)
+    # make folder dir, default to gerapy
     if not os.path.exists(folder_path):
         os.mkdir(folder_path)
     
-    # 创建projects文件夹，存放scrapy项目
+    # make dir of project
     os.chdir(folder_path)
-    projects_folder = merge(folder_path, PROJECTS_FOLDER)
+    projects_folder = join(folder_path, PROJECTS_FOLDER)
     if not os.path.exists(projects_folder):
         os.mkdir(projects_folder)

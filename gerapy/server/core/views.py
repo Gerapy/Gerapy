@@ -1,28 +1,20 @@
-import json
-import os
-import requests
-import shutil
-import time
-import pytz
-import pymongo
-import string
-from django.shortcuts import render
-from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.utils import IGNORES, is_valid_name, copytree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_templatefile, get_traceback
-from gerapy.cmd.init import PROJECTS_FOLDER
-from gerapy.server.core.utils import scrapyd_url, log_url, get_tree
-from gerapy.server.core.models import Client, Project, Deploy, Monitor
-from django.core.serializers import serialize
-from django.http import HttpResponse
-from django.forms.models import model_to_dict
+import json, os, requests, time, pytz, pymongo, string
+from shutil import move, copy, rmtree
 from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
 from os.path import join, exists
-from shutil import move, copy
-from gerapy.server.server.settings import TIME_ZONE
+from django.shortcuts import render
+from django.core.serializers import serialize
+from django.http import HttpResponse
+from django.forms.models import model_to_dict
 from django.utils import timezone
 from gerapy.server.core.response import JsonResponse
+from gerapy.cmd.init import PROJECTS_FOLDER
+from gerapy.server.server.settings import TIME_ZONE
+from gerapy.server.core.models import Client, Project, Deploy, Monitor
+from gerapy.server.core.build import build_project, find_egg
+from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
+    render_template, get_traceback, scrapyd_url, log_url, get_tree
 
 
 def index(request):
@@ -32,8 +24,8 @@ def index(request):
 def index_status(request):
     """
     index statistics
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json
     """
     if request.method == 'GET':
         clients = Client.objects.all()
@@ -61,8 +53,8 @@ def index_status(request):
 def client_index(request):
     """
     get client list
-    :param request: Request object
-    :return: Client list
+    :param request: request object
+    :return: client list
     """
     return HttpResponse(serialize('json', Client.objects.order_by('-id')))
 
@@ -70,9 +62,9 @@ def client_index(request):
 def client_info(request, client_id):
     """
     get client info
-    :param request: Request object
-    :param id: Client id
-    :return: JsonResponse
+    :param request: request object
+    :param id: client id
+    :return: json
     """
     if request.method == 'GET':
         return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
@@ -81,9 +73,9 @@ def client_info(request, client_id):
 def client_status(request, client_id):
     """
     get client status
-    :param request: Request object
-    :param client_id: Client id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :return: json
     """
     if request.method == 'GET':
         # get client object
@@ -98,9 +90,9 @@ def client_status(request, client_id):
 def client_update(request, client_id):
     """
     update client info
-    :param request: Request object
-    :param client_id: Client id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :return: json
     """
     if request.method == 'POST':
         client = Client.objects.filter(id=client_id)
@@ -112,8 +104,8 @@ def client_update(request, client_id):
 def client_create(request):
     """
     create a client
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -124,9 +116,9 @@ def client_create(request):
 def client_remove(request, client_id):
     """
     remove a client
-    :param request: Request object
-    :param client_id: Client id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :return: json
     """
     if request.method == 'POST':
         Client.objects.filter(id=client_id).delete()
@@ -136,10 +128,10 @@ def client_remove(request, client_id):
 def spider_list(request, client_id, project_name):
     """
     get spider list from one client
-    :param request: Request Object
-    :param client_id: Client id
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request Object
+    :param client_id: client id
+    :param project_name: project name
+    :return: json
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -155,11 +147,11 @@ def spider_list(request, client_id, project_name):
 def spider_start(request, client_id, project_name, spider_name):
     """
     start a spider
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :param spider_name: Spider name
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :param spider_name: spider name
+    :return: json
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -174,9 +166,9 @@ def spider_start(request, client_id, project_name, spider_name):
 def project_list(request, client_id):
     """
     project deployed list on one client
-    :param request: Request object
-    :param client_id: Client id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :return: json
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -191,8 +183,8 @@ def project_list(request, client_id):
 def project_index(request):
     """
     project index list
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json
     """
     if request.method == 'GET':
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
@@ -207,9 +199,9 @@ def project_index(request):
 def project_configure(request, project_name):
     """
     get or update configuration
-    :param request: Request object
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request object
+    :param project_name: project name
+    :return: json
     """
     # get configuration
     if request.method == 'GET':
@@ -231,9 +223,9 @@ def project_configure(request, project_name):
 def project_tree(request, project_name):
     """
     get file tree of project
-    :param request: Request object
-    :param project_name: Project name
-    :return: JsonResponse of tree
+    :param request: request object
+    :param project_name: project name
+    :return: json of tree
     """
     if request.method == 'GET':
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
@@ -245,8 +237,8 @@ def project_tree(request, project_name):
 def project_create(request):
     """
     create a configurable project
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -258,15 +250,15 @@ def project_create(request):
 def project_remove(request, project_name):
     """
     remove project from disk and db
-    :param request: Request object
-    :param project_name: Project name
-    :return:
+    :param request: request object
+    :param project_name: project name
+    :return: result of remove
     """
     if request.method == 'POST':
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)
         # delete project file tree
-        shutil.rmtree(project_path)
+        rmtree(project_path)
         # delete project
         result = Project.objects.filter(name=project_name).delete()
         return JsonResponse({'result': result})
@@ -275,10 +267,10 @@ def project_remove(request, project_name):
 def project_version(request, client_id, project_name):
     """
     get project deploy version
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :return:
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :return: deploy version of project
     """
     if request.method == 'GET':
         # get client and project model
@@ -307,10 +299,10 @@ def project_version(request, client_id, project_name):
 def project_deploy(request, client_id, project_name):
     """
     deploy project operation
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :return: json of deploy result
     """
     if request.method == 'POST':
         # get project folder
@@ -339,9 +331,9 @@ def project_deploy(request, client_id, project_name):
 def project_build(request, project_name):
     """
     get build info or execute build operation
-    :param request: Request object
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request object
+    :param project_name: project name
+    :return: json
     """
     # get project folder
     path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
@@ -396,9 +388,9 @@ def project_build(request, project_name):
 def project_generate(request, project_name):
     """
     generate code of project
-    :param request: Request object
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request object
+    :param project_name: project name
+    :return: json of generated project
     """
     if request.method == 'POST':
         # get configuration
@@ -410,9 +402,9 @@ def project_generate(request, project_name):
         # remove original project dir
         project_dir = join(PROJECTS_FOLDER, project_name)
         if exists(project_dir):
-            shutil.rmtree(project_dir)
+            rmtree(project_dir)
         # generate project
-        copytree(join(TEMPLATES_DIR, 'project'), project_dir)
+        copy_tree(join(TEMPLATES_DIR, 'project'), project_dir)
         move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
         for paths in TEMPLATES_TO_RENDER:
             path = join(*paths)
@@ -422,7 +414,7 @@ def project_generate(request, project_name):
                 'project_name': project_name,
                 'items': configuration.get('items'),
             }
-            render_templatefile(tplfile, tplfile.rstrip('.tmpl'), **vars)
+            render_template(tplfile, tplfile.rstrip('.tmpl'), **vars)
         # generate spider
         spiders = configuration.get('spiders')
         for spider in spiders:
@@ -430,7 +422,7 @@ def project_generate(request, project_name):
             new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
             spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
             copy(source_tpl_file, new_tpl_file)
-            render_templatefile(new_tpl_file, spider_file, spider=spider, project_name=project_name)
+            render_template(new_tpl_file, spider_file, spider=spider, project_name=project_name)
         # save generated_at attr
         model = Project.objects.get(name=project_name)
         model.generated_at = timezone.now()
@@ -444,8 +436,8 @@ def project_generate(request, project_name):
 def project_file_read(request):
     """
     get content of project file
-    :param request:
-    :return:
+    :param request: request object
+    :return: file content
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -457,8 +449,8 @@ def project_file_read(request):
 def project_file_update(request):
     """
     update project file
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: result of update
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -472,8 +464,8 @@ def project_file_update(request):
 def project_file_create(request):
     """
     create project file
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: result of create
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -485,8 +477,8 @@ def project_file_create(request):
 def project_file_delete(request):
     """
     delete project file
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: result of delete
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -498,8 +490,8 @@ def project_file_delete(request):
 def project_file_rename(request):
     """
     rename file name
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: result of rename
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -512,10 +504,10 @@ def project_file_rename(request):
 def job_list(request, client_id, project_name):
     """
     get job list of project from one client
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :return: list of jobs
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -536,12 +528,12 @@ def job_list(request, client_id, project_name):
 def job_log(request, client_id, project_name, spider_name, job_id):
     """
     get log of jog
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :param spider_name: Spider name
-    :param job_id: Job id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :param spider_name: spider name
+    :param job_id: job id
+    :return: log of job
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -564,11 +556,11 @@ def job_log(request, client_id, project_name, spider_name, job_id):
 def job_cancel(request, client_id, project_name, job_id):
     """
     cancel a job
-    :param request: Request object
-    :param client_id: Client id
-    :param project_name: Project name
-    :param job_id: Job id
-    :return: JsonResponse
+    :param request: request object
+    :param client_id: client id
+    :param project_name: project name
+    :param job_id: job id
+    :return: json of cancel
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
@@ -583,8 +575,8 @@ def job_cancel(request, client_id, project_name, job_id):
 def monitor_db_list(request):
     """
     get monitor db list
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json of db list
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -599,8 +591,8 @@ def monitor_db_list(request):
 def monitor_collection_list(request):
     """
     get monitor collection list
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json of collection list
     """
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -617,8 +609,8 @@ def monitor_collection_list(request):
 def monitor_create(request):
     """
     create a monitor
-    :param request: Request object
-    :return: JsonResponse
+    :param request: request object
+    :return: json of create
     """
     if request.method == 'POST':
         data = json.loads(request.body)
