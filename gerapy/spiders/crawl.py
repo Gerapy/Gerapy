@@ -15,15 +15,18 @@ class CrawlSpider(BaseSpider):
         for request in self.start():
             self.crawler.engine.slot.scheduler.enqueue_request(request)
     
+    def start(self):
+        for url in self.make_start_urls():
+            yield Request(url)
+    
+    def make_start_urls(self):
+        return self.start_urls
+    
     def splash_request(self, request, args={'wait': 1}):
         meta = request.meta
         meta.update({'url': request.url})
         return SplashRequest(url=request.url, dont_process_response=True, args=args, callback=request.callback,
                              meta=meta)
-    
-    def start(self):
-        for url in self.start_urls:
-            yield Request(url, callback=self.parse_start_url)
     
     def _requests_to_follow(self, response):
         seen = set()

@@ -8,15 +8,17 @@ from scrapy.loader.processors import *
 
 class {{ spider.name|capitalize }}Spider(CrawlSpider):
     name = '{{ spider.name }}'
-    {% if spider.allowedDomains -%}
+    {% if spider.allowed_domains -%}
     allowed_domains = [
-        {%- for allowed_domain in spider.allowedDomains -%} '{{ allowed_domain }}',{%- endfor -%} 
+        {%- for allowed_domain in spider.allowed_domains -%} '{{ allowed_domain }}',{%- endfor -%} 
     ]
     {% endif -%}
-    {%- if spider.startUrls -%}
+    {%- if spider.start_urls -%}
+    {%- if spider.start_urls.mode == "list" -%}
     start_urls = [
-        {%- for start_url in spider.startUrls -%} '{{ start_url }}',{%- endfor -%} 
+        {%- for start_url in spider.start_urls.list -%} '{{ start_url }}',{%- endfor -%}
     ]
+    {%- endif -%}
     {% endif -%}
     {%- if spider.attrs %}
     {%- for attr in spider.attrs -%}
@@ -48,9 +50,18 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
             {%- if rule.process_links -%}process_links='{{rule.process_links}}'{% endif -%}
             {%- if rule.process_request -%}process_request='{{rule.process_request}}'{% endif -%}
         ),
-        {% endfor %}
+        {% endfor -%}
     )
     {% endif %}
+    {%- if spider.start_urls -%}
+    {%-if spider.start_urls.mode == "code" %}
+    def make_start_urls(self):
+        {%- set lines = spider.start_urls.code.split('\n') -%}
+        {% for line in lines %}
+        {{ line -}}
+        {% endfor %}
+    {% endif %}
+    {%- endif -%}
     {%- if spider.extractors %}
     {% for extractor in spider.extractors %}
     def {{ extractor.callback }}(self, response):

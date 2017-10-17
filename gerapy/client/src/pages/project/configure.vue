@@ -88,10 +88,10 @@
                         v-model="attr['value']" class="inline inline-third" placeholder="值"
                         size="small"></el-input>
                       <el-input
-                        v-model="attr['inProcessor']" class="inline inline-fourth" placeholder="输入处理"
+                        v-model="attr['in_processor']" class="inline inline-fourth" placeholder="输入处理"
                         size="small"></el-input>
                       <el-input
-                        v-model="attr['outProcessor']" class="inline inline-fifth" placeholder="输出处理"
+                        v-model="attr['out_processor']" class="inline inline-fifth" placeholder="输出处理"
                         size="small"></el-input>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(item.attrs, attrKey)">
@@ -110,7 +110,7 @@
             <h4 class="inline m-b-sm">爬虫列表</h4>
 
             <el-button type="primary" class="inline" size="mini"
-                       @click="onAddInput(configuration.spiders, {name:null, customSettings:null, code:null, extractors: [], rules: [], startUrls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowedDomains: []})">
+                       @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
               <i class="fa fa-plus"></i>
               添加爬虫
             </el-button>
@@ -143,13 +143,18 @@
 
                 <el-form-item>
                   <h4 class="inline m-r-sm m-b-md">爬虫配置</h4>
-                  <el-input type="textarea" v-model="spider.customSettings" class="inline" size="small"
+                  <el-input type="textarea" v-model="spider.custom_settings" class="inline" size="small"
                             placeholder="爬虫配置"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                  <h4 class="inline m-r-sm m-b-md">自定代码</h4>
-                  <el-input type="textarea" v-model="spider.code" class="inline" size="small"
+                  <h4 class="inline m-r-sm m-b-md">类内代码</h4>
+                  <el-input type="textarea" v-model="spider.code.in_class" class="inline" size="small"
+                            placeholder="自定代码"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <h4 class="inline m-r-sm m-b-md">类外代码</h4>
+                  <el-input type="textarea" v-model="spider.code.out_class" class="inline" size="small"
                             placeholder="自定代码"></el-input>
                 </el-form-item>
 
@@ -179,30 +184,30 @@
                 <!-- 起始链接开始 -->
                 <el-form-item>
                   <h4 class="inline">起始链接</h4>
-                  <el-button type="primary" v-if="spider.startUrls.mode == 'list'" class="inline" size="mini"
-                             @click="onAddInput(spider.startUrls.list)">
+                  <el-button type="primary" v-if="spider.start_urls.mode == 'list'" class="inline" size="mini"
+                             @click="onAddInput(spider.start_urls.list)">
                     <i class="fa fa-plus"></i>
                     添加链接
                   </el-button>
                   <div>
-                    <el-radio class="radio" v-model="spider.startUrls.mode" label="list">列表</el-radio>
-                    <!--<el-radio class="radio" v-model="spider.startUrls.mode" label="file">文件</el-radio>-->
-                    <el-radio class="radio" v-model="spider.startUrls.mode" label="code">代码</el-radio>
+                    <el-radio class="radio" v-model="spider.start_urls.mode" label="list">列表</el-radio>
+                    <!--<el-radio class="radio" v-model="spider.start_urls.mode" label="file">文件</el-radio>-->
+                    <el-radio class="radio" v-model="spider.start_urls.mode" label="code">代码</el-radio>
                   </div>
-                  <div v-if="spider.startUrls.mode == 'list'">
-                    <div v-for="(value, key, index) in spider.startUrls.list" :key="key">
+                  <div v-if="spider.start_urls.mode == 'list'">
+                    <div v-for="(value, key, index) in spider.start_urls.list" :key="key">
                       <el-input
-                        v-model="spider.startUrls.list[key]" class="inline" placeholder="请输入起始链接"
+                        v-model="spider.start_urls.list[key]" class="inline" placeholder="请输入起始链接"
                         size="small"></el-input>
-                      <el-button type="danger" size="mini" @click="onDeleteInput(spider.startUrls.list, key)">
+                      <el-button type="danger" size="mini" @click="onDeleteInput(spider.start_urls.list, key)">
                         <i class="fa fa-remove"></i>
                         删除
                       </el-button>
                     </div>
                   </div>
-                  <div v-if="spider.startUrls.mode == 'code'">
+                  <div v-if="spider.start_urls.mode == 'code'">
                     <el-input type="textarea"
-                              v-model="spider.startUrls.code" class="inline" placeholder="请输入起始链接生成代码"
+                              v-model="spider.start_urls.code" class="inline" placeholder="请输入起始链接生成代码"
                               size="small"></el-input>
                   </div>
                 </el-form-item>
@@ -211,15 +216,15 @@
                 <!-- 合法域名 -->
                 <el-form-item>
                   <h4 class="inline">合法域名</h4>
-                  <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowedDomains)">
+                  <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowed_domains)">
                     <i class="fa fa-plus"></i>
                     添加域名
                   </el-button>
-                  <div v-for="(value, key, index) in spider.allowedDomains" :key="key">
+                  <div v-for="(value, key, index) in spider.allowed_domains" :key="key">
                     <el-input
-                      v-model="spider.allowedDomains[key]" class="inline" placeholder="请输入合法域名"
+                      v-model="spider.allowed_domains[key]" class="inline" placeholder="请输入合法域名"
                       size="small"></el-input>
-                    <el-button type="danger" size="mini" @click="onDeleteInput(spider.allowedDomains, key)">
+                    <el-button type="danger" size="mini" @click="onDeleteInput(spider.allowed_domains, key)">
                       <i class="fa fa-remove"></i>
                       删除
                     </el-button>

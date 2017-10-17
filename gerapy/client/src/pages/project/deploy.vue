@@ -159,11 +159,13 @@
         clientsStatus: {},
         statusClass: {
           '1': 'success',
-          '0': 'danger'
+          '0': 'warning',
+          '-1': 'danger',
         },
         statusText: {
           '1': '运行正常',
-          '0': '连接失败'
+          '0': '连接中',
+          '-1': '连接失败',
         },
         rules: {
           description: [
@@ -200,11 +202,13 @@
         })
       },
       getClientStatus(id) {
+        this.$set(this.clientsStatus, id, 0)
         this.$fetch.apiClient.status({
           id: id
-        }).then(({data: data}) => {
-          console.log(data)
+        }).then(({data: {result: data}}) => {
           this.$set(this.clientsStatus, id, data)
+        }).catch(() => {
+          this.$set(this.clientsStatus, id, -1)
         })
       },
       getClientData(){
