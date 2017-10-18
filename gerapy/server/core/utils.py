@@ -139,6 +139,8 @@ def render_template(tpl_file, dst_file, *args, **kwargs):
     template = Template(open(tpl_file).read())
     os.remove(tpl_file)
     result = template.render(vars)
+    print(result)
+    
     open(dst_file, 'w').write(result)
 
 

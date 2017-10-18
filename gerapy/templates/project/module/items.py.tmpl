@@ -9,7 +9,7 @@ class {{ item.name }}(Item):
     {% if definition.value -%}
     {{ attr }} = '{{ definition.value }}'
     {% else -%}
-    {{ attr }} = Field({%- if definition.inProcessor -%}input_processor={{ definition.inProcessor }}, {% endif -%}{%- if definition.outProcessor -%}output_processor={{ definition.outProcessor }}{%- endif -%})
+    {{ attr }} = Field({%- if definition.in_processor -%}input_processor={{ definition.in_processor }}, {% endif -%}{%- if definition.out_processor -%}output_processor={{ definition.out_processor }}{%- endif -%})
     {% endif -%}
     {%- endfor -%}
 {% endfor %}

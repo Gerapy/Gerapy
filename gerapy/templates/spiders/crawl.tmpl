@@ -13,7 +13,17 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {%- for allowed_domain in spider.allowed_domains -%} '{{ allowed_domain }}',{%- endfor -%} 
     ]
     {% endif -%}
-    {%- if spider.start_urls -%}
+    custom_settings = {
+        {% if spider.storage.mysql.host -%}"MYSQL_HOST": "{{ spider.storage.mysql.host }}",{%- endif %}
+        {% if spider.storage.mysql.port -%}"MYSQL_PORT": {{ spider.storage.mysql.port }},{%- endif %}
+        {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif %}
+        {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif %}
+        {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif %}
+        "ITEM_PIPELINES": {
+            'gerapy.pipelines.MySQLPipeline': 300,
+        }
+    }
+    {% if spider.start_urls -%}
     {%- if spider.start_urls.mode == "list" -%}
     start_urls = [
         {%- for start_url in spider.start_urls.list -%} '{{ start_url }}',{%- endfor -%}
@@ -70,6 +80,12 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {%- for item in items -%}
         {%- if item.method == 'xpath' or item.method == 'css' -%}
         loader.add_{{ item.method }}('{{ attr }}', '{{ item.arg }}'{% if item.processor %}, {{ item.processor }}{% endif %}{% if item.re %}, re='{{ item.re }}'{% endif%})
+        {% endif -%}
+        {%- if item.method == 'attr' -%}
+        loader.add_value('{{ attr }}', response.{{ item.arg }}, {% if item.processor %}, {{ item.processor }}{% endif %}{% if item.re %}, re='{{ item.re }}'{% endif%})
+        {% endif -%}
+        {%- if item.method == 'value' -%}
+        loader.add_value('{{ attr }}', "{{ item.arg }}", {% if item.processor %}, {{ item.processor }}{% endif %}{% if item.re %}, re='{{ item.re }}'{% endif%})
         {% endif -%}
         {%- endfor -%}
         {%- endfor -%}

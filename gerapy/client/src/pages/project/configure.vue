@@ -110,7 +110,7 @@
             <h4 class="inline m-b-sm">爬虫列表</h4>
 
             <el-button type="primary" class="inline" size="mini"
-                       @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
+                       @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {kind: 'mysql', mysql: {}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
               <i class="fa fa-plus"></i>
               添加爬虫
             </el-button>
@@ -321,12 +321,12 @@
                             <!-- 字符串类型 -->
                             <!-- 布尔类型，如 follow -->
                             <div v-if="typeof value == 'boolean'">
-                        <span class="inline">
-                          <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="true">True
-                          </el-radio>
-                          <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="false">False
-                          </el-radio>
-                        </span>
+                              <span class="inline">
+                                <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="true">True
+                                </el-radio>
+                                <el-radio class="radio" v-model="spider.rules[ruleKey][key]" :label="false">False
+                                </el-radio>
+                              </span>
                               <el-button type="danger" size="mini"
                                          @click="onDeleteInput(spider.rules[ruleKey], key)">
                                 <i class="fa fa-remove"></i>
@@ -459,6 +459,33 @@
                   </el-collapse>
                 </el-form-item>
                 <!-- 提取规则结束 -->
+
+                <!-- 存储开始 -->
+                <el-form-item>
+                  <h4 class="inline">存储目标</h4>
+                  <div>
+                    <el-radio class="radio" v-model="spider.storage.kind" label="mysql">MySQL</el-radio>
+                    <!--<el-radio class="radio" v-model="spider.start_urls.mode" label="file">文件</el-radio>-->
+                  </div>
+                  <div v-if="spider.storage.kind == 'mysql'">
+                    <el-input
+                      v-model="spider.storage.mysql.host" class="inline" placeholder="请输入地址"
+                      size="small"></el-input>
+                    <el-input
+                      v-model="spider.storage.mysql.port" class="inline" placeholder="请输入端口"
+                      size="small"></el-input>
+                    <el-input
+                      v-model="spider.storage.mysql.user" class="inline" placeholder="请输入用户名"
+                      size="small"></el-input>
+                    <el-input
+                      v-model="spider.storage.mysql.password" class="inline" placeholder="请输入密码"
+                      size="small"></el-input>
+                    <el-input
+                      v-model="spider.storage.mysql.database" class="inline" placeholder="请输入数据库名"
+                      size="small"></el-input>
+                  </div>
+                </el-form-item>
+                <!-- 存储结束 -->
 
               </el-collapse-item>
             </el-collapse>
