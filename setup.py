@@ -49,9 +49,9 @@ setup(
         ])
     },
     publish=[
-        'python setup.py bdist_egg',
-        'python setup.py sdist',
-        'python setup.py bdist_egg upload'
-        'python setup.py sdist upload'
+        'sudo python3 setup.py bdist_egg',
+        'sudo python3 setup.py sdist',
+        'sudo python3 setup.py bdist_egg upload'
+        'sudo python3 setup.py sdist upload'
     ]
 )
