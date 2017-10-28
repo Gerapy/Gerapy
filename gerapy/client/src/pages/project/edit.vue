@@ -11,18 +11,18 @@
     </el-col>
     <el-col :span="19">
       <div class="panel m-l-md">
-        <panel-title title="代码">
+        <panel-title>
           <el-button @click="renameFile" size="mini" type="primary" v-if="activeFile">
             <i class="fa fa-edit"></i>
-            重命名
+            {{ $lang[$store.state.lang].buttons.rename }}
           </el-button>
           <el-button @click="createFile" size="mini" type="info" v-if="activeFile">
             <i class="fa fa-plus"></i>
-            新建
+            {{ $lang[$store.state.lang].buttons.create }}
           </el-button>
           <el-button @click="deleteFile" size="mini" type="danger" v-if="activeFile">
             <i class="fa fa-close"></i>
-            删除
+            {{ $lang[$store.state.lang].buttons.delete }}
           </el-button>
         </panel-title>
         <div class="panel-body">

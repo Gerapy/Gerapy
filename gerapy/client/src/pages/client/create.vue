@@ -1,29 +1,35 @@
 <template>
   <div class="panel">
-    <panel-title :title="$route.meta.title"></panel-title>
+    <panel-title :title="$lang[$store.state.lang].titles.createClient"></panel-title>
     <div class="panel-body"
          v-loading="loadData"
-         element-loading-text="拼命加载中">
+         :element-loading-text="$lang[$store.state.lang].messages.loading">
       <el-row>
         <el-col :span="8">
           <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-            <el-form-item label="名称:" prop="name">
-              <el-input v-model="form.name" placeholder="请输入名称" size="small"></el-input>
+            <el-form-item :label="$lang[$store.state.lang].columns.name" prop="name">
+              <el-input v-model="form.name"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.name"
+                        size="small"></el-input>
             </el-form-item>
-            <el-form-item label="IP:" prop="ip">
-              <el-input v-model="form.ip" placeholder="请输入IP" size="small"></el-input>
+            <el-form-item :label="$lang[$store.state.lang].columns.ip" prop="ip">
+              <el-input v-model="form.ip"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.ip"
+                        size="small"></el-input>
             </el-form-item>
-            <el-form-item label="端口:" prop="port">
-              <el-input v-model="form.port" placeholder="请输入端口" size="small"></el-input>
+            <el-form-item :label="$lang[$store.state.lang].columns.port" prop="port">
+              <el-input v-model="form.port"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.port"
+                        size="small"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
                 <i class="fa fa-check"></i>
-                创建
+                {{ $lang[$store.state.lang].buttons.create }}
               </el-button>
               <el-button @click="$router.back()" size="small">
                 <i class="fa fa-reply"></i>
-                返回
+                {{ $lang[$store.state.lang].buttons.return }}
               </el-button>
             </el-form-item>
           </el-form>
@@ -51,15 +57,36 @@
         onSubmitLoading: false,
         rules: {
           name: [
-            {required: true, message: '名称不能为空', trigger: 'blur'},
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.name + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            },
           ],
           ip: [
-            {required: true, message: 'IP不能为空', trigger: 'blur'},
-            {pattern: ip, message: 'IP不正确', trigger: 'blur'},
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.ip + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            },
+            {
+              pattern: ip,
+              message: this.$lang[this.$store.state.lang].columns.ip + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
+              trigger: 'blur'
+            }
           ],
           port: [
-            {required: true, message: '端口不能为空', trigger: 'blur'},
-            {pattern: port, message: '端口不正确', trigger: 'blur'},
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.isNull
+              , trigger: 'blur'
+            },
+            {
+              pattern: port,
+              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
+              trigger: 'blur'
+            }
+            ,
           ]
         }
       }

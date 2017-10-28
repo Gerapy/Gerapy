@@ -3,40 +3,40 @@
     <el-row :gutter="20">
       <el-col :span="8">
         <div class="panel">
-          <panel-title title="主机">
+          <panel-title :title="$lang[$store.state.lang].objects.client">
             <el-button size="mini" type="primary">
               {{ $lang[$store.state.lang].buttons.normal }}
             </el-button>
           </panel-title>
           <div class="panel-body" v-loading="loading">
             <h1 class="number">{{ status.success}}</h1>
-            <small>主机正常运行</small>
+            <small> {{ $lang[$store.state.lang].descriptions.normalClients }}</small>
           </div>
         </div>
       </el-col>
       <el-col :span="8">
         <div class="panel">
-          <panel-title title="主机">
+          <panel-title :title="$lang[$store.state.lang].objects.client">
             <el-button size="mini" type="danger">
-              错误
+              {{ $lang[$store.state.lang].buttons.error }}
             </el-button>
           </panel-title>
           <div class="panel-body" v-loading="loading">
             <h1 class="number">{{ status.error}}</h1>
-            <small>主机连接失败</small>
+            <small> {{ $lang[$store.state.lang].descriptions.errorClients }}</small>
           </div>
         </div>
       </el-col>
       <el-col :span="8">
         <div class="panel" id="tree">
-          <panel-title title="项目">
+          <panel-title :title="$lang[$store.state.lang].objects.project">
             <el-button size="mini" type="success">
-              正常
+              {{ $lang[$store.state.lang].buttons.normal }}
             </el-button>
           </panel-title>
           <div class="panel-body" v-loading="loading">
             <h1 class="number">{{ status.project }}</h1>
-            <small>个项目</small>
+            <small>{{ $lang[$store.state.lang].descriptions.countProjects }}</small>
           </div>
         </div>
       </el-col>

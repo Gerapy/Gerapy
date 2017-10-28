@@ -47,11 +47,11 @@
     data(){
       return {
         nav_menu_data: [{
-          title: "主机管理",
+          title: this.$lang[this.$store.state.lang].menus.clients,
           path: "/client",
           icon: "fa-television",
         }, {
-          title: "项目管理",
+          title: this.$lang[this.$store.state.lang].menus.projects,
           path: "/project",
           icon: "fa-folder-o",
         }]

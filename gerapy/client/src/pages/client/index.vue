@@ -1,14 +1,14 @@
 <template>
   <div class="panel">
-    <panel-title :title="$route.meta.title">
+    <panel-title :title="$lang[$store.state.lang].objects.clients">
       <!--<el-button @click.stop="onRefresh" size="mini">-->
-        <!--<i class="fa fa-refresh"></i>-->
-        <!--刷新-->
+      <!--<i class="fa fa-refresh"></i>-->
+      <!--刷新-->
       <!--</el-button>-->
       <router-link :to="{name: 'clientCreate'}" tag="span">
         <el-button type="success" size="mini">
           <i class="fa fa-plus"></i>
-          添加
+          {{ $lang[$store.state.lang].buttons.create }}
         </el-button>
       </router-link>
     </panel-title>
@@ -16,7 +16,7 @@
       <el-table
         :data="clients"
         v-loading="loadData"
-        element-loading-text="拼命加载中"
+        :element-loading-text="$lang[$store.state.lang].messages.loading"
         @selection-change="onBatchSelect">
         <el-table-column
           align="center"
@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="状态"
+          :label="$lang[$store.state.lang].columns.status"
           width="100">
           <template scope="props">
             <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
@@ -36,45 +36,45 @@
         <el-table-column
           align="center"
           prop="pk"
-          label="ID"
+          :label="$lang[$store.state.lang].columns.id"
           width="60">
         </el-table-column>
         <el-table-column
           align="center"
           prop="fields.name"
-          label="名称"
+          :label="$lang[$store.state.lang].columns.name"
           width="200">
         </el-table-column>
         <el-table-column
           align="center"
           prop="fields.ip"
-          label="IP"
+          :label="$lang[$store.state.lang].columns.ip"
           width="200">
         </el-table-column>
         <el-table-column
           align="center"
           prop="fields.port"
-          label="端口">
+          :label="$lang[$store.state.lang].columns.port">
         </el-table-column>
         <el-table-column
           align="center"
-          label="操作">
+          :label="$lang[$store.state.lang].columns.operations">
           <template scope="props">
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
-                编辑
+                {{ $lang[$store.state.lang].buttons.edit }}
               </el-button>
             </router-link>
             <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk}}" tag="span">
               <el-button type="success" size="mini">
                 <i class="fa fa-sitemap"></i>
-                调度
+                {{ $lang[$store.state.lang].buttons.schedule }}
               </el-button>
             </router-link>
             <el-button type="danger" size="mini" @click="onSingleDelete(props.row.pk)">
               <i class="fa fa-remove"></i>
-              删除
+              {{ $lang[$store.state.lang].buttons.delete }}
             </el-button>
           </template>
         </el-table-column>
@@ -87,7 +87,7 @@
           :disabled="batchSelect.length === 0"
           @click="onBatchDelete"
           slot="handler">
-          <span>批量删除</span>
+          <span>{{ $lang[$store.state.lang].buttons.batchDelete }}</span>
         </el-button>
       </bottom-tool-bar>
     </div>
@@ -110,9 +110,9 @@
           '-1': 'danger',
         },
         statusText: {
-          '1': '运行正常',
-          '0': '连接中',
-          '-1': '连接失败',
+          '1': this.$lang[this.$store.state.lang].buttons.normal,
+          '0': this.$lang[this.$store.state.lang].buttons.connecting,
+          '-1': this.$lang[this.$store.state.lang].buttons.error,
         }
       }
     },

@@ -3,13 +3,13 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="panel">
-          <panel-title title="项目部署">
+          <panel-title :title="$lang[$store.state.lang].titles.deployProject">
           </panel-title>
           <div class="panel-body">
             <el-table
               :data="clients"
               v-loading="loadData"
-              element-loading-text="请稍后"
+              :element-loading-text="$lang[$store.state.lang].messages.loading"
               @selection-change="onBatchSelect"
               style="width: 100%;">
               <el-table-column
@@ -19,7 +19,7 @@
               </el-table-column>
               <el-table-column
                 align="center"
-                label="状态"
+                :label="$lang[$store.state.lang].columns.status"
                 width="100">
                 <template scope="props">
                   <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
@@ -30,49 +30,49 @@
               <el-table-column
                 align="center"
                 prop="pk"
-                label="ID"
+                :label="$lang[$store.state.lang].columns.id"
                 width="60">
               </el-table-column>
               <el-table-column
                 align="center"
                 prop="fields.name"
-                label="主机名称"
+                :label="$lang[$store.state.lang].columns.name"
                 width="100">
               </el-table-column>
               <el-table-column
                 align="center"
                 prop="fields.ip"
-                label="主机IP"
+                :label="$lang[$store.state.lang].columns.ip"
                 width="150">
               </el-table-column>
               <el-table-column
                 align="center"
                 prop="fields.port"
-                label="主机端口"
+                :label="$lang[$store.state.lang].columns.port"
                 width="100">
               </el-table-column>
               <el-table-column
                 align="center"
-                label="部署版本">
+                :label="$lang[$store.state.lang].columns.description">
                 <template scope="props">
                   <span>{{ projectDescriptions[props.row.pk]}}</span>
                 </template>
               </el-table-column>
               <el-table-column
                 align="center"
-                label="部署时间">
+                :label="$lang[$store.state.lang].columns.deployedAt">
                 <template scope="props">
                   <span>{{ projectDateTimes[props.row.pk]}}</span>
                 </template>
               </el-table-column>
               <el-table-column
                 align="center"
-                label="操作">
+                :label="$lang[$store.state.lang].columns.operations">
                 <template scope="props">
                   <el-button type="success" size="mini" @click="onDeploy(props.row.pk)"
                              v-if="clientsStatus[props.row.pk]">
                     <i class="fa fa-cloud-upload"></i>
-                    部署
+                    {{ $lang[$store.state.lang].buttons.deploy }}
                   </el-button>
                 </template>
               </el-table-column>
@@ -86,7 +86,7 @@
                 slot="handler">
               <span>
                 <i class="fa fa-cloud-upload"></i>
-                批量部署
+                {{ $lang[$store.state.lang].buttons.batchDeploy }}
               </span>
               </el-button>
             </bottom-tool-bar>
@@ -97,17 +97,17 @@
     <el-row :gutter="20">
       <el-col :span="8">
         <div class="panel">
-          <panel-title title="项目信息">
+          <panel-title :title="$lang[$store.state.lang].objects.project">
           </panel-title>
           <div class="panel-body">
             <el-form :model="buildInfo" label-width="80px">
-              <el-form-item label="项目名称">
+              <el-form-item :label="$lang[$store.state.lang].columns.name">
                 {{ buildInfo.name }}
               </el-form-item>
-              <el-form-item label="包名">
+              <el-form-item :label="$lang[$store.state.lang].columns.packageName">
                 {{ buildInfo.egg || notBuildText }}
               </el-form-item>
-              <el-form-item label="打包时间">
+              <el-form-item :label="$lang[$store.state.lang].columns.builtAt">
                 {{ buildInfo.built_at || notBuildText }}
               </el-form-item>
             </el-form>

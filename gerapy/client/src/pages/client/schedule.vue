@@ -14,20 +14,20 @@
           style="width: 100%;">
           <el-table-column
             prop="id"
-            label="ID"
+            :label="$lang[$store.state.lang].columns.id"
             width="200">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="爬虫名称"
+            :label="$lang[$store.state.lang].columns.name"
             width="400">
           </el-table-column>
           <el-table-column
-            label="操作">
+            :label="$lang[$store.state.lang].columns.operations">
             <template scope="props">
               <el-button type="success" size="mini" @click="startSpider(project, props.row.name)">
                 <i class="fa fa-caret-right"></i>
-                新任务
+                {{ $lang[$store.state.lang].buttons.run }}
               </el-button>
             </template>
           </el-table-column>
@@ -37,21 +37,22 @@
             <template slot="title">
               <span v-if="job.spider">
                 <i class="fa fa-bug"></i>
-                爬虫名称：
+                {{ $lang[$store.state.lang].columns.spiderName }}:
                 {{ job.spider }}
               </span>
               <span v-if="job.spider" class="m-l-md">
                 <i class="fa fa-key"></i>
-                任务代号：{{ job.id }}
+                {{ $lang[$store.state.lang].columns.jobID }}:
+                {{ job.id }}
               </span>
               <span v-if="job.start_time" class="m-l-md">
                 <i class="el-icon-time"></i>
-                开始时间：
+                {{ $lang[$store.state.lang].columns.startTime }}:
                 {{ job.start_time.substring(0, 16) }}
               </span>
               <span v-if="job.end_time" class="m-l-md">
                 <i class="el-icon-time"></i>
-                结束时间：
+                {{ $lang[$store.state.lang].columns.endTime }}:
                 {{ job.end_time.substring(0, 16) }}
               </span>
               <span class="wrapper">
@@ -62,10 +63,10 @@
                            v-if="['pending', 'running'].includes(job.status)" @click.stop="cancelJob(job.id)">
                   <i class="fa fa-remove"></i>
                   <span v-if="['pending'].includes(job.status)">
-                    取消
+                    {{ $lang[$store.state.lang].buttons.cancel }}
                   </span>
                   <span v-if="['running'].includes(job.status)">
-                    停止
+                    {{ $lang[$store.state.lang].buttons.stop }}
                   </span>
                 </el-button>
               </span>
@@ -104,9 +105,9 @@
         },
         // 任务状态文本
         jobStatusText: {
-          finished: '已完成',
-          running: '运行中',
-          pending: '等待中'
+          finished: this.$lang[this.$store.state.lang].buttons.finished,
+          running: this.$lang[this.$store.state.lang].buttons.running,
+          pending: this.$lang[this.$store.state.lang].buttons.pending
         },
         // 任务信息 {'jobid': {'spider': 'spider1', 'project': 'project1'}}
         jobsInfo: {},
@@ -115,7 +116,7 @@
         // 加载logs标志
         logLoadData: true,
         // 加载log提示语
-        logLoadDataText: '日志加载中',
+        logLoadDataText: this.$lang[this.$store.state.lang].messages.loading,
         // 定时刷新log指针
         logLoadDataInterval: null,
         // 标记正在加载哪个log

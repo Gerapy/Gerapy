@@ -1,17 +1,75 @@
 export default {
+  objects: {
+    client: 'client',
+    clients: 'clients',
+    project: 'project',
+    projects: 'projects',
+    spider: 'spider',
+    spiders: 'spiders',
+    job: 'job',
+    jobs: 'jobs',
+    log: 'log',
+    logs: 'logs',
+  },
   buttons: {
     save: 'save',
     create: 'create',
     delete: 'delete',
-    normal: 'normal'
+    normal: 'normal',
+    edit: 'edit',
+    error: 'error',
+    schedule: 'schedule',
+    batchDelete: 'batch delete',
+    connecting: 'connecting',
+    return: 'return',
+    run: 'run',
+    finished: 'finished',
+    pending: 'pending',
+    running: 'running',
+    stop: 'stop',
+    cancel: 'cancel',
+    configure: 'configure',
+    deploy: 'deploy',
+    rename: 'rename',
+    batchDeploy: 'batch deploy'
+  },
+  titles: {
+    createClient: 'Create Client',
+    deployProject: 'Deploy Project'
   },
   menus: {
     clients: 'Clients',
     projects: 'Projects',
   },
-  messages: {},
+  messages: {
+    loading: 'Loading...',
+    enter: 'Please Enter',
+    isNull: 'Should Not Be Null',
+    notValid: 'Is Not Valid'
+  },
+  descriptions: {
+    normalClients: 'Normal Clients',
+    errorClients: 'Error Clients',
+    countProjects: 'Projects',
+  },
   columns: {
     id: 'ID',
+    status: 'Status',
+    name: 'Name',
+    ip: 'IP',
+    port: 'Port',
+    operations: 'Operations',
+    jobID: 'Job ID',
+    spiderName: 'Spider Name',
+    startTime: 'Start Time',
+    endTime: 'End Time',
+    description: 'Description',
+    built: 'Built',
+    deployed: 'Deployed',
+    configurable: 'Configurable',
+    builtAt: 'Built At',
+    deployedAt: 'Deployed At',
+    packageName: 'Package Name'
   },
 
 }

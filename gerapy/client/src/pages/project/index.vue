@@ -2,35 +2,36 @@
   <div class="panel">
     <el-dialog :visible.sync="createProjectDialog" size="tiny">
       <el-form>
-        <el-form-item label="项目名称">
+        <el-form-item :label="$lang[$store.state.lang].columns.name">
           <el-input
-            v-model="projectName" class="inline" placeholder="项目名称"
+            v-model="projectName" class="inline" :placeholder="$lang[$store.state.lang].columns.status"
             size="small">
           </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="createProjectDialog=false" size="small">取消</el-button>
+        <el-button @click="createProjectDialog=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
+        </el-button>
         <el-button @click="onCreateProject()"
-                   type="primary" size="small">添加
+                   type="primary" size="small">{{ $lang[$store.state.lang].columns.create }}
         </el-button>
       </div>
     </el-dialog>
-    <panel-title title="项目管理">
+    <panel-title :title="$lang[$store.state.lang].objects.project">
       <!--<el-button @click.stop="onRefresh" size="mini">-->
       <!--<i class="fa fa-refresh"></i>-->
       <!--刷新-->
       <!--</el-button>-->
       <el-button type="primary" size="mini" @click="createProjectDialog=true">
         <i class="fa fa-plus"></i>
-        创建
+        {{ $lang[$store.state.lang].buttons.create }}
       </el-button>
     </panel-title>
     <div class="panel-body">
       <el-table
         :data="projects"
         v-loading="loadData"
-        element-loading-text="拼命加载中"
+        :element-loading-text="$lang[$store.state.lang].messages.loading"
         @selection-change="onBatchSelect"
         style="width: 100%;">
         <el-table-column
@@ -41,13 +42,13 @@
         <el-table-column
           align="center"
           prop="name"
-          label="项目名称"
+          :label="$lang[$store.state.lang].columns.name"
           width="150">
         </el-table-column>
         <el-table-column
           align="center"
-          label="版本描述"
-          width="100">
+          :label="$lang[$store.state.lang].columns.description"
+          width="120">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['description'] }}
@@ -56,37 +57,27 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="已打包"
+          :label="$lang[$store.state.lang].columns.built"
           width="80">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
-              {{ buildInfos[props.row.name]['egg'] ? '是' : '否' }}
+              {{ buildInfos[props.row.name]['egg'] ? '✓' : '✗' }}
             </span>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="可配置"
-          width="80">
+          :label="$lang[$store.state.lang].columns.configurable"
+          width="150">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
-              {{ buildInfos[props.row.name]['configurable'] ? '是' : '否' }}
+              {{ buildInfos[props.row.name]['configurable'] ? '✓' : '✗' }}
             </span>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="打包名称"
-          width="200">
-          <template scope="props">
-            <span v-if="buildInfos[props.row.name]">
-              {{ buildInfos[props.row.name]['egg'] }}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="打包时间"
+          :label="$lang[$store.state.lang].columns.builtAt"
           width="200">
           <template scope="props">
             <span v-if="buildInfos[props.row.name]">
@@ -96,25 +87,25 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="操作">
+          :label="$lang[$store.state.lang].columns.operations">
           <template scope="props">
             <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span"
                          v-if="buildInfos[props.row.name]['configurable']">
               <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
-                配置
+                {{ $lang[$store.state.lang].buttons.configure }}
               </el-button>
             </router-link>
             <router-link :to="{name: 'projectEdit', params: {name: props.row.name}}" tag="span" v-else>
               <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
-                编辑
+                {{ $lang[$store.state.lang].buttons.edit }}
               </el-button>
             </router-link>
             <router-link :to="{name: 'projectDeploy', params: {name: props.row.name}}" tag="span">
               <el-button type="success" size="mini">
                 <i class="fa fa-cloud-upload"></i>
-                部署
+                {{ $lang[$store.state.lang].buttons.deploy }}
               </el-button>
             </router-link>
             <!--<router-link :to="{name: 'projectMonitor', params: {name: props.row.name}}" tag="span">-->
@@ -125,7 +116,7 @@
             <!--</router-link>-->
             <el-button type="danger" size="mini" @click="onSingleDelete(props.row.name)">
               <i class="fa fa-remove"></i>
-              删除
+              {{ $lang[$store.state.lang].buttons.delete }}
             </el-button>
           </template>
         </el-table-column>
@@ -138,7 +129,7 @@
           :disabled="batchSelect.length === 0"
           @click="onBatchDelete"
           slot="handler">
-          <span>批量删除</span>
+          <span>{{ $lang[$store.state.lang].buttons.batchDelete }}</span>
         </el-button>
       </bottom-tool-bar>
     </div>
