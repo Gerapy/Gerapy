@@ -10,5 +10,8 @@ export default {
   },
   clearIntervals: ({commit}) => {
     commit('clearIntervals')
-  }
+  },
+  setLang: ({commit}, lang) => {
+    commit('setLang', lang)
+  },
 }

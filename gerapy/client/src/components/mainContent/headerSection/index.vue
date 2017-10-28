@@ -6,18 +6,15 @@
         placeholder="请输入内容">
       </el-input>
     </div>
+    <lang></lang>
   </div>
 </template>
 <script type="text/javascript">
-  import search from 'components/search'
+  import lang from '../lang'
 
   export default{
     components: {
-    },
-    methods: {
-      submit_search(value) {
-        this.$message.success(value)
-      }
+      lang,
     }
   }
 </script>

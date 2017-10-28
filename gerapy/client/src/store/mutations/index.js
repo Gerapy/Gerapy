@@ -16,5 +16,8 @@ export default {
       clearInterval(interval)
     })
     state.intervals = []
+  },
+  setLang: (state, lang) => {
+    state.lang = lang
   }
 }

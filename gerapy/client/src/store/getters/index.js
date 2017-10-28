@@ -6,4 +6,7 @@ export default {
   getIntervals: state => {
     return state.intervals
   },
+  getLang: state => {
+    return state.lang
+  }
 }

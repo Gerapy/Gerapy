@@ -5,7 +5,7 @@
         <div class="panel">
           <panel-title title="主机">
             <el-button size="mini" type="primary">
-              正常
+              {{ $lang[$store.state.lang].buttons.normal }}
             </el-button>
           </panel-title>
           <div class="panel-body" v-loading="loading">

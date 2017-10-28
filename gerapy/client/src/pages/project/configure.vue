@@ -16,6 +16,7 @@
               <h4 class="inline m-r-sm">项目名称</h4>
               {{ projectName }}
             </el-form-item>
+
             <el-form-item>
               <h4 class="inline m-r-sm">代码生成</h4>
               {{ projectGeneratedAt ? projectGeneratedAt : '未生成' }}
@@ -25,6 +26,7 @@
                 生成代码
               </el-button>
             </el-form-item>
+
             <!-- 提取实体 -->
             <el-form-item>
               <h4 class="inline">提取实体</h4>
@@ -110,7 +112,7 @@
             <h4 class="inline m-b-sm">爬虫列表</h4>
 
             <el-button type="primary" class="inline" size="mini"
-                       @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {kind: 'mysql', mysql: {}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
+                       @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {mysql: {enable: false}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
               <i class="fa fa-plus"></i>
               添加爬虫
             </el-button>
@@ -464,16 +466,43 @@
                 <el-form-item>
                   <h4 class="inline">存储目标</h4>
                   <div>
-                    <el-radio class="radio" v-model="spider.storage.kind" label="mysql">MySQL</el-radio>
-                    <!--<el-radio class="radio" v-model="spider.start_urls.mode" label="file">文件</el-radio>-->
+                    <h5 class="inline m-v-sm">MySQL</h5>
+                    <el-switch
+                      v-model="spider.storage.mysql.enable">
+                    </el-switch>
                   </div>
-                  <div v-if="spider.storage.kind == 'mysql'">
-                    <el-input
-                      v-model="spider.storage.mysql.host" class="inline" placeholder="请输入地址"
-                      size="small"></el-input>
-                    <el-input
-                      v-model="spider.storage.mysql.port" class="inline" placeholder="请输入端口"
-                      size="small"></el-input>
+                  <div v-if="spider.storage.mysql.enable">
+
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">地址</h4>
+                      <el-input
+                        v-model="spider.storage.mysql.host" class="inline" placeholder="请输入地址"
+                        size="small"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">端口</h4>
+                      <el-input
+                        v-model="spider.storage.mysql.port" class="inline" placeholder="请输入端口"
+                        size="small"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">爬虫名称</h4>
+                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">爬虫名称</h4>
+                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">爬虫名称</h4>
+                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                    </el-form-item>
+
+
                     <el-input
                       v-model="spider.storage.mysql.user" class="inline" placeholder="请输入用户名"
                       size="small"></el-input>
@@ -486,7 +515,6 @@
                   </div>
                 </el-form-item>
                 <!-- 存储结束 -->
-
               </el-collapse-item>
             </el-collapse>
           </el-form>
