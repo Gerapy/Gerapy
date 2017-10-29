@@ -3,7 +3,7 @@
     <div class="search">
       <el-input
         size="small"
-        placeholder="请输入内容">
+        placeholder="">
       </el-input>
     </div>
     <lang></lang>
