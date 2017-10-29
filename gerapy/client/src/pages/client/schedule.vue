@@ -196,10 +196,10 @@
           project: project,
           spider: spider,
         }).then(() => {
-          this.$message.success('启动任务成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successRun)
           this.getJobs()
         }).catch(() => {
-          this.$message.error('启动任务失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorRun)
         })
       },
       // 获取日志
@@ -241,11 +241,11 @@
           project: this.jobsInfo[job]['project'],
           job: job,
         }).then(() => {
-          this.$message.success('正在取消，请稍后')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.canceling)
           this.getJobs()
         }).catch(() => {
           //如果错误
-          this.$message.success('取消失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorCancel)
         })
       }
     }

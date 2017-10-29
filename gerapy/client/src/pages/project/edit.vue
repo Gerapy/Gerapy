@@ -156,7 +156,7 @@
         }).then(({data: tree}) => {
           this.tree = tree
         }).catch(() => {
-          this.$message.error('加载项目失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorLoad)
         })
       },
       handleNodeClick(data) {
@@ -178,17 +178,17 @@
           ).then(({data: code}) => {
             this.code = code
           }).catch(() => {
-            this.$message.error('加载失败')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorLoad)
           })
         }
       },
       renameFile() {
-        this.$prompt('修改文件', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$prompt(this.$lang[this.$store.state.lang].titles.renameFile, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           inputValue: this.activeNode.label,
           inputPattern: /[^\/\s]/,
-          inputErrorMessage: '格式不正确'
+          inputErrorMessage: this.$lang[this.$store.state.lang].messages.errorFormat
         }).then(({value}) => {
           // 删除文件
           this.$fetch.apiProject.projectFileRename({
@@ -196,37 +196,37 @@
             pre: this.activeNode.label,
             new: value
           }).then(() => {
-            this.$message.success('修改成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error('修改失败')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
           })
         })
       },
       createFile() {
-        this.$prompt('请输入文件名', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$prompt(this.$lang[this.$store.state.lang].titles.createFile, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           inputValue: this.activeNode.label,
           inputPattern: /[^\/\s]/,
-          inputErrorMessage: '格式不正确'
+          inputErrorMessage: this.$lang[this.$store.state.lang].messages.errorFormat
         }).then(({value}) => {
           // 删除文件
           this.$fetch.apiProject.projectFileCreate({
             path: this.activeNode.path,
             name: value
           }).then(() => {
-            this.$message.success('创建成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error('创建失败')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
           })
         })
       },
       deleteFile() {
-        this.$confirm('确定要删除吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           // 删除文件
@@ -234,10 +234,10 @@
             path: this.activeNode.path,
             label: this.activeNode.label
           }).then(() => {
-            this.$message.success('删除成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successDelete)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error('删除失败')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
           })
         }).catch((error) => {
           console.log(error)
@@ -254,7 +254,7 @@
             callback()
           }
         }).catch(() => {
-          this.$message.error('修改失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
         })
       }
     }

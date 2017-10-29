@@ -1,47 +1,47 @@
 <template>
 
   <div class="panel">
-    <panel-title title="项目配置">
+    <panel-title :title="$lang[$store.state.lang].titles.configureProject">
       <el-button type="primary" size="mini" @click="saveProject()">
         <i class="fa fa-check"></i>
-        保存
+        {{ $lang[$store.state.lang].buttons.save }}
       </el-button>
     </panel-title>
     <div class="panel-body" id="project-create">
       <el-row>
         <el-col :span="24">
           <el-form ref="form" :model="configuration" label-width="100px">
-
             <el-form-item>
-              <h4 class="inline m-r-sm">项目名称</h4>
+              <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.projectName }}</h4>
               {{ projectName }}
             </el-form-item>
-
             <el-form-item>
-              <h4 class="inline m-r-sm">代码生成</h4>
-              {{ projectGeneratedAt ? projectGeneratedAt : '未生成' }}
+              <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.generateCode }}</h4>
+              {{ projectGeneratedAt ? projectGeneratedAt : $lang[$store.state.lang].descriptions.notGenerated }}
               <el-button type="primary" class="inline" size="mini"
                          @click="onGenerate(projectName)">
                 <i class="fa fa-magic"></i>
-                生成代码
+                {{ $lang[$store.state.lang].buttons.generate }}
               </el-button>
             </el-form-item>
 
             <!-- 提取实体 -->
             <el-form-item>
-              <h4 class="inline">提取实体</h4>
+              <h4 class="inline">{{ $lang[$store.state.lang].titles.items }}</h4>
               <!-- 添加规则配置浮窗 -->
               <el-dialog :visible.sync="addItem" size="tiny">
                 <el-form>
-                  <el-form-item label="字段名称">
-                    <el-input size="small" v-model="item" class="inline" placeholder="字段名称">
+                  <el-form-item :label="$lang[$store.state.lang].columns.column">
+                    <el-input size="small" v-model="item" class="inline"
+                              :placeholder="$lang[$store.state.lang].columns.column">
                     </el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer">
-                  <el-button @click="addItem=false" size="small">取消</el-button>
+                  <el-button @click="addItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
+                  </el-button>
                   <el-button @click="onAddItem()"
-                             type="primary" size="small">添加
+                             type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
                   </el-button>
                 </div>
               </el-dialog>
@@ -49,7 +49,7 @@
               <el-button type="primary" class="inline" size="mini"
                          @click="onAddInput(configuration.items, {name:'', attrs:{}})">
                 <i class="fa fa-plus"></i>
-                添加实体
+                {{ $lang[$store.state.lang].buttons.addItem }}
               </el-button>
               <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
                            v-if="configuration.items.length">
@@ -58,26 +58,26 @@
                   <!-- 每个实体配置 -->
                   <template slot="title">
                     <span>
-                      实体{{ itemKey + 1 }}
+                      {{ $lang[$store.state.lang].titles.item }} {{ itemKey + 1 }}
                     </span>
                     <span class="pull-right">
                       <el-button type="primary" class="inline" size="mini"
                                  @click.stop="addItem=true,activeItem=itemKey">
                         <i class="fa fa-plus"></i>
-                        添加字段
+                        {{ $lang[$store.state.lang].buttons.addColumn }}
                       </el-button>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(configuration.items, itemKey)">
                           <i class="fa fa-remove"></i>
-                          删除
+                          {{ $lang[$store.state.lang].buttons.delete }}
                       </el-button>
                     </span>
                   </template>
                   <!-- 每个实体配置 -->
                   <el-form-item>
-                    <h4 class="inline m-r-sm">名称</h4>
+                    <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.name }}</h4>
                     <el-input
-                      v-model="item['name']" class="inline" placeholder="名称"
+                      v-model="item['name']" class="inline" :placeholder="$lang[$store.state.lang].columns.name"
                       size="small"></el-input>
                   </el-form-item>
                   <el-form-item>
@@ -87,18 +87,21 @@
                       </el-button>
                       <span class="inline inline-second">{{ attrKey }}</span>
                       <el-input
-                        v-model="attr['value']" class="inline inline-third" placeholder="值"
+                        v-model="attr['value']" class="inline inline-third"
+                        :placeholder="$lang[$store.state.lang].columns.value"
                         size="small"></el-input>
                       <el-input
-                        v-model="attr['in_processor']" class="inline inline-fourth" placeholder="输入处理"
+                        v-model="attr['in_processor']" class="inline inline-fourth"
+                        :placeholder="$lang[$store.state.lang].columns.inProcessor"
                         size="small"></el-input>
                       <el-input
-                        v-model="attr['out_processor']" class="inline inline-fifth" placeholder="输出处理"
+                        v-model="attr['out_processor']" class="inline inline-fifth"
+                        :placeholder="$lang[$store.state.lang].columns.outProcessor"
                         size="small"></el-input>
                       <el-button type="danger" size="mini" class="m-r-md"
                                  @click="onDeleteInput(item.attrs, attrKey)">
                         <i class="fa fa-remove"></i>
-                        删除
+                        {{ $lang[$store.state.lang].buttons.delete }}
                       </el-button>
                     </div>
                   </el-form-item>
@@ -109,12 +112,12 @@
 
             <div class="hr-line-dashed"></div>
 
-            <h4 class="inline m-b-sm">爬虫列表</h4>
+            <h4 class="inline m-b-sm">{{ $lang[$store.state.lang].titles.listSpider }}</h4>
 
             <el-button type="primary" class="inline" size="mini"
                        @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {mysql: {enable: false}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
               <i class="fa fa-plus"></i>
-              添加爬虫
+              {{ $lang[$store.state.lang].buttons.addSpider }}
             </el-button>
 
             <el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
@@ -133,51 +136,54 @@
                     <el-button type="danger" size="mini" class="m-r-md"
                                @click="onDeleteInput(configuration.spiders, spiderKey)">
                         <i class="fa fa-remove"></i>
-                        删除
+                        {{ $lang[$store.state.lang].buttons.delete }}
                     </el-button>
                   </span>
                 </template>
 
                 <el-form-item>
-                  <h4 class="inline m-r-sm">爬虫名称</h4>
-                  <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                  <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.name }}</h4>
+                  <el-input v-model="spider.name" class="inline" size="small"
+                            :placeholder="$lang[$store.state.lang].columns.name"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                  <h4 class="inline m-r-sm m-b-md">爬虫配置</h4>
+                  <h4 class="inline m-r-sm m-b-md">{{ $lang[$store.state.lang].columns.customSettings }}</h4>
                   <el-input type="textarea" v-model="spider.custom_settings" class="inline" size="small"
-                            placeholder="爬虫配置"></el-input>
+                            :placeholder="$lang[$store.state.lang].columns.customSettings"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                  <h4 class="inline m-r-sm m-b-md">类内代码</h4>
+                  <h4 class="inline m-r-sm m-b-md">{{ $lang[$store.state.lang].columns.innerCode }}</h4>
                   <el-input type="textarea" v-model="spider.code.in_class" class="inline" size="small"
-                            placeholder="自定代码"></el-input>
+                            :placeholder="$lang[$store.state.lang].columns.innerCode"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <h4 class="inline m-r-sm m-b-md">类外代码</h4>
+                  <h4 class="inline m-r-sm m-b-md">{{ $lang[$store.state.lang].columns.outerCode }}</h4>
                   <el-input type="textarea" v-model="spider.code.out_class" class="inline" size="small"
-                            placeholder="自定代码"></el-input>
+                            :placeholder="$lang[$store.state.lang].columns.innerCode"></el-input>
                 </el-form-item>
 
                 <!-- 起始链接开始 -->
                 <el-form-item>
-                  <h4 class="inline">爬虫类属性</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].columns.classAttrs }}</h4>
                   <el-button type="primary" class="inline" size="mini"
                              @click="onAddInput(spider.attrs, {'key': null, 'value': null})">
                     <i class="fa fa-plus"></i>
-                    添加属性
+                    {{ $lang[$store.state.lang].buttons.addAttr }}
                   </el-button>
                   <div v-for="(value, key, index) in spider.attrs" :key="key">
                     <el-input
-                      v-model="value['key']" class="inline inline-short" placeholder="属性名"
+                      v-model="value['key']" class="inline inline-short"
+                      :placeholder="$lang[$store.state.lang].columns.attrName"
                       size="small"></el-input>
                     <el-input
-                      v-model="value['value']" class="inline inline-long" placeholder="属性值"
+                      v-model="value['value']" class="inline inline-long"
+                      :placeholder="$lang[$store.state.lang].columns.attrValue"
                       size="small"></el-input>
                     <el-button type="danger" size="mini" @click="onDeleteInput(spider.attrs, key)">
                       <i class="fa fa-remove"></i>
-                      删除
+                      {{ $lang[$store.state.lang].buttons.delete }}
                     </el-button>
                   </div>
                 </el-form-item>
@@ -185,31 +191,37 @@
 
                 <!-- 起始链接开始 -->
                 <el-form-item>
-                  <h4 class="inline">起始链接</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].columns.startUrls }}</h4>
                   <el-button type="primary" v-if="spider.start_urls.mode == 'list'" class="inline" size="mini"
                              @click="onAddInput(spider.start_urls.list)">
                     <i class="fa fa-plus"></i>
-                    添加链接
+                    {{ $lang[$store.state.lang].buttons.addUrl }}
                   </el-button>
                   <div>
-                    <el-radio class="radio" v-model="spider.start_urls.mode" label="list">列表</el-radio>
+                    <el-radio class="radio" v-model="spider.start_urls.mode" label="list">
+                      {{ $lang[$store.state.lang].columns.list }}
+                    </el-radio>
                     <!--<el-radio class="radio" v-model="spider.start_urls.mode" label="file">文件</el-radio>-->
-                    <el-radio class="radio" v-model="spider.start_urls.mode" label="code">代码</el-radio>
+                    <el-radio class="radio" v-model="spider.start_urls.mode" label="code">
+                      {{ $lang[$store.state.lang].columns.code }}
+                    </el-radio>
                   </div>
                   <div v-if="spider.start_urls.mode == 'list'">
                     <div v-for="(value, key, index) in spider.start_urls.list" :key="key">
                       <el-input
-                        v-model="spider.start_urls.list[key]" class="inline" placeholder="请输入起始链接"
+                        v-model="spider.start_urls.list[key]" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.startUrls"
                         size="small"></el-input>
                       <el-button type="danger" size="mini" @click="onDeleteInput(spider.start_urls.list, key)">
                         <i class="fa fa-remove"></i>
-                        删除
+                        {{ $lang[$store.state.lang].buttons.delete }}
                       </el-button>
                     </div>
                   </div>
                   <div v-if="spider.start_urls.mode == 'code'">
                     <el-input type="textarea"
-                              v-model="spider.start_urls.code" class="inline" placeholder="请输入起始链接生成代码"
+                              v-model="spider.start_urls.code" class="inline"
+                              :placeholder="$lang[$store.state.lang].columns.code"
                               size="small"></el-input>
                   </div>
                 </el-form-item>
@@ -217,18 +229,19 @@
 
                 <!-- 合法域名 -->
                 <el-form-item>
-                  <h4 class="inline">合法域名</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].columns.allowedDomains }}</h4>
                   <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowed_domains)">
                     <i class="fa fa-plus"></i>
-                    添加域名
+                    {{ $lang[$store.state.lang].buttons.addDomain }}
                   </el-button>
                   <div v-for="(value, key, index) in spider.allowed_domains" :key="key">
                     <el-input
-                      v-model="spider.allowed_domains[key]" class="inline" placeholder="请输入合法域名"
+                      v-model="spider.allowed_domains[key]" class="inline"
+                      :placeholder="$lang[$store.state.lang].columns.allowedDomains"
                       size="small"></el-input>
                     <el-button type="danger" size="mini" @click="onDeleteInput(spider.allowed_domains, key)">
                       <i class="fa fa-remove"></i>
-                      删除
+                      {{ $lang[$store.state.lang].buttons.delete }}
                     </el-button>
                   </div>
                 </el-form-item>
@@ -236,12 +249,13 @@
 
                 <!-- 爬取规则开始 -->
                 <el-form-item>
-                  <h4 class="inline">爬取规则</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].titles.rules }}</h4>
                   <!-- 添加规则配置浮窗 -->
                   <el-dialog :visible.sync="addRuleItem" size="tiny">
                     <el-form>
-                      <el-form-item label="选择规则配置">
-                        <el-select v-model="ruleItem" placeholder="请选择" size="small">
+                      <el-form-item :label="$lang[$store.state.lang].titles.selectConfig">
+                        <el-select v-model="ruleItem" :placeholder="$lang[$store.state.lang].titles.selectConfig"
+                                   size="small">
                           <el-option
                             v-for="item in ruleItemOptions"
                             :key="item.value"
@@ -252,16 +266,17 @@
                       </el-form-item>
                     </el-form>
                     <div slot="footer">
-                      <el-button @click="addRuleItem=false" size="small">取消</el-button>
+                      <el-button @click="addRuleItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
+                      </el-button>
                       <el-button @click="onAddRuleItem()"
-                                 type="primary" size="small">添加
+                                 type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
                       </el-button>
                     </div>
                   </el-dialog>
                   <!-- 添加规则配置浮窗 -->
                   <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.rules, {})">
                     <i class="fa fa-plus"></i>
-                    添加规则
+                    {{ $lang[$store.state.lang].buttons.addRule }}
                   </el-button>
                   <el-collapse :accordion="accordion" :value="parseInt(spider.rules.length-1)"
                                v-if="spider.rules.length">
@@ -269,18 +284,18 @@
                       <!-- 每条规则标题及操作配置 -->
                       <template slot="title">
                         <span>
-                          规则{{ ruleKey + 1 }}
+                          {{ $lang[$store.state.lang].titles.rule }} {{ ruleKey + 1 }}
                         </span>
                         <span class="pull-right">
                           <el-button type="primary" class="inline" size="mini"
                                      @click.stop="addRuleItem=true,activeRule=ruleKey">
                             <i class="fa fa-plus"></i>
-                            添加字段
+                            {{ $lang[$store.state.lang].buttons.addColumn }}
                           </el-button>
                           <el-button type="danger" size="mini" class="m-r-md"
                                      @click="onDeleteInput(spider.rules, ruleKey)">
                               <i class="fa fa-remove"></i>
-                              删除
+                              {{ $lang[$store.state.lang].buttons.delete }}
                           </el-button>
                         </span>
                       </template>
@@ -292,7 +307,7 @@
                           <el-button type="primary" size="mini" class="inline" v-if="value instanceof Array"
                                      @click="onAddInput(spider.rules[ruleKey][key])">
                             <i class="fa fa-plus"></i>
-                            添加
+                            {{ $lang[$store.state.lang].buttons.add }}
                           </el-button>
                           <el-form-item>
                             <!-- 列表类型，如 allow, deny -->
@@ -304,7 +319,7 @@
                                 <el-button type="danger" size="mini"
                                            @click="onDeleteInput(spider.rules[ruleKey], key, k)">
                                   <i class="fa fa-remove"></i>
-                                  删除
+                                  {{ $lang[$store.state.lang].buttons.delete }}
                                 </el-button>
                               </div>
                             </div>
@@ -317,7 +332,7 @@
                               <el-button type="danger" size="mini"
                                          @click="onDeleteInput(spider.rules[ruleKey], key)">
                                 <i class="fa fa-remove"></i>
-                                删除
+                                {{ $lang[$store.state.lang].buttons.delete }}
                               </el-button>
                             </div>
                             <!-- 字符串类型 -->
@@ -332,7 +347,7 @@
                               <el-button type="danger" size="mini"
                                          @click="onDeleteInput(spider.rules[ruleKey], key)">
                                 <i class="fa fa-remove"></i>
-                                删除
+                                {{ $lang[$store.state.lang].buttons.delete }}
                               </el-button>
                             </div>
                             <!-- 布尔类型 -->
@@ -340,7 +355,7 @@
                         </div>
                       </div>
                       <div v-else>
-                        <h5>请添加字段</h5>
+                        <h5>{{ $lang[$store.state.lang].messages.addColumn }}</h5>
                       </div>
                       <!-- 每条规则配置选项 -->
                     </el-collapse-item>
@@ -351,11 +366,11 @@
 
                 <!-- 提取规则开始 -->
                 <el-form-item>
-                  <h4 class="inline">解析器</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].titles.extractors }}</h4>
                   <!-- 添加规则配置浮窗 -->
                   <el-dialog :visible.sync="addExtractorItem" size="tiny">
                     <el-form>
-                      <el-form-item label="选择规则配置">
+                      <el-form-item :label="$lang[$store.state.lang].titles.selectConfig">
                         <el-cascader
                           expand-trigger="hover"
                           :options="extractorItemOptions"
@@ -364,9 +379,11 @@
                       </el-form-item>
                     </el-form>
                     <div slot="footer">
-                      <el-button @click="addExtractorItem=false" size="small">取消</el-button>
+                      <el-button @click="addExtractorItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel
+                        }}
+                      </el-button>
                       <el-button @click="onAddExtractorItem()"
-                                 type="primary" size="small">添加
+                                 type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
                       </el-button>
                     </div>
                   </el-dialog>
@@ -374,7 +391,7 @@
                   <el-button type="primary" class="inline" size="mini"
                              @click="onAddInput(spider.extractors, {callback:'', item: '', attrs:{}})">
                     <i class="fa fa-plus"></i>
-                    添加解析器
+                    {{ $lang[$store.state.lang].buttons.addExtractor }}
                   </el-button>
                   <el-collapse :accordion="accordion" :value="parseInt(spider.extractors.length-1)"
                                v-if="spider.extractors.length">
@@ -383,32 +400,34 @@
                       <!-- 每条规则标题及操作配置 -->
                       <template slot="title">
                         <span>
-                          规则{{ extractorKey + 1 }}
+                          {{ $lang[$store.state.lang].titles.extractor }} {{ extractorKey + 1 }}
                         </span>
                         <span class="pull-right">
                           <el-button type="primary" class="inline" size="mini"
                                      @click.stop="addExtractorItem=true,activeExtractorItem=extractorKey">
                             <i class="fa fa-plus"></i>
-                            添加字段
+                            {{ $lang[$store.state.lang].buttons.addColumn }}
                           </el-button>
                           <el-button type="danger" size="mini" class="m-r-md"
                                      @click="onDeleteInput(spider.extractors, extractorKey)">
                               <i class="fa fa-remove"></i>
-                              删除
+                              {{ $lang[$store.state.lang].buttons.delete }}
                           </el-button>
                         </span>
                       </template>
                       <!-- 每条规则标题及操作配置 -->
                       <el-form-item>
-                        <h5 class="inline m-v-sm">处理函数</h5>
+                        <h5 class="inline m-v-sm">{{ $lang[$store.state.lang].titles.callback }}</h5>
                         <el-input
-                          v-model="extractor.callback" class="inline" placeholder="处理函数名称"
+                          v-model="extractor.callback" class="inline"
+                          :placeholder="$lang[$store.state.lang].titles.callback"
                           size="small">
                         </el-input>
                       </el-form-item>
                       <el-form-item>
-                        <h5 class="inline m-v-sm">提取实体</h5>
-                        <el-select v-model="extractor.item" placeholder="提取实体" size="small" class="inline inline-first">
+                        <h5 class="inline m-v-sm">{{ $lang[$store.state.lang].titles.item }}</h5>
+                        <el-select v-model="extractor.item" :placeholder="$lang[$store.state.lang].titles.item"
+                                   size="small" class="inline inline-first">
                           <el-option
                             v-for="item in extractorItemOptions"
                             :key="item.value"
@@ -424,10 +443,11 @@
                             <el-button type="primary" size="mini"
                                        @click="onAddInput(extractor.attrs[key], {method: 'xpath'})">
                               <i class="fa fa-plus"></i>
-                              添加规则
+                              {{ $lang[$store.state.lang].buttons.addRule }}
                             </el-button>
                             <div v-for="(v, k, i) in value" :key="k" class="extractor-rule">
-                              <el-select v-model="v['method']" placeholder="提取方式" size="small"
+                              <el-select v-model="v['method']" :placeholder="$lang[$store.state.lang].columns.method"
+                                         size="small"
                                          class="inline inline-first">
                                 <el-option
                                   v-for="item in extractorMethods"
@@ -437,24 +457,27 @@
                                 </el-option>
                               </el-select>
                               <el-input
-                                v-model="v['arg']" class="inline inline-second" placeholder="提取规则"
+                                v-model="v['arg']" class="inline inline-second"
+                                :placeholder="$lang[$store.state.lang].columns.value"
                                 size="small"></el-input>
                               <el-input
-                                v-model="v['processor']" class="inline inline-third" placeholder="处理器"
+                                v-model="v['processor']" class="inline inline-third"
+                                :placeholder="$lang[$store.state.lang].columns.processors"
                                 size="small"></el-input>
                               <el-input
-                                v-model="v['re']" class="inline inline-fourth" placeholder="正则表达式"
+                                v-model="v['re']" class="inline inline-fourth"
+                                :placeholder="$lang[$store.state.lang].columns.regex"
                                 size="small"></el-input>
                               <el-button type="danger" size="mini"
                                          @click="onDeleteInput(extractor.attrs, key, k)">
                                 <i class="fa fa-remove"></i>
-                                删除
+                                {{ $lang[$store.state.lang].buttons.delete }}
                               </el-button>
                             </div>
                           </div>
                         </div>
                         <div v-else>
-                          <h5>请添加字段</h5>
+                          <h5>{{ $lang[$store.state.lang].messages.addColumn }}</h5>
                         </div>
                       </el-form-item>
                     </el-collapse-item>
@@ -464,7 +487,7 @@
 
                 <!-- 存储开始 -->
                 <el-form-item>
-                  <h4 class="inline">存储目标</h4>
+                  <h4 class="inline">{{ $lang[$store.state.lang].titles.storage }}</h4>
                   <div>
                     <h5 class="inline m-v-sm">MySQL</h5>
                     <el-switch
@@ -474,44 +497,45 @@
                   <div v-if="spider.storage.mysql.enable">
 
                     <el-form-item>
-                      <h4 class="inline m-r-sm">地址</h4>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.host }}</h4>
                       <el-input
-                        v-model="spider.storage.mysql.host" class="inline" placeholder="请输入地址"
+                        v-model="spider.storage.mysql.host" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.host"
                         size="small"></el-input>
                     </el-form-item>
 
                     <el-form-item>
-                      <h4 class="inline m-r-sm">端口</h4>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.port }}</h4>
                       <el-input
-                        v-model="spider.storage.mysql.port" class="inline" placeholder="请输入端口"
+                        v-model="spider.storage.mysql.port" class="inline"
+                        placeholder="$lang[$store.state.lang].columns.port"
                         size="small"></el-input>
                     </el-form-item>
 
                     <el-form-item>
-                      <h4 class="inline m-r-sm">爬虫名称</h4>
-                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.user }}</h4>
+                      <el-input
+                        v-model="spider.storage.mysql.user" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.user"
+                        size="small"></el-input>
                     </el-form-item>
 
                     <el-form-item>
-                      <h4 class="inline m-r-sm">爬虫名称</h4>
-                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.password }}</h4>
+                      <el-input
+                        v-model="spider.storage.mysql.password" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.password"
+                        size="small"></el-input>
                     </el-form-item>
 
                     <el-form-item>
-                      <h4 class="inline m-r-sm">爬虫名称</h4>
-                      <el-input v-model="spider.name" class="inline" size="small" placeholder="爬虫名称"></el-input>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.database }}</h4>
+                      <el-input
+                        v-model="spider.storage.mysql.database" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.database"
+                        size="small"></el-input>
                     </el-form-item>
 
-
-                    <el-input
-                      v-model="spider.storage.mysql.user" class="inline" placeholder="请输入用户名"
-                      size="small"></el-input>
-                    <el-input
-                      v-model="spider.storage.mysql.password" class="inline" placeholder="请输入密码"
-                      size="small"></el-input>
-                    <el-input
-                      v-model="spider.storage.mysql.database" class="inline" placeholder="请输入数据库名"
-                      size="small"></el-input>
                   </div>
                 </el-form-item>
                 <!-- 存储结束 -->
@@ -689,7 +713,6 @@
           this.configuration = data.configuration || this.configuration
           this.loadData = false
         }).catch(() => {
-          this.$message.error('获取配置失败')
         })
       },
       saveProject() {
@@ -698,19 +721,19 @@
         }, {
           configuration: this.configuration
         }).then(({data: data}) => {
-          this.$message.success('保存配置成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
         }).catch(() => {
-          this.$message.error('保存配置失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
         })
       },
       generateProject() {
         this.$fetch.apiProject.projectGenerate({
           name: this.projectName
         }).then(({data: data}) => {
-          this.$message.success('代码生成成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successGenerate)
           this.getProject()
         }).catch(() => {
-          this.$message.error('代码生成失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorGenerate)
         })
       },
       onDeleteInput(array, ...keys) {
@@ -742,19 +765,18 @@
       },
       onGenerate() {
         if (this.projectBuiltAt) {
-          this.$confirm('重新生成代码将清空打包的内容, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm(this.$lang[this.$store.state.lang].messages.reGenerate, this.$lang[this.$store.state.lang].buttons.confirm, {
+            confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+            cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
             type: 'warning'
           }).then(() => {
             this.generateProject()
           }).catch(() => {
-            this.$message.error('批量删除出错')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
           })
         } else {
           this.generateProject()
         }
-
       }
     },
     watch: {

@@ -95,12 +95,12 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="8">
+      <el-col :span="12">
         <div class="panel">
           <panel-title :title="$lang[$store.state.lang].objects.project">
           </panel-title>
           <div class="panel-body">
-            <el-form :model="buildInfo" label-width="80px">
+            <el-form :model="buildInfo" label-width="120px">
               <el-form-item :label="$lang[$store.state.lang].columns.name">
                 {{ buildInfo.name }}
               </el-form-item>
@@ -114,22 +114,25 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="12">
         <div class="panel">
-          <panel-title title="项目打包">
+          <panel-title :title="$lang[$store.state.lang].titles.buildProject">
           </panel-title>
           <div class="panel-body">
-            <el-form ref="form" :model="buildInfo" :rules="rules" label-width="80px">
-              <el-form-item label="项目名称">
+            <el-form ref="form" :model="buildInfo" :rules="rules" label-width="120px">
+              <el-form-item :label="$lang[$store.state.lang].columns.name">
                 {{ buildInfo.name }}
               </el-form-item>
-              <el-form-item label="版本描述" prop="description" class="description">
+              <el-form-item :label="$lang[$store.state.lang].columns.description"
+                            prop="description"
+                            class="description">
                 <el-input v-model="buildInfo.description" size="small"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="small" @click="onBuild">
                   <i class="fa fa-codepen"></i>
-                  <span v-if="buildInfo.egg">重新</span>打包
+                  <span v-if="buildInfo.egg">{{ $lang[$store.state.lang].buttons.re
+                    }}</span>{{ $lang[$store.state.lang].buttons.build }}
                 </el-button>
               </el-form-item>
             </el-form>
@@ -147,7 +150,7 @@
     data(){
       return {
         buildInfo: {},
-        notBuildText: '未打包',
+        notBuildText: this.$lang[this.$store.state.lang].messages.notBuilt,
         clients: [],
         //请求时的loading效果
         loadData: false,
@@ -163,13 +166,13 @@
           '-1': 'danger',
         },
         statusText: {
-          '1': '运行正常',
-          '0': '连接中',
-          '-1': '连接失败',
+          '1': this.$lang[this.$store.state.lang].buttons.normal,
+          '0': this.$lang[this.$store.state.lang].buttons.connecting,
+          '-1': this.$lang[this.$store.state.lang].buttons.error,
         },
         rules: {
           description: [
-            {required: true, message: '描述不能为空', trigger: 'blur'},
+            {required: true, message: this.$lang[this.$store.state.lang].messages.emptyDescription, trigger: 'blur'},
           ]
         }
       }
@@ -231,16 +234,17 @@
             id: id,
             name: this.projectName,
           }).then(() => {
-            this.$message.success('主机' + id + '部署成功')
+            this.$message.success(this.$lang[this.$store.state.lang].titles.client + ' ' + id + ' ' +
+              this.$lang[this.$store.state.lang].messages.successDeploy
+            )
             this.getProjectVersion(id)
             this.loadData = false
           }).catch((data) => {
-            console.log('部署失败', data)
-            this.$message.error('主机' + id + '部署失败')
+            this.$message.error(this.$lang[this.$store.state.lang].titles.client + ' ' + id + ' ' + this.$lang[this.$store.state.lang].messages.errorDeploy)
             this.loadData = false
           })
         } else {
-          this.$message.error('主机' + id + '连接失败')
+          this.$message.error(this.$lang[this.$store.state.lang].titles.client + ' ' + id + ' ' + this.$lang[this.$store.state.lang].messages.errorDeploy)
           this.loadData = false
         }
       },
@@ -258,9 +262,9 @@
         })
       },
       onBatchDeploy() {
-        this.$confirm('此操作将花费一些时间, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true
@@ -269,14 +273,14 @@
             this.deploy(id)
           })
         }).catch(() => {
-          this.$message.error('批量部署部分出错')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDeploy)
         })
       },
       onDeploy(id) {
         if (this.buildInfo.egg) {
           this.deploy(id)
         } else {
-          this.$message.error('请先打包项目')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.buildFirst)
         }
       },
       onBuild() {
@@ -293,10 +297,10 @@
             this.buildInfo = data
             console.log(data)
             this.loadData = false
-            this.$message.success('打包成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successBuild)
           }).catch(() => {
             this.loadData = false
-            this.$message.error('打包失败')
+            this.$message.error(this.$lang[this.$store.state.lang].messages.errorBuild)
           })
         })
       }

@@ -41,6 +41,8 @@
 </template>
 <script type="text/javascript">
   import {panelTitle} from 'components'
+  import {ip, port} from '../../common/tools/regex'
+
   export default{
     data(){
       return {
@@ -91,6 +93,7 @@
       }
     },
     created(){
+      console.log('RouterID', this.routeId)
       this.routeId !== null && this.getFormData()
     },
     methods: {
@@ -115,7 +118,7 @@
               id: this.form.id
             }, this.form
           ).then(() => {
-            this.$message.success('修改成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {
             this.onSubmitLoading = false

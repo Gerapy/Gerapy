@@ -13,7 +13,7 @@
         <el-button @click="createProjectDialog=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
         </el-button>
         <el-button @click="onCreateProject()"
-                   type="primary" size="small">{{ $lang[$store.state.lang].columns.create }}
+                   type="primary" size="small">{{ $lang[$store.state.lang].buttons.create }}
         </el-button>
       </div>
     </el-dialog>
@@ -194,19 +194,19 @@
         this.$fetch.apiProject.projectRemove({
           name: name
         }).then(() => {
-          this.$message.success('删除成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successDelete)
           this.loadData = false
           this.getProjectData()
         }).catch((error) => {
           this.loadData = false
-          this.$message.error('删除失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
         })
       },
       // 单个删除
       onSingleDelete(name) {
-        this.$confirm('此操作将删除项目相关所有数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           this.deleteProject(name)
@@ -214,30 +214,29 @@
       },
       //批量删除
       onBatchDelete(){
-        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true
-          console.log(this.batchSelect)
           this.batchSelect.forEach(({name: name}) => {
             this.deleteProject(name)
           })
         }).catch(() => {
-          this.$message.error('批量删除出错')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
         })
       },
       onCreateProject() {
         this.$fetch.apiProject.projectCreate({
           name: this.projectName
         }).then(() => {
-          this.$message.success('创建成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
           this.loadData = false
           this.$router.push({name: 'projectConfigure', params: {name: this.projectName}})
         }).catch((error) => {
           this.loadData = false
-          this.$message.error('创建失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
         })
       }
     }

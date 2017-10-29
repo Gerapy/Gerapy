@@ -101,7 +101,7 @@
           this.$fetch.apiClient.create(
             this.form
           ).then(() => {
-            this.$message.success('创建成功')
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {
             this.onSubmitLoading = false

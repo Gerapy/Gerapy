@@ -165,18 +165,18 @@
         this.$fetch.apiClient.remove({
           id: id
         }).then(() => {
-          this.$message.success('删除成功')
+          this.$message.success(this.$lang[this.$store.state.lang].messages.successDelete)
           this.loadData = false
           this.getClientData()
         }).catch(() => {
-          this.$message.error('删除失败')
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
           this.loadData = false
         })
       },
       onSingleDelete(id) {
-        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           this.deleteClient(id)
@@ -184,9 +184,9 @@
       },
       //批量删除
       onBatchDelete(){
-        this.$confirm('此操作将批量删除选择数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
+          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
+          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true
