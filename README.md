@@ -46,10 +46,10 @@ Also you can drag your Scrapy Project to `gerapy/projects` folder. Then refresh 
 will appear in the Project Index Page and comes to un-configurable, but you can edit this
 project in the web interface.
 
-As for the deploy, you can move to Deploy Page. Firstly you need to build you project and 
+As for the deploy, you can move to Deploy Page. Firstly you need to build your project and 
 add client, then you can deploy the project by clicking button.
 
-After the deployment, you can manage the job in Scheduler Page.
+After the deployment, you can manage the job in Monitor Page.
 
 
 ## Preview
