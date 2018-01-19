@@ -1,6 +1,6 @@
 # Create your models here.
 from django.db.models import Model, CharField, GenericIPAddressField, IntegerField, TextField, DateTimeField, \
-    ManyToManyField, ForeignKey
+    ManyToManyField, ForeignKey, DO_NOTHING
 
 
 class Client(Model):
@@ -26,8 +26,8 @@ class Project(Model):
 
 
 class Deploy(Model):
-    client = ForeignKey(Client, unique=False)
-    project = ForeignKey(Project, unique=False)
+    client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
+    project = ForeignKey(Project, unique=False, on_delete=DO_NOTHING)
     description = CharField(max_length=255, blank=True, null=True)
     deployed_at = DateTimeField(default=None, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
@@ -42,6 +42,6 @@ class Monitor(Model):
     description = CharField(max_length=255, default='', blank=True)
     type = CharField(max_length=255, default='', blank=True)
     configuration = TextField(default='', blank=True)
-    project = ForeignKey(Project, blank=True, null=True)
+    project = ForeignKey(Project, blank=True, null=True, on_delete=DO_NOTHING)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)

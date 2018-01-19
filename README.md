@@ -39,6 +39,13 @@ gerapy runserver
 
 Then you can visit [http://localhost:8000](http://localhost:8000) to enjoy it.
 
+Or you can configure host and port like this:
+
+```
+gerapy runserver 0.0.0.0:8888
+```
+
+Then it will run with public host and port 8888.
 
 You can create a configurable project and then configure and generate code automatically.
 

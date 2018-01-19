@@ -3,7 +3,7 @@ Usage:
   gerapy init [--folder=<folder>]
   gerapy migrate
   gerapy createsuperuser
-  gerapy runserver
+  gerapy runserver [<host:port>]
   gerapy makemigrations
 
 Options:
@@ -20,6 +20,8 @@ def cmd():
     arguments = docopt(__doc__, version=version())
     
     if arguments.get('init'):
+        # init folder
         init(arguments.get('--folder'))
     else:
-        server(arguments.get('--port'), arguments.get('--host'))
+        # Call django cmd
+        server()

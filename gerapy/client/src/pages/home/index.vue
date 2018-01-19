@@ -41,9 +41,9 @@
         </div>
       </el-col>
     </el-row>
-    <el-button type="primary" class="float-circle" @click="monitorFormVisible = true">
-      <span>+</span>
-    </el-button>
+    <!--<el-button type="primary" class="float-circle" @click="monitorFormVisible = true">-->
+      <!--<span>+</span>-->
+    <!--</el-button>-->
     <el-dialog title="添加监控" :visible.sync="monitorFormVisible">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="名称:" prop="name">

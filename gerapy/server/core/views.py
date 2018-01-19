@@ -198,7 +198,6 @@ def project_index(request):
         for file in files:
             if os.path.isdir(join(path, file)) and not file in IGNORES:
                 project_list.append({'name': file})
-        print(project_list)
         return JsonResponse(project_list)
 
 

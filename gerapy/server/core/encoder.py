@@ -6,7 +6,6 @@ import json
 import uuid
 from django.db.models import QuerySet
 from django.utils import six
-from django.utils.deprecation import CallableBool
 from django.utils.duration import duration_iso_string
 from django.utils.functional import Promise
 from django.utils.timezone import is_aware
@@ -40,8 +39,6 @@ class JSONEncoder(json.JSONEncoder):
             return str(o)
         elif isinstance(o, Promise):
             return six.text_type(o)
-        elif isinstance(o, CallableBool):
-            return bool(o)
         elif isinstance(o, QuerySet):
             return list(o.values())
         else:
