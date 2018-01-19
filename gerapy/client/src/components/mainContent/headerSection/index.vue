@@ -1,11 +1,11 @@
 <template>
   <div class="header-section">
-    <div class="search">
-      <el-input
-        size="small"
-        placeholder="">
-      </el-input>
-    </div>
+    <!--<div class="search">-->
+      <!--<el-input-->
+        <!--size="small"-->
+        <!--placeholder="Search">-->
+      <!--</el-input>-->
+    <!--</div>-->
     <lang></lang>
   </div>
 </template>

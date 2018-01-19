@@ -2,7 +2,7 @@
   <div class="left-side">
     <div class="left-side-inner">
       <router-link to="/" class="logo block">
-        <img src="./images/logo.png" alt="AdminX">
+        <img src="./images/logo.png" alt="Gerapy">
       </router-link>
       <el-menu
         class="menu-box"
@@ -59,3 +59,13 @@
     }
   }
 </script>
+<style>
+  .left-side .logo {
+    text-align: left !important;
+  }
+
+  .left-side .logo img {
+    width: 150px;
+    margin-left: 10px;
+  }
+</style>
