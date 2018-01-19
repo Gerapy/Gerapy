@@ -84,3 +84,11 @@ Project Deploy:
 Project Configuration:
 
 ![](https://ws2.sinaimg.cn/large/006tKfTcly1fkbe5aqerdj31kw0xggu0.jpg)
+
+## TodoList
+
+- [] Add Visual Configuration of Spider with Previewing Website
+- [] Add Scrapyd Auth Management
+- [] Add Automatic Python&Scrapyd Environment Deployment
+- [] Add Timed Task Scheduler
+- [] Add MongoDB&Redis&MySQL Monitor
