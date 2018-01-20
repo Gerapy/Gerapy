@@ -1,6 +1,6 @@
 cryptography>=2.1.1
 docopt
-django>=1.9.2
+django>=1.11
 django-cors-headers
 jinja2
 scrapy>=1.4.0

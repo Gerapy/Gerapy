@@ -4,7 +4,6 @@ Usage:
   gerapy migrate
   gerapy createsuperuser
   gerapy runserver [<host:port>]
-  gerapy makemigrations
 
 Options:
   -h --help
@@ -20,7 +19,7 @@ def cmd():
     arguments = docopt(__doc__, version=version())
     
     if arguments.get('init'):
-        # init folder
+        # nit folder
         init(arguments.get('--folder'))
     else:
         # Call django cmd
