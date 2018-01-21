@@ -92,3 +92,11 @@ Project Configuration:
 - [ ] Add Automatic Python&Scrapyd Environment Deployment
 - [ ] Add Timed Task Scheduler
 - [ ] Add MongoDB&Redis&MySQL Monitor
+- [ ] Add Timed Task Scheduler
+
+## Communication
+
+If you have any questions or ideas, you can join this QQ Group:
+
+![](https://ws1.sinaimg.cn/large/006tNc79gy1fno6kzta43j30bi0f0wf2.jpg)
+
