@@ -13,7 +13,12 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sys
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# print(BASE_DIR)
+# print(os.path.join(BASE_DIR, 'core'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'core'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
