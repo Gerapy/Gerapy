@@ -2,6 +2,8 @@
 
 Distributed Management Framework Based on Scrapy and Scrapyd.
 
+中文介绍：[跟繁琐的命令行说拜拜！Gerapy分布式爬虫管理框架来袭！](https://cuiqingcai.com/4959.html)
+
 ## Support
 
 Gerapy is developed over Python 3.x. Python 2.x will be supported later.
