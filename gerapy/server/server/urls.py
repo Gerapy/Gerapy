@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-    path(r'admin/', admin.site.urls),
-    path(r'', include('gerapy.server.core.urls')),
+    path('admin/', admin.site.urls),
+    path('', include('gerapy.server.core.urls')),
 ]
