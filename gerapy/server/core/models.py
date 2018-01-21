@@ -11,6 +11,9 @@ class Client(Model):
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return '主机名称{},ip地址是{}'.format(self.name, self.ip)
+
 
 class Project(Model):
     name = CharField(max_length=255, default=None)
@@ -24,6 +27,9 @@ class Project(Model):
     updated_at = DateTimeField(auto_now=True)
     clients = ManyToManyField(Client, through='Deploy', unique=False)
 
+    def __str__(self):
+        return '项目:{}'.format(self.name)
+
 
 class Deploy(Model):
     client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
@@ -32,7 +38,7 @@ class Deploy(Model):
     deployed_at = DateTimeField(default=None, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
-    
+
     class Meta:
         unique_together = ('client', 'project')
 
@@ -45,3 +51,6 @@ class Monitor(Model):
     project = ForeignKey(Project, blank=True, null=True, on_delete=DO_NOTHING)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '主机{}'.format(self.name)

@@ -47,6 +47,9 @@ def index_status(request):
             except ConnectionError:
                 data['error'] += 1
         path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
+
+        if not os.path.exists(path):
+            os.makedirs(path)
         files = os.listdir(path)
         # projects info
         for file in files:
@@ -251,6 +254,8 @@ def project_create(request):
         project, result = Project.objects.update_or_create(**data)
         # generate a single project folder
         path = join(os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER)), data['name'])
+        if os.path.exists(path):
+            os.rmdir(path)
         os.mkdir(path)
         return JsonResponse(model_to_dict(project))
 
