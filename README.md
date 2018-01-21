@@ -91,7 +91,7 @@ Project Configuration:
 - [ ] Add Scrapyd Auth Management
 - [ ] Add Automatic Python&Scrapyd Environment Deployment
 - [ ] Add Timed Task Scheduler
-- [ ] Add MongoDB&Redis&MySQL Monitor
+- [ ] Add MongoDB & Redis & MySQL Monitor
 - [ ] Add Timed Task Scheduler
 
 ## Communication
