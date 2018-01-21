@@ -98,5 +98,4 @@ Project Configuration:
 
 If you have any questions or ideas, you can join this QQ Group:
 
-![](https://ws1.sinaimg.cn/large/006tNc79gy1fno6kzta43j30bi0f0wf2.jpg)
-
+![](https://ws2.sinaimg.cn/large/006tNc79gy1fno6qey8a3j307609k3zs.jpg)
