@@ -101,7 +101,7 @@ def client_update(request, client_id):
     """
     if request.method == 'POST':
         client = Client.objects.filter(id=client_id)
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         client.update(**data)
         return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
 
@@ -113,7 +113,7 @@ def client_create(request):
     :return: json
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         client = Client.objects.create(**data)
         return JsonResponse(model_to_dict(client))
 
@@ -217,7 +217,7 @@ def project_configure(request, project_name):
     # update configuration
     elif request.method == 'POST':
         project = Project.objects.filter(name=project_name)
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
         project = Project.objects.get(name=project_name)
@@ -246,7 +246,7 @@ def project_create(request):
     :return: json
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         data['configurable'] = 1
         project, result = Project.objects.update_or_create(**data)
         # generate a single project folder
@@ -371,7 +371,7 @@ def project_build(request, project_name):
         return JsonResponse(data)
     # build operation manually by clicking button
     elif request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         description = data['description']
         build_project(project_name)
         egg = find_egg(project_path)
@@ -403,7 +403,7 @@ def project_generate(request, project_name):
     if request.method == 'POST':
         # get configuration
         configuration = Project.objects.get(name=project_name).configuration
-        configuration = json.loads(configuration)
+        configuration = json.loads(configuration.decode('utf-8'))
         
         if not is_valid_name(project_name):
             return JsonResponse({'message': 'Invalid project name'}, status=500)
@@ -448,7 +448,7 @@ def project_file_read(request):
     :return: file content
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         path = join(data['path'], data['label'])
         with open(path, 'r') as f:
             return HttpResponse(f.read())
@@ -461,7 +461,7 @@ def project_file_update(request):
     :return: result of update
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         path = join(data['path'], data['label'])
         code = data['code']
         with open(path, 'w') as f:
@@ -476,7 +476,7 @@ def project_file_create(request):
     :return: result of create
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         path = join(data['path'], data['name'])
         open(path, 'w').close()
         return JsonResponse({'result': '1'})
@@ -489,7 +489,7 @@ def project_file_delete(request):
     :return: result of delete
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         path = join(data['path'], data['label'])
         result = os.remove(path)
         return JsonResponse({'result': result})
@@ -502,7 +502,7 @@ def project_file_rename(request):
     :return: result of rename
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         pre = join(data['path'], data['pre'])
         new = join(data['path'], data['new'])
         os.rename(pre, new)
@@ -587,7 +587,7 @@ def monitor_db_list(request):
     :return: json of db list
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         url = data['url']
         type = data['type']
         if type == 'MongoDB':
@@ -603,7 +603,7 @@ def monitor_collection_list(request):
     :return: json of collection list
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         url = data['url']
         db = data['db']
         type = data['type']
@@ -621,7 +621,7 @@ def monitor_create(request):
     :return: json of create
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         data = data['form']
         data['configuration'] = json.dumps(data['configuration'])
         monitor = Monitor.objects.create(**data)
