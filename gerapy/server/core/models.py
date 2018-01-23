@@ -5,9 +5,12 @@ from django.db.models import Model, CharField, GenericIPAddressField, IntegerFie
 
 class Client(Model):
     name = CharField(max_length=255, default=None)
-    ip = GenericIPAddressField(max_length=255, null=True)
+    ip = CharField(max_length=255, blank=True, null=True)
     port = IntegerField(default=6800, blank=True, null=True)
     description = TextField(blank=True, null=True)
+    need_auth = IntegerField(default=0, blank=True, null=True)
+    username = CharField(max_length=255, blank=True, null=True)
+    password = CharField(max_length=255, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
 
