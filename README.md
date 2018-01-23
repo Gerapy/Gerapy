@@ -16,7 +16,7 @@ pip3 install gerapy
 
 After the installation, you need to do these things below to run Gerapy server:
 
-If you have installed Gerapy successfully, you can use command 'gerapy'. If not, check the installation.
+If you have installed Gerapy successfully, you can use command `gerapy`. If not, check the installation.
 
 First use this command to initialize the workspace:
 
