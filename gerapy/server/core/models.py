@@ -8,7 +8,7 @@ class Client(Model):
     ip = CharField(max_length=255, blank=True, null=True)
     port = IntegerField(default=6800, blank=True, null=True)
     description = TextField(blank=True, null=True)
-    need_auth = IntegerField(default=0, blank=True, null=True)
+    auth = IntegerField(default=0, blank=True, null=True)
     username = CharField(max_length=255, blank=True, null=True)
     password = CharField(max_length=255, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True)

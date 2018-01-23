@@ -40,6 +40,7 @@ export default {
     build: '打包',
     re: '重新',
     add: '添加',
+    update: '更新',
     generate: '生成',
     addItem: '添加实体',
     addColumn: '添加字段',
@@ -154,7 +155,7 @@ export default {
     user: '用户名',
     username: '用户名',
     password: '密码',
-    needAuth: '需要认证'
+    auth: '认证'
   },
 
 }

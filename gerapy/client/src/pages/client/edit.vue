@@ -22,25 +22,25 @@
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.port"
                         size="small"></el-input>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.needAuth" prop="port">
+            <el-form-item :label="$lang[$store.state.lang].columns.auth" prop="auth">
               <el-switch
-                v-model="form.needAuth">
+                v-model="form.auth">
               </el-switch>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.username" prop="username" v-if="form.needAuth">
+            <el-form-item :label="$lang[$store.state.lang].columns.username" prop="username" v-if="form.auth">
               <el-input v-model="form.username"
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.username"
                         size="small"></el-input>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.password" prop="password" v-if="form.needAuth">
-              <el-input v-model="form.password"
+            <el-form-item :label="$lang[$store.state.lang].columns.password" prop="password" v-if="form.auth">
+              <el-input v-model="form.password" type="password"
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.password"
                         size="small"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
                 <i class="fa fa-check"></i>
-                {{ $lang[$store.state.lang].buttons.create }}
+                {{ $lang[$store.state.lang].buttons.update }}
               </el-button>
               <el-button @click="$router.back()" size="small">
                 <i class="fa fa-reply"></i>
@@ -66,7 +66,7 @@
           ip: '',
           port: '',
           description: '',
-          needAuth: false,
+          auth: false,
           username: '',
           password: ''
         },
@@ -89,11 +89,11 @@
             }
           ],
           port: [
-            {
-              required: true,
-              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.isNull
-              , trigger: 'blur'
-            },
+//            {
+//              required: true,
+//              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.isNull
+//              , trigger: 'blur'
+//            },
             {
               pattern: port,
               message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
@@ -116,6 +116,7 @@
           id: this.routeId
         }).then(({data: data}) => {
           this.form = data
+          this.form.auth = data.auth ? true : false
           this.loadData = false
         }).catch(() => {
           this.loadData = false

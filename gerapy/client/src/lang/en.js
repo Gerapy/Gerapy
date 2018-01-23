@@ -40,6 +40,7 @@ export default {
     build: 'build',
     re: 're',
     add: 'add',
+    update: 'update',
     generate: 'generate',
     addItem: 'add item',
     addColumn: 'add column',
@@ -154,7 +155,7 @@ export default {
     user: 'User',
     password: 'Password',
     username: 'Username',
-    needAuth: 'Need Auth'
+    auth: 'Auth'
   },
 
 }
