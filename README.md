@@ -2,6 +2,8 @@
 
 Distributed Management Framework Based on Scrapy and Scrapyd.
 
+中文介绍：[跟繁琐的命令行说拜拜！Gerapy分布式爬虫管理框架来袭！](https://cuiqingcai.com/4959.html)
+
 ## Support
 
 Gerapy is developed over Python 3.x. Python 2.x will be supported later.
@@ -91,4 +93,11 @@ Project Configuration:
 - [ ] Add Scrapyd Auth Management
 - [ ] Add Automatic Python&Scrapyd Environment Deployment
 - [ ] Add Timed Task Scheduler
-- [ ] Add MongoDB&Redis&MySQL Monitor
+- [ ] Add MongoDB & Redis & MySQL Monitor
+- [ ] Add Timed Task Scheduler
+
+## Communication
+
+If you have any questions or ideas, you can join this QQ Group:
+
+![](https://ws2.sinaimg.cn/large/006tNc79gy1fno6qey8a3j307609k3zs.jpg)
