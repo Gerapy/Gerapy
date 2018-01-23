@@ -6,11 +6,7 @@ Distributed Management Framework Based on Scrapy and Scrapyd.
 
 Gerapy is developed over Python 3.x. Python 2.x will be supported later.
 
-## Installation
-
-You can use Gerapy by Python Package or Docker.
-
-### Python Package
+## Usage
 
 Just install by pip:
 
@@ -18,32 +14,9 @@ Just install by pip:
 pip3 install gerapy
 ```
 
-### Docker
+After the installation, you need to do these things below to run Gerapy server:
 
-Just run this command:
-
-```
-docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 thsheep/gerapy:master
-```
-
-Then it will run at port 8000.
-
-Usage:
-
-```
-docker run -d -v <your_workspace>:/app/gerapy -p <public_port>:<container_port> thsheep/gerapy:master
-```
-
-Please specify your workspace to mount Gerapy workspace by `-v <your_workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
-
-
-## Usage
-
-If you run Gerapy by Docker, you can visit Gerapy website such as localhost:8000 and enjoy it, no need to do other initialzation things.
-
-But if you install Gerapy by pip, you need to do these things below to run Gerapy server:
-
-After installing Gerapy, you can use command 'gerapy'. If not, check the installation.
+If you have installed Gerapy successfully, you can use command 'gerapy'. If not, check the installation.
 
 First use this command to initialize the workspace:
 
@@ -82,6 +55,26 @@ project in the web interface.
 As for the deploy, you can move to Deploy Page. Firstly you need to build your project and add client in the Client Index Page, then you can deploy the project by clicking button.
 
 After the deployment, you can manage the job in Monitor Page.
+
+## Docker
+
+Just run this command:
+
+```
+docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 thsheep/gerapy:master
+```
+
+Then it will run at port 8000.
+
+Command:
+
+```
+docker run -d -v <your_workspace>:/app/gerapy -p <public_port>:<container_port> thsheep/gerapy:master
+```
+
+Please specify your workspace to mount Gerapy workspace by `-v <your_workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
+
+If you run Gerapy by Docker, you can visit Gerapy website such as [http://localhost:8000](http://localhost:8000) and enjoy it, no need to do other initialzation things.
 
 ## Preview
 
