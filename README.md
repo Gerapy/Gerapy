@@ -1,6 +1,6 @@
 # Gerapy
 
-Distributed Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django、Vue.js.
+Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
 ## Support
 
