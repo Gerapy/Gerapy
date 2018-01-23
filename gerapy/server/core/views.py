@@ -113,6 +113,8 @@ def client_create(request):
     :return: json
     """
     if request.method == 'POST':
+        print('TTTType', request.body)
+        
         data = json.loads(request.body)
         client = Client.objects.create(**data)
         return JsonResponse(model_to_dict(client))
@@ -263,13 +265,18 @@ def project_remove(request, project_name):
     :return: result of remove
     """
     if request.method == 'POST':
+        # delete deployments
+        project = Project.objects.get(name=project_name)
+        Deploy.objects.filter(project=project).delete()
+        # delete project
+        result = Project.objects.filter(name=project_name).delete()
+        # get project path
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)
         # delete project file tree
-        rmtree(project_path)
-        # delete project
-        result = Project.objects.filter(name=project_name).delete()
-        return JsonResponse({'result': result})
+        if exists(project_path):
+            rmtree(project_path)
+        return JsonResponse({'result': '1'})
 
 
 def project_version(request, client_id, project_name):
@@ -318,6 +325,8 @@ def project_deploy(request, client_id, project_name):
         project_path = join(path, project_name)
         # find egg file
         egg = find_egg(project_path)
+        if not egg:
+            return JsonResponse({'message': 'egg not found'}, status=500)
         egg_file = open(join(project_path, egg), 'rb')
         # get client and project model
         client = Client.objects.get(id=client_id)
@@ -375,6 +384,8 @@ def project_build(request, project_name):
         description = data['description']
         build_project(project_name)
         egg = find_egg(project_path)
+        if not egg:
+            return JsonResponse({'message': 'egg not found'}, status=500)
         # update built_at info
         built_at = timezone.now()
         # if project does not exists in db, create it

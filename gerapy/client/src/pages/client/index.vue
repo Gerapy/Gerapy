@@ -14,6 +14,7 @@
     </panel-title>
     <div class="panel-body">
       <el-table
+        :empty-text="$lang[$store.state.lang].messages.noData"
         :data="clients"
         v-loading="loadData"
         :element-loading-text="$lang[$store.state.lang].messages.loading"

@@ -76,6 +76,7 @@ export default {
   },
   messages: {
     loading: 'Loading...',
+    noData: 'No Data',
     enter: 'Please Enter',
     isNull: 'Should Not Be Null',
     notValid: 'Is Not Valid',

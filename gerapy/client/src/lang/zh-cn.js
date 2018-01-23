@@ -71,11 +71,12 @@ export default {
     createFile: '新建',
   },
   menus: {
-    clients: '主机',
-    projects: '项目',
+    clients: '主机管理',
+    projects: '项目管理',
   },
   messages: {
     loading: '加载中...',
+    noData: '暂无数据',
     enter: '请添加',
     isNull: '不能为空',
     notValid: '不合法',
