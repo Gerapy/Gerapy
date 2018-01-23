@@ -89,11 +89,6 @@
             }
           ],
           port: [
-//            {
-//              required: true,
-//              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.isNull
-//              , trigger: 'blur'
-//            },
             {
               pattern: port,
               message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
