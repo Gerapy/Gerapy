@@ -113,8 +113,6 @@ def client_create(request):
     :return: json
     """
     if request.method == 'POST':
-        print('TTTType', request.body)
-        
         data = json.loads(request.body)
         client = Client.objects.create(**data)
         return JsonResponse(model_to_dict(client))
@@ -563,6 +561,8 @@ def job_log(request, client_id, project_name, spider_name, job_id):
             response = requests.get(url, timeout=5, headers={
                 'Range': 'bytes=-1000'
             })
+            # change encoding
+            response.encoding = response.apparent_encoding
             # log not found
             if response.status_code == 404:
                 return JsonResponse({'message': 'Log Not Found'}, status=404)
