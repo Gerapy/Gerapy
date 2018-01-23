@@ -152,7 +152,9 @@ export default {
     host: '地址',
     database: '数据库',
     user: '用户名',
-    password: '密码'
+    username: '用户名',
+    password: '密码',
+    needAuth: '需要认证'
   },
 
 }

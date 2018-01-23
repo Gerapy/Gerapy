@@ -22,6 +22,21 @@
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.port"
                         size="small"></el-input>
             </el-form-item>
+            <el-form-item :label="$lang[$store.state.lang].columns.needAuth" prop="port">
+              <el-switch
+                v-model="form.needAuth">
+              </el-switch>
+            </el-form-item>
+            <el-form-item :label="$lang[$store.state.lang].columns.username" prop="username" v-if="form.needAuth">
+              <el-input v-model="form.username"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.username"
+                        size="small"></el-input>
+            </el-form-item>
+            <el-form-item :label="$lang[$store.state.lang].columns.password" prop="password" v-if="form.needAuth">
+              <el-input v-model="form.password"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.password"
+                        size="small"></el-input>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
                 <i class="fa fa-check"></i>
@@ -50,7 +65,10 @@
           name: '',
           ip: '',
           port: '',
-          description: ''
+          description: '',
+          needAuth: false,
+          username: '',
+          password: ''
         },
         routeId: this.$route.params.id,
         loadData: false,
@@ -67,11 +85,6 @@
             {
               required: true,
               message: this.$lang[this.$store.state.lang].columns.ip + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
-              trigger: 'blur'
-            },
-            {
-              pattern: ip,
-              message: this.$lang[this.$store.state.lang].columns.ip + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
               trigger: 'blur'
             }
           ],

@@ -152,7 +152,9 @@ export default {
     host: 'Host',
     database: 'Database',
     user: 'User',
-    password: 'Password'
+    password: 'Password',
+    username: 'Username',
+    needAuth: 'Need Auth'
   },
 
 }
