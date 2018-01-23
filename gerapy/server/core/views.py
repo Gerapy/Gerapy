@@ -412,8 +412,9 @@ def project_generate(request, project_name):
     if request.method == 'POST':
         # get configuration
         configuration = Project.objects.get(name=project_name).configuration
+        if not configuration:
+            return JsonResponse({'message': 'Invalid configuration'}, status=500)
         configuration = json.loads(configuration)
-        
         if not is_valid_name(project_name):
             return JsonResponse({'message': 'Invalid project name'}, status=500)
         # remove original project dir
