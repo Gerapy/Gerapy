@@ -8,7 +8,7 @@ Gerapy is developed over Python 3.x. Python 2.x will be supported later.
 
 ## Usage
 
-Just install by pip:
+Install Gerapy by pip:
 
 ```bash
 pip3 install gerapy
