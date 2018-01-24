@@ -105,9 +105,8 @@ Project Configuration:
 ## TodoList
 
 - [ ] Add Visual Configuration of Spider with Previewing Website
-- [ ] Add Scrapyd Auth Management
+- [x] Add Scrapyd Auth Management
 - [ ] Add Automatic Python & Scrapyd Environment Deployment
-- [ ] Add Timed Task Scheduler
 - [ ] Add MongoDB & Redis & MySQL Monitor
 - [ ] Add Timed Task Scheduler
 
