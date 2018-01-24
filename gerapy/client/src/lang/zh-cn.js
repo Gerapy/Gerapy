@@ -40,6 +40,7 @@ export default {
     build: '打包',
     re: '重新',
     add: '添加',
+    update: '更新',
     generate: '生成',
     addItem: '添加实体',
     addColumn: '添加字段',
@@ -71,11 +72,12 @@ export default {
     createFile: '新建',
   },
   menus: {
-    clients: '主机',
-    projects: '项目',
+    clients: '主机管理',
+    projects: '项目管理',
   },
   messages: {
     loading: '加载中...',
+    noData: '暂无数据',
     enter: '请添加',
     isNull: '不能为空',
     notValid: '不合法',
@@ -151,7 +153,9 @@ export default {
     host: '地址',
     database: '数据库',
     user: '用户名',
-    password: '密码'
+    username: '用户名',
+    password: '密码',
+    auth: '认证'
   },
 
 }

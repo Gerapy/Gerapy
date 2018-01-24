@@ -9,33 +9,18 @@
         theme="dark"
         router
         :default-active="$route.path">
-        <div
-          v-for="(item, index) in nav_menu_data"
-          :key="index">
-          <el-menu-item
-            class="menu-list"
-            v-if="typeof item.child === 'undefined'"
-            :index="item.path">
-            <i class="icon fa" :class="item.icon"></i>
-            <span v-text="item.title" class="text"></span>
-          </el-menu-item>
-          <el-submenu
-            :index="item.path"
-            v-else>
-            <template slot="title">
-              <i class="icon fa" :class="item.icon"></i>
-              <span v-text="item.title" class="text"></span>
-            </template>
-            <el-menu-item
-              class="menu-list"
-              v-for="(sub_item, sub_index) in item.child"
-              :index="sub_item.path"
-              :key="sub_index">
-              <!--<i class="icon fa" :class="sub_item.icon"></i>-->
-              <span v-text="sub_item.title" class="text"></span>
-            </el-menu-item>
-          </el-submenu>
-        </div>
+        <el-menu-item
+          class="menu-list"
+          index="/client">
+          <i class="icon fa fa-television"></i>
+          <span v-text="$lang[$store.state.lang].menus.clients" class="text"></span>
+        </el-menu-item>
+        <el-menu-item
+          class="menu-list"
+          index="/project">
+          <i class="icon fa fa-folder-o"></i>
+          <span v-text="$lang[$store.state.lang].menus.projects" class="text"></span>
+        </el-menu-item>
       </el-menu>
     </div>
   </div>
@@ -43,19 +28,8 @@
 <script type="text/javascript">
   export default{
     name: 'slide',
-
     data(){
-      return {
-        nav_menu_data: [{
-          title: this.$lang[this.$store.state.lang].menus.clients,
-          path: "/client",
-          icon: "fa-television",
-        }, {
-          title: this.$lang[this.$store.state.lang].menus.projects,
-          path: "/project",
-          icon: "fa-folder-o",
-        }]
-      }
+      return {}
     }
   }
 </script>

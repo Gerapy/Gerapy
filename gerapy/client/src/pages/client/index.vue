@@ -14,6 +14,7 @@
     </panel-title>
     <div class="panel-body">
       <el-table
+        :empty-text="$lang[$store.state.lang].messages.noData"
         :data="clients"
         v-loading="loadData"
         :element-loading-text="$lang[$store.state.lang].messages.loading"
@@ -58,15 +59,26 @@
         </el-table-column>
         <el-table-column
           align="center"
+          prop="fields.auth"
+          width="80"
+          :label="$lang[$store.state.lang].columns.auth">
+          <template scope="props">
+            <span>
+              {{ props.row.fields.auth ? '✓' : '✗'  }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           :label="$lang[$store.state.lang].columns.operations">
           <template scope="props">
-            <router-link :to="{name: 'clientEdit', params: {id: props.row.pk}}" tag="span">
+            <router-link :to="{name: 'clientEdit', params: {id: props.row.pk }}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
                 {{ $lang[$store.state.lang].buttons.edit }}
               </el-button>
             </router-link>
-            <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk}}" tag="span">
+            <router-link :to="{name: 'clientSchedule', params: {id: props.row.pk }}" tag="span">
               <el-button type="success" size="mini">
                 <i class="fa fa-sitemap"></i>
                 {{ $lang[$store.state.lang].buttons.schedule }}

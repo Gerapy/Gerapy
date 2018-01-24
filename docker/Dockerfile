@@ -1,5 +1,5 @@
-FROM thsheep/gerapy:master
-MAINTAINER 哎哟卧槽
+FROM python:latest
+MAINTAINER thsheep
 COPY requirements.txt /tmp/requirements.txt
 COPY run.sh /usr/bin/run.sh
 RUN mkdir /app \

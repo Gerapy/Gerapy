@@ -4,7 +4,7 @@
       <el-form>
         <el-form-item :label="$lang[$store.state.lang].columns.name">
           <el-input
-            v-model="projectName" class="inline" :placeholder="$lang[$store.state.lang].columns.status"
+            v-model="projectName" class="inline" :placeholder="$lang[$store.state.lang].columns.name"
             size="small">
           </el-input>
         </el-form-item>
@@ -30,6 +30,7 @@
     <div class="panel-body">
       <el-table
         :data="projects"
+        :empty-text="$lang[$store.state.lang].messages.noData"
         v-loading="loadData"
         :element-loading-text="$lang[$store.state.lang].messages.loading"
         @selection-change="onBatchSelect"
@@ -90,7 +91,7 @@
           :label="$lang[$store.state.lang].columns.operations">
           <template scope="props">
             <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span"
-                         v-if="buildInfos[props.row.name]['configurable']">
+                         v-if="buildInfos[props.row.name] && buildInfos[props.row.name]['configurable']">
               <el-button type="warning" size="mini">
                 <i class="fa fa-edit"></i>
                 {{ $lang[$store.state.lang].buttons.configure }}

@@ -40,6 +40,7 @@ export default {
     build: 'build',
     re: 're',
     add: 'add',
+    update: 'update',
     generate: 'generate',
     addItem: 'add item',
     addColumn: 'add column',
@@ -76,6 +77,7 @@ export default {
   },
   messages: {
     loading: 'Loading...',
+    noData: 'No Data',
     enter: 'Please Enter',
     isNull: 'Should Not Be Null',
     notValid: 'Is Not Valid',
@@ -151,7 +153,9 @@ export default {
     host: 'Host',
     database: 'Database',
     user: 'User',
-    password: 'Password'
+    password: 'Password',
+    username: 'Username',
+    auth: 'Auth'
   },
 
 }

@@ -1,24 +1,24 @@
 # Gerapy
 
-Distributed Management Framework Based on Scrapy and Scrapyd.
-
-中文介绍：[跟繁琐的命令行说拜拜！Gerapy分布式爬虫管理框架来袭！](https://cuiqingcai.com/4959.html)
+Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
 ## Support
 
 Gerapy is developed over Python 3.x. Python 2.x will be supported later.
 
-## Installation
+## Usage
+
+Install Gerapy by pip:
 
 ```bash
 pip3 install gerapy
 ```
 
-## Usage
+After the installation, you need to do these things below to run Gerapy server:
 
-After installing Gerapy, you can use command 'gerapy'. If not, check the installation.
+If you have installed Gerapy successfully, you can use command `gerapy`. If not, check the installation.
 
-Next use this command to initialize the workspace:
+First use this command to initialize the workspace:
 
 ```bash
 gerapy init
@@ -49,17 +49,32 @@ gerapy runserver 0.0.0.0:8888
 
 Then it will run with public host and port 8888.
 
-You can create a configurable project and then configure and generate code automatically.
-
-Also you can drag your Scrapy Project to `gerapy/projects` folder. Then refresh web, it
-will appear in the Project Index Page and comes to un-configurable, but you can edit this
+You can create a configurable project and then configure and generate code automatically.Also you can drag your Scrapy Project to `gerapy/projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this
 project in the web interface.
 
-As for the deploy, you can move to Deploy Page. Firstly you need to build your project and 
-add client, then you can deploy the project by clicking button.
+As for the deploy, you can move to Deploy Page. Firstly you need to build your project and add client in the Client Index Page, then you can deploy the project by clicking button.
 
 After the deployment, you can manage the job in Monitor Page.
 
+## Docker
+
+Just run this command:
+
+```
+docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 thsheep/gerapy:master
+```
+
+Then it will run at port 8000.
+
+Command:
+
+```
+docker run -d -v <your_workspace>:/app/gerapy -p <public_port>:<container_port> thsheep/gerapy:master
+```
+
+Please specify your workspace to mount Gerapy workspace by `-v <your_workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
+
+If you run Gerapy by Docker, you can visit Gerapy website such as [http://localhost:8000](http://localhost:8000) and enjoy it, no need to do other initialzation things.
 
 ## Preview
 
@@ -91,7 +106,7 @@ Project Configuration:
 
 - [ ] Add Visual Configuration of Spider with Previewing Website
 - [ ] Add Scrapyd Auth Management
-- [ ] Add Automatic Python&Scrapyd Environment Deployment
+- [ ] Add Automatic Python & Scrapyd Environment Deployment
 - [ ] Add Timed Task Scheduler
 - [ ] Add MongoDB & Redis & MySQL Monitor
 - [ ] Add Timed Task Scheduler
