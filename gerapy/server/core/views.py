@@ -125,6 +125,8 @@ def client_remove(request, client_id):
     :return: json
     """
     if request.method == 'POST':
+        client = Client.objects.get(id=client_id)
+        Deploy.objects.filter(client=client).delete()
         Client.objects.filter(id=client_id).delete()
         return JsonResponse({'result': '1'})
 
@@ -273,7 +275,7 @@ def project_remove(request, project_name):
         # delete project file tree
         if exists(project_path):
             rmtree(project_path)
-        return JsonResponse({'result': '1'})
+        return JsonResponse({'result': result})
 
 
 def project_version(request, client_id, project_name):
