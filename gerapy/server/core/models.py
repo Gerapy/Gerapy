@@ -1,6 +1,6 @@
 # Create your models here.
 from django.db.models import Model, CharField, GenericIPAddressField, IntegerField, TextField, DateTimeField, \
-    ManyToManyField, ForeignKey, DO_NOTHING
+    ManyToManyField, ForeignKey, DO_NOTHING, BooleanField
 
 
 class Client(Model):
@@ -45,3 +45,16 @@ class Monitor(Model):
     project = ForeignKey(Project, blank=True, null=True, on_delete=DO_NOTHING)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
+
+
+class Scheduler(Model):
+    client_id = IntegerField(default=0, verbose_name="客户端ID")
+    project_name = CharField(max_length=255, verbose_name="项目名字")
+    spider_name = CharField(max_length=255, verbose_name="Spider名字")
+    scheduler_at = IntegerField(default=0, verbose_name="调度间隔时间")
+    updated_at = DateTimeField(auto_now=True, verbose_name="上一次调度时间")
+    success = BooleanField(default=False, verbose_name="是否调度成功")
+    job_id = CharField(max_length=255, default="", blank=True, verbose_name="调度返回的作业ID")
+
+    class Meta:
+        verbose_name = '调度'

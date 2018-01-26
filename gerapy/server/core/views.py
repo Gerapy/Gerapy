@@ -1,3 +1,5 @@
+import sys
+import traceback
 import json, os, requests, time, pytz, pymongo, string
 from shutil import move, copy, rmtree
 from scrapyd_api import ScrapydAPI
@@ -11,7 +13,7 @@ from django.utils import timezone
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
-from gerapy.server.core.models import Client, Project, Deploy, Monitor
+from gerapy.server.core.models import Client, Project, Deploy, Monitor, Scheduler
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree
@@ -127,6 +129,8 @@ def client_remove(request, client_id):
     """
     if request.method == 'POST':
         Client.objects.filter(id=client_id).delete()
+        # delete scheduler
+        Scheduler.objects.filter(client_id=client_id).delete()
         return JsonResponse({'result': '1'})
 
 
@@ -268,6 +272,8 @@ def project_remove(request, project_name):
         Deploy.objects.filter(project=project).delete()
         # delete project
         result = Project.objects.filter(name=project_name).delete()
+        # delete scheduler
+        Scheduler.objects.filter(project_name=project).delete()
         # get project path
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)
@@ -638,3 +644,24 @@ def monitor_create(request):
         data['configuration'] = json.dumps(data['configuration'])
         monitor = Monitor.objects.create(**data)
         return JsonResponse(model_to_dict(monitor))
+
+
+def add_scheduler(request):
+    """
+    Add Scheduler Jobs
+    :param request: request object
+    :return: Bool
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            model = Scheduler.objects.create(client_id=data['client_id'],
+                                             project_name=data['project_name'],
+                                             spider_name=data['spider_name'],
+                                             scheduler_at=data['scheduler_at'])
+            model.save()
+            return JsonResponse({"success": '1'})
+        except Exception as e:
+            traceback.print_exc(file=sys.stdout)
+            return JsonResponse({"success": '0'})
+    return HttpResponse("这是个POST接口")

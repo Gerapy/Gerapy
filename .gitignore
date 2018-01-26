@@ -5,3 +5,4 @@
 /dist
 /build
 npm-debug.log
+/test

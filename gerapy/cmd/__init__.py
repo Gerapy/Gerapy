@@ -2,6 +2,7 @@
 Usage:
   gerapy init [--folder=<folder>]
   gerapy migrate
+  gerapy makemigrations
   gerapy createsuperuser
   gerapy runserver [<host:port>]
 

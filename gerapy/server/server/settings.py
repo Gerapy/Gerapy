@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gerapy.server.core',
+    'django_apscheduler',
     'corsheaders'
 ]
 
@@ -73,10 +74,12 @@ WSGI_APPLICATION = 'gerapy.server.server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DB_PATH = os.path.join(os.getcwd(), 'db.sqlite3')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(os.getcwd(), 'db.sqlite3'),
+        'NAME': DB_PATH,
     }
 }
 

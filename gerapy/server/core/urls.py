@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^api/monitor/create', views.monitor_create, name='monitor_create'),
     url(r'^api/monitor/db/list', views.monitor_db_list, name='monitor_db_list'),
     url(r'^api/monitor/collection/list', views.monitor_collection_list, name='monitor_collection_list'),
+    url(r'^api/scheduler/add_scheduler', views.add_scheduler, name="add_scheduler")
 ]
