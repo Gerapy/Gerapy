@@ -563,12 +563,13 @@ def job_log(request, client_id, project_name, spider_name, job_id):
             response = requests.get(url, timeout=5, headers={
                 'Range': 'bytes=-1000'
             }, auth=(client.username, client.password) if client.auth else None)
-            # change encoding
-            response.encoding = response.apparent_encoding
+            # Get encoding
+            encoding = response.apparent_encoding
             # log not found
             if response.status_code == 404:
                 return JsonResponse({'message': 'Log Not Found'}, status=404)
-            text = response.text
+            # bytes to string
+            text = response.content.decode(encoding,errors='replace')
             return HttpResponse(text)
         except requests.ConnectionError:
             return JsonResponse({'message': 'Load Log Error'}, status=500)
