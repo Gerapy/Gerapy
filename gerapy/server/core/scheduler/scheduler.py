@@ -56,6 +56,6 @@ def scheduler_job():
 
 register_events(scheduler)
 
-scheduler.start()
+# scheduler.start()
 logger.info("Scheduler started!")
 print("Scheduler started!")

@@ -665,3 +665,20 @@ def add_scheduler(request):
             traceback.print_exc(file=sys.stdout)
             return JsonResponse({"success": '0'})
     return HttpResponse("这是个POST接口")
+
+
+def remove_scheduler(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            Scheduler.objects.filter(project_name=data['project_name']).delete()
+            return JsonResponse({"success": '1'})
+        except Exception as e:
+            return JsonResponse({"success": '0'})
+
+
+def get_all_scheduler(request):
+    if request.method == 'GET':
+        scheduler_all = Scheduler.objects.values()
+        print(scheduler_all)
+        return JsonResponse(scheduler_all)
