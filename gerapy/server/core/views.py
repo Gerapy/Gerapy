@@ -2,7 +2,6 @@ import sys
 import traceback
 import json, os, requests, time, pytz, pymongo, string
 from shutil import move, copy, rmtree
-from scrapyd_api import ScrapydAPI
 from requests.exceptions import ConnectionError
 from os.path import join, exists
 from django.shortcuts import render
@@ -16,7 +15,7 @@ from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Scheduler
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_template, get_traceback, scrapyd_url, log_url, get_tree
+    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd
 
 
 def index(request):
@@ -128,6 +127,8 @@ def client_remove(request, client_id):
     :return: json
     """
     if request.method == 'POST':
+        client = Client.objects.get(id=client_id)
+        Deploy.objects.filter(client=client).delete()
         Client.objects.filter(id=client_id).delete()
         # delete scheduler
         Scheduler.objects.filter(client_id=client_id).delete()
@@ -144,7 +145,7 @@ def spider_list(request, client_id, project_name):
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         try:
             spiders = scrapyd.list_spiders(project_name)
             spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
@@ -164,7 +165,7 @@ def spider_start(request, client_id, project_name, spider_name):
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         try:
             job = scrapyd.schedule(project_name, spider_name)
             return JsonResponse({'job': job})
@@ -181,7 +182,7 @@ def project_list(request, client_id):
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         try:
             projects = scrapyd.list_projects()
             return JsonResponse(projects)
@@ -280,7 +281,7 @@ def project_remove(request, project_name):
         # delete project file tree
         if exists(project_path):
             rmtree(project_path)
-        return JsonResponse({'result': '1'})
+        return JsonResponse({'result': result})
 
 
 def project_version(request, client_id, project_name):
@@ -295,7 +296,7 @@ def project_version(request, client_id, project_name):
         # get client and project model
         client = Client.objects.get(id=client_id)
         project = Project.objects.get(name=project_name)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         # if deploy info exists in db, return it
         if Deploy.objects.filter(client=client, project=project):
             deploy = Deploy.objects.get(client=client, project=project)
@@ -336,7 +337,7 @@ def project_deploy(request, client_id, project_name):
         client = Client.objects.get(id=client_id)
         project = Project.objects.get(name=project_name)
         # execute deploy operation
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         try:
             scrapyd.add_version(project_name, int(time.time()), egg_file.read())
             # update deploy info
@@ -535,7 +536,7 @@ def job_list(request, client_id, project_name):
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+        scrapyd = get_scrapyd(client)
         try:
             result = scrapyd.list_jobs(project_name)
             jobs = []
@@ -567,7 +568,7 @@ def job_log(request, client_id, project_name, spider_name, job_id):
             # get last 1000 bytes of log
             response = requests.get(url, timeout=5, headers={
                 'Range': 'bytes=-1000'
-            })
+            }, auth=(client.username, client.password) if client.auth else None)
             # change encoding
             response.encoding = response.apparent_encoding
             # log not found
@@ -591,7 +592,7 @@ def job_cancel(request, client_id, project_name, job_id):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         try:
-            scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+            scrapyd = get_scrapyd(client)
             result = scrapyd.cancel(project_name, job_id)
             return JsonResponse(result)
         except ConnectionError:
