@@ -12,7 +12,7 @@ from django.utils import timezone
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
-from gerapy.server.core.models import Client, Project, Deploy, Monitor, Scheduler
+from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd
@@ -647,39 +647,46 @@ def monitor_create(request):
         return JsonResponse(model_to_dict(monitor))
 
 
-def add_scheduler(request):
+def task_create(request):
     """
-    Add Scheduler Jobs
+    add task
     :param request: request object
     :return: Bool
     """
     if request.method == 'POST':
         data = json.loads(request.body)
         try:
-            model = Scheduler.objects.create(client_id=data['client_id'],
-                                             project_name=data['project_name'],
-                                             spider_name=data['spider_name'],
-                                             scheduler_at=data['scheduler_at'])
-            model.save()
-            return JsonResponse({"success": '1'})
-        except Exception as e:
+            client = Client.objects.get(id=data.get('client'))
+            task = Task.objects.create(client=client,
+                                       project=data.get('project'),
+                                       spider=data.get('spider'),
+                                       configuration=json.dumps(data.get('configuration')))
+            return JsonResponse({'result': '1', 'data': model_to_dict(task)})
+        except:
             traceback.print_exc(file=sys.stdout)
-            return JsonResponse({"success": '0'})
-    return HttpResponse("这是个POST接口")
+            return JsonResponse({'result': '0'})
 
 
-def remove_scheduler(request):
+def task_remove(request, task_id):
+    """
+    remove task by task_id
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
-        data = json.loads(request.body)
         try:
-            Scheduler.objects.filter(project_name=data['project_name']).delete()
-            return JsonResponse({"success": '1'})
-        except Exception as e:
-            return JsonResponse({"success": '0'})
+            Task.objects.filter(id=task_id).delete()
+            return JsonResponse({'result': '1'})
+        except:
+            return JsonResponse({'result': '0'})
 
 
-def get_all_scheduler(request):
+def task_index(request):
+    """
+    get all tasks
+    :param request:
+    :return:
+    """
     if request.method == 'GET':
-        scheduler_all = Scheduler.objects.values()
-        print(scheduler_all)
-        return JsonResponse(scheduler_all)
+        tasks = Task.objects.values()
+        return JsonResponse({'result': '1', 'data': tasks})

@@ -50,14 +50,14 @@ class Monitor(Model):
     updated_at = DateTimeField(auto_now=True)
 
 
-class Scheduler(Model):
-    client_id = IntegerField(default=0, verbose_name="客户端ID")
-    project_name = CharField(max_length=255, verbose_name="项目名字")
-    spider_name = CharField(max_length=255, verbose_name="Spider名字")
-    scheduler_at = IntegerField(default=0, verbose_name="调度间隔时间")
-    updated_at = DateTimeField(auto_now=True, verbose_name="上一次调度时间")
-    success = BooleanField(default=False, verbose_name="是否调度成功")
-    job_id = CharField(max_length=255, default="", blank=True, verbose_name="调度返回的作业ID")
-
-    class Meta:
-        verbose_name = '调度'
+class Task(Model):
+    client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
+    project = CharField(max_length=255, default='', blank=True)
+    spider = CharField(max_length=255, default='', blank=True)
+    args = TextField(default='', blank=True)
+    configuration = TextField(default='', blank=True)
+    success = IntegerField(default=0, blank=True)
+    error = IntegerField(default=0, blank=True)
+    last = DateTimeField(auto_now=True)
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)
