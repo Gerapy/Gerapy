@@ -690,4 +690,5 @@ def task_index(request):
     """
     if request.method == 'GET':
         tasks = Task.objects.values()
+        print(tasks)
         return JsonResponse({'result': '1', 'data': tasks})

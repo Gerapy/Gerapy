@@ -3,8 +3,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^api/task/create', views.task_create, name='task_create'),
     url(r'^api/task/$', views.task_index, name='task_index'),
+    url(r'^api/task/create', views.task_create, name='task_create'),
     url(r'^api/task/(\d+)/remove', views.task_remove, name='task_remove'),
     url(r'^api/index/status/$', views.index_status, name='index_status'),
     url(r'^api/client/$', views.client_index, name='client_index'),
