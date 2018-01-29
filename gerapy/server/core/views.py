@@ -128,10 +128,12 @@ def client_remove(request, client_id):
     """
     if request.method == 'POST':
         client = Client.objects.get(id=client_id)
+        # delete deploy
         Deploy.objects.filter(client=client).delete()
+        # delete task
+        Task.objects.filter(client_id=client_id).delete()
+        # delete client
         Client.objects.filter(id=client_id).delete()
-        # delete scheduler
-        Scheduler.objects.filter(client_id=client_id).delete()
         return JsonResponse({'result': '1'})
 
 
@@ -273,8 +275,6 @@ def project_remove(request, project_name):
         Deploy.objects.filter(project=project).delete()
         # delete project
         result = Project.objects.filter(name=project_name).delete()
-        # delete scheduler
-        Scheduler.objects.filter(project_name=project).delete()
         # get project path
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)
@@ -575,7 +575,7 @@ def job_log(request, client_id, project_name, spider_name, job_id):
             if response.status_code == 404:
                 return JsonResponse({'message': 'Log Not Found'}, status=404)
             # bytes to string
-            text = response.content.decode(encoding,errors='replace')
+            text = response.content.decode(encoding, errors='replace')
             return HttpResponse(text)
         except requests.ConnectionError:
             return JsonResponse({'message': 'Load Log Error'}, status=500)
