@@ -275,6 +275,8 @@ def project_remove(request, project_name):
         Deploy.objects.filter(project=project).delete()
         # delete project
         result = Project.objects.filter(name=project_name).delete()
+        # delete scheduler
+        Task.objects.filter(project_name=project).delete()
         # get project path
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)

@@ -47,10 +47,9 @@ def scheduler_job():
             scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
             try:
                 job = scrapyd.schedule(project_name, spider_name)
-                model.job_id = job
-                model.success = True
+                model.success = 1
             except ConnectionError:
-                model.success = False
+                model.success = 0
             finally:
                 model.save()
 
