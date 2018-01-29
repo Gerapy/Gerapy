@@ -5,7 +5,8 @@ Usage:
   gerapy makemigrations
   gerapy createsuperuser
   gerapy runserver [<host:port>]
-
+  gerapy loaddata <source>
+  gerapy dumpdata [<appname>]
 Options:
   -h --help
   -v --version

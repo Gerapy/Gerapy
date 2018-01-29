@@ -5,6 +5,7 @@ import traceback
 from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
 from jinja2 import Template
+from scrapyd_api import ScrapydAPI
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -17,6 +18,12 @@ TEMPLATES_TO_RENDER = (
     ('${project_name}', 'pipelines.py.tmpl'),
     ('${project_name}', 'middlewares.py.tmpl'),
 )
+
+
+def get_scrapyd(client):
+    if not client.auth:
+        return ScrapydAPI(scrapyd_url(client.ip, client.port))
+    return ScrapydAPI(scrapyd_url(client.ip, client.port), auth=(client.username, client.password))
 
 
 def scrapyd_url(ip, port):

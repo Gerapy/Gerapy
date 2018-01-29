@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^api/task/create', views.task_create, name='task_create'),
+    url(r'^api/task/$', views.task_index, name='task_index'),
+    url(r'^api/task/(\d+)/remove', views.task_remove, name='task_remove'),
     url(r'^api/index/status/$', views.index_status, name='index_status'),
     url(r'^api/client/$', views.client_index, name='client_index'),
     url(r'^api/client/create', views.client_create, name='client_create'),
@@ -33,7 +36,4 @@ urlpatterns = [
     url(r'^api/monitor/create', views.monitor_create, name='monitor_create'),
     url(r'^api/monitor/db/list', views.monitor_db_list, name='monitor_db_list'),
     url(r'^api/monitor/collection/list', views.monitor_collection_list, name='monitor_collection_list'),
-    url(r'^api/scheduler/add_scheduler', views.add_scheduler, name="add_scheduler"),
-    url(r'^api/scheduler/get_all_scheduler', views.get_all_scheduler, name="get_all_scheduler"),
-    url(r'^api/scheduler/remove_scheduler', views.remove_scheduler, name="remove_scheduler")
 ]

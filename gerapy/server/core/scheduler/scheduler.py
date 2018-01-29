@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : scheduler.py
 # @Software: PyCharm
+
 import time
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -13,7 +14,7 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from scrapyd_api import ScrapydAPI
 
 from gerapy.server.core.utils import scrapyd_url
-from gerapy.server.core.models import Scheduler, Client
+from gerapy.server.core.models import Task, Client
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ def scheduler_job():
     每分钟检查一次定时任务
     :return:
     """
-    models = Scheduler.objects.all()
+    models = Task.objects.all()
     for model in models:
         scheduler_at = model.scheduler_at
         updated_at = model.updated_at
@@ -46,10 +47,9 @@ def scheduler_job():
             scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
             try:
                 job = scrapyd.schedule(project_name, spider_name)
-                model.job_id = job
-                model.success = True
+                model.success = 1
             except ConnectionError:
-                model.success = False
+                model.success = 0
             finally:
                 model.save()
 
