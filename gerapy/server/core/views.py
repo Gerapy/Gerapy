@@ -680,5 +680,4 @@ def remove_scheduler(request):
 def get_all_scheduler(request):
     if request.method == 'GET':
         scheduler_all = Scheduler.objects.values()
-        print(scheduler_all)
         return JsonResponse(scheduler_all)
