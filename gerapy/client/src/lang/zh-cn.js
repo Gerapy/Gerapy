@@ -11,7 +11,9 @@ export default {
     log: '日志',
     logs: '日志',
     item: '实体',
-    items: '实体'
+    items: '实体',
+    task: '任务',
+    tasks: '任务',
   },
   buttons: {
     confirm: '确定',
@@ -74,6 +76,7 @@ export default {
   menus: {
     clients: '主机管理',
     projects: '项目管理',
+    tasks: '任务管理',
   },
   messages: {
     loading: '加载中...',

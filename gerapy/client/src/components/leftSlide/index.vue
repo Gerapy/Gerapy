@@ -21,6 +21,12 @@
           <i class="icon fa fa-folder-o"></i>
           <span v-text="$lang[$store.state.lang].menus.projects" class="text"></span>
         </el-menu-item>
+        <el-menu-item
+          class="menu-list"
+          index="/task">
+          <i class="icon fa fa-hdd-o"></i>
+          <span v-text="$lang[$store.state.lang].menus.tasks" class="text"></span>
+        </el-menu-item>
       </el-menu>
     </div>
   </div>

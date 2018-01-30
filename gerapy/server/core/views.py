@@ -666,7 +666,6 @@ def task_create(request):
                                        configuration=json.dumps(data.get('configuration')))
             return JsonResponse({'result': '1', 'data': model_to_dict(task)})
         except:
-            traceback.print_exc(file=sys.stdout)
             return JsonResponse({'result': '0'})
 
 
@@ -692,5 +691,4 @@ def task_index(request):
     """
     if request.method == 'GET':
         tasks = Task.objects.values()
-        print(tasks)
         return JsonResponse({'result': '1', 'data': tasks})

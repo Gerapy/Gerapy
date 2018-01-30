@@ -11,7 +11,9 @@ export default {
     log: 'log',
     logs: 'logs',
     item: 'item',
-    items: 'items'
+    items: 'items',
+    task: 'task',
+    tasks: 'tasks',
   },
   buttons: {
     confirm: 'confirm',
@@ -74,6 +76,7 @@ export default {
   menus: {
     clients: 'Clients',
     projects: 'Projects',
+    tasks: 'Tasks',
   },
   messages: {
     loading: 'Loading...',
