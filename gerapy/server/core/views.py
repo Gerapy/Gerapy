@@ -12,7 +12,7 @@ from django.utils import timezone
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
-from gerapy.server.core.models import Client, Project, Deploy, Monitor
+from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd
@@ -649,46 +649,46 @@ def monitor_create(request):
         monitor = Monitor.objects.create(**data)
         return JsonResponse(model_to_dict(monitor))
 
-#
-# def task_create(request):
-#     """
-#     add task
-#     :param request: request object
-#     :return: Bool
-#     """
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         try:
-#             client = Client.objects.get(id=data.get('client'))
-#             task = Task.objects.create(client=client,
-#                                        project=data.get('project'),
-#                                        spider=data.get('spider'),
-#                                        configuration=json.dumps(data.get('configuration')))
-#             return JsonResponse({'result': '1', 'data': model_to_dict(task)})
-#         except:
-#             return JsonResponse({'result': '0'})
-#
-#
-# def task_remove(request, task_id):
-#     """
-#     remove task by task_id
-#     :param request:
-#     :return:
-#     """
-#     if request.method == 'POST':
-#         try:
-#             Task.objects.filter(id=task_id).delete()
-#             return JsonResponse({'result': '1'})
-#         except:
-#             return JsonResponse({'result': '0'})
-#
-#
-# def task_index(request):
-#     """
-#     get all tasks
-#     :param request:
-#     :return:
-#     """
-#     if request.method == 'GET':
-#         tasks = Task.objects.values()
-#         return JsonResponse({'result': '1', 'data': tasks})
+
+def task_create(request):
+    """
+    add task
+    :param request: request object
+    :return: Bool
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            client = Client.objects.get(id=data.get('client'))
+            task = Task.objects.create(client=client,
+                                       project=data.get('project'),
+                                       spider=data.get('spider'),
+                                       configuration=json.dumps(data.get('configuration')))
+            return JsonResponse({'result': '1', 'data': model_to_dict(task)})
+        except:
+            return JsonResponse({'result': '0'})
+
+
+def task_remove(request, task_id):
+    """
+    remove task by task_id
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        try:
+            Task.objects.filter(id=task_id).delete()
+            return JsonResponse({'result': '1'})
+        except:
+            return JsonResponse({'result': '0'})
+
+
+def task_index(request):
+    """
+    get all tasks
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        tasks = Task.objects.values()
+        return JsonResponse({'result': '1', 'data': tasks})
