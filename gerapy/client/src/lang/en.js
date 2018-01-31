@@ -158,7 +158,10 @@ export default {
     user: 'User',
     password: 'Password',
     username: 'Username',
-    auth: 'Auth'
+    auth: 'Auth',
+    spider: 'Spider',
+    project: 'Project',
+    clients: 'Clients',
+    trigger: 'Trigger'
   },
-
 }

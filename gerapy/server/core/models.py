@@ -51,7 +51,7 @@ class Monitor(Model):
 
 
 class Task(Model):
-    client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
+    clients = TextField(null=True, blank=True)
     project = CharField(max_length=255, null=True, blank=True)
     spider = CharField(max_length=255, null=True, blank=True)
     name = CharField(max_length=255, null=True, blank=True)

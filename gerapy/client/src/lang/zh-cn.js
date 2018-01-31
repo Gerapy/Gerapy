@@ -158,7 +158,11 @@ export default {
     user: '用户名',
     username: '用户名',
     password: '密码',
-    auth: '认证'
+    auth: '认证',
+    spider: '爬虫',
+    project: '项目',
+    clients: '主机',
+    trigger: '调度方式',
   },
 
 }

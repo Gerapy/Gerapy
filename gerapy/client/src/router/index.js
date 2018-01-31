@@ -23,6 +23,7 @@ import projectConfigureComponent from 'pages/project/configure'
 import projectDeployComponent from 'pages/project/deploy'
 // task
 import taskIndexComponent from 'pages/task/index'
+import taskCreateComponent from 'pages/task/create'
 
 
 Vue.use(VueRouter)
@@ -116,6 +117,14 @@ const routes = [{
     component: taskIndexComponent,
     meta: {
       title: "任务管理",
+      auth: false
+    }
+  }, {
+    path: '/task/create',
+    name: 'taskCreate',
+    component: taskCreateComponent,
+    meta: {
+      title: "任务添加",
       auth: false
     }
   }]

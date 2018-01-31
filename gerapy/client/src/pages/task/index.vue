@@ -28,20 +28,20 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="fields.name"
+          prop="name"
           :label="$lang[$store.state.lang].columns.name"
           width="200">
         </el-table-column>
         <el-table-column
           align="center"
-          prop="fields.ip"
-          :label="$lang[$store.state.lang].columns.ip"
+          prop="project"
+          :label="$lang[$store.state.lang].columns.project"
           width="200">
         </el-table-column>
         <el-table-column
           align="center"
-          prop="port"
-          :label="$lang[$store.state.lang].columns.port">
+          prop="spider"
+          :label="$lang[$store.state.lang].columns.spider">
         </el-table-column>
         <el-table-column
           align="center"
@@ -51,12 +51,6 @@
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
                 {{ $lang[$store.state.lang].buttons.edit }}
-              </el-button>
-            </router-link>
-            <router-link :to="{name: 'taskSchedule', params: {id: props.row.pk }}" tag="span">
-              <el-button type="success" size="mini">
-                <i class="fa fa-sitemap"></i>
-                {{ $lang[$store.state.lang].buttons.schedule }}
               </el-button>
             </router-link>
             <el-button type="danger" size="mini" @click="onSingleDelete(props.row.pk)">
@@ -90,12 +84,6 @@
         loadData: true,
         //批量选择数组
         batchSelect: [],
-        tasksStatus: {},
-        statusClass: {
-          '1': 'success',
-          '0': 'warning',
-          '-1': 'danger',
-        },
         statusText: {
           '1': this.$lang[this.$store.state.lang].buttons.normal,
           '0': this.$lang[this.$store.state.lang].buttons.connecting,
@@ -120,20 +108,6 @@
       changeFilter () {
         this.lastIds = {}
         this.getTaskData()
-      },
-      getTasksStatus() {
-        this.tasks.forEach((task) => {
-          this.getTaskStatus(task.pk)
-        })
-      },
-      getTaskStatus(id) {
-        this.$fetch.apiTask.status({
-          id: id
-        }).then(({data: {result: result}}) => {
-          this.$set(this.tasksStatus, id, result)
-        }).catch(() => {
-          this.$set(this.tasksStatus, id, -1)
-        })
       },
       //获取数据
       getTaskData(){
