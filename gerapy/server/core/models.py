@@ -42,9 +42,9 @@ class Deploy(Model):
 
 class Monitor(Model):
     name = CharField(max_length=255, default=None)
-    description = CharField(max_length=255, default='', blank=True)
-    type = CharField(max_length=255, default='', blank=True)
-    configuration = TextField(default='', blank=True)
+    description = CharField(max_length=255, null=True, blank=True)
+    type = CharField(max_length=255, null=True, blank=True)
+    configuration = TextField(null=True, blank=True)
     project = ForeignKey(Project, blank=True, null=True, on_delete=DO_NOTHING)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
@@ -52,12 +52,14 @@ class Monitor(Model):
 
 class Task(Model):
     client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
-    project = CharField(max_length=255, default='', blank=True)
-    spider = CharField(max_length=255, default='', blank=True)
-    args = TextField(default='', blank=True)
-    configuration = TextField(default='', blank=True)
+    project = CharField(max_length=255, null=True, blank=True)
+    spider = CharField(max_length=255, null=True, blank=True)
+    name = CharField(max_length=255, null=True, blank=True)
+    args = TextField(null=True, blank=True)
+    description = TextField(null=True, blank=True)
     success = IntegerField(default=0, blank=True)
     error = IntegerField(default=0, blank=True)
-    last = DateTimeField(auto_now=True)
+    last = DateTimeField(null=True, blank=True)
+    configuration = TextField(null=True, blank=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)

@@ -22,17 +22,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          :label="$lang[$store.state.lang].columns.status"
-          width="100">
-          <template scope="props">
-            <el-button :type="statusClass[tasksStatus[props.row.pk]]" size="mini">
-              {{ statusText[tasksStatus[props.row.pk]] }}
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="pk"
+          prop="id"
           :label="$lang[$store.state.lang].columns.id"
           width="60">
         </el-table-column>
@@ -50,19 +40,8 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="fields.port"
+          prop="port"
           :label="$lang[$store.state.lang].columns.port">
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="fields.auth"
-          width="80"
-          :label="$lang[$store.state.lang].columns.auth">
-          <template scope="props">
-            <span>
-              {{ props.row.fields.auth ? '✓' : '✗' }}
-            </span>
-          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -160,7 +139,7 @@
       getTaskData(){
         this.loadData = true
         this.$fetch.apiTask.index(
-        ).then(({data: tasks}) => {
+        ).then(({data: {data: tasks}}) => {
           this.tasks = tasks
           this.loadData = false
         }).catch(() => {

@@ -6,3 +6,4 @@
 /build
 npm-debug.log
 /test
+db.sqlite3
