@@ -16,3 +16,28 @@ export function create(data) {
     data,
   })
 }
+
+export function info(params) {
+  return fetch({
+    url: task.info,
+    method: 'get',
+    params
+  })
+}
+
+export function update(params, data) {
+  return fetch({
+    url: task.update,
+    method: 'post',
+    params,
+    data,
+  })
+}
+
+export function remove(params) {
+  return fetch({
+    url: task.remove,
+    method: 'post',
+    params,
+  })
+}

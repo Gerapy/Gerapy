@@ -138,7 +138,7 @@
             <el-form-item>
               <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
                 <i class="fa fa-check"></i>
-                {{ $lang[$store.state.lang].buttons.create }}
+                {{ $lang[$store.state.lang].buttons.update }}
               </el-button>
               <el-button @click="$router.back()" size="small">
                 <i class="fa fa-reply"></i>
@@ -186,6 +186,7 @@
             day_of_week: null,
           }
         },
+        routeId: this.$route.params.id,
         clientOptions: [],
         dateOptions: {
           disabledDate(time) {
@@ -232,6 +233,7 @@
     },
     created() {
       this.getClientData()
+      this.getTaskData()
     },
     methods: {
       getClientData(){
@@ -248,12 +250,22 @@
           this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
         })
       },
+      getTaskData() {
+        this.$fetch.apiTask.info({
+          id: this.routeId
+        }).then(({data: {data: client}}) => {
+          console.log(client)
+          this.form = client
+        }).catch(() => {
+          this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+        })
+      },
       onSubmitForm(){
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
           this.onSubmitLoading = true
-          this.$fetch.apiTask.create(this.form).then(() => {
+          this.$fetch.apiTask.update({id: this.routeId}, this.form).then(() => {
             this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {

@@ -340,16 +340,13 @@ def project_deploy(request, client_id, project_name):
         project = Project.objects.get(name=project_name)
         # execute deploy operation
         scrapyd = get_scrapyd(client)
-        try:
-            scrapyd.add_version(project_name, int(time.time()), egg_file.read())
-            # update deploy info
-            deployed_at = timezone.now()
-            Deploy.objects.filter(client=client, project=project).delete()
-            deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at,
-                                                             description=project.description)
-            return JsonResponse(model_to_dict(deploy))
-        except Exception:
-            return JsonResponse({'message': get_traceback()}, status=500)
+        scrapyd.add_version(project_name, int(time.time()), egg_file.read())
+        # update deploy info
+        deployed_at = timezone.now()
+        Deploy.objects.filter(client=client, project=project).delete()
+        deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at,
+                                                         description=project.description)
+        return JsonResponse(model_to_dict(deploy))
 
 
 def project_build(request, project_name):
@@ -658,15 +655,31 @@ def task_create(request):
     """
     if request.method == 'POST':
         data = json.loads(request.body)
-        try:
-            client = Client.objects.get(id=data.get('client'))
-            task = Task.objects.create(client=client,
-                                       project=data.get('project'),
-                                       spider=data.get('spider'),
-                                       configuration=json.dumps(data.get('configuration')))
-            return JsonResponse({'result': '1', 'data': model_to_dict(task)})
-        except:
-            return JsonResponse({'result': '0'})
+        task = Task.objects.create(clients=json.dumps(data.get('clients')),
+                                   project=data.get('project'),
+                                   name=data.get('name'),
+                                   spider=data.get('spider'),
+                                   trigger=data.get('trigger'),
+                                   configuration=json.dumps(data.get('configuration')))
+        return JsonResponse({'result': '1', 'data': model_to_dict(task)})
+
+
+def task_update(request, task_id):
+    """
+    update task info
+    :param request: request object
+    :param task_id: task id
+    :return: json
+    """
+    if request.method == 'POST':
+        task = Task.objects.filter(id=task_id)
+        data = json.loads(request.body)
+        print(data)
+        data['clients'] = json.dumps(data.get('clients'))
+        data['configuration'] = json.dumps(data.get('configuration'))
+        print(data)
+        task.update(**data)
+        return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
 
 
 def task_remove(request, task_id):
@@ -681,6 +694,22 @@ def task_remove(request, task_id):
             return JsonResponse({'result': '1'})
         except:
             return JsonResponse({'result': '0'})
+
+
+def task_info(request, task_id):
+    """
+    get task info
+    :param request: request object
+    :param task_id: task id
+    :return: json
+    """
+    if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        data = model_to_dict(task)
+        print(data)
+        data['clients'] = json.loads(data.get('clients'))
+        data['configuration'] = json.loads(data.get('configuration'))
+        return JsonResponse({'data': data})
 
 
 def task_index(request):

@@ -47,13 +47,13 @@
           align="center"
           :label="$lang[$store.state.lang].columns.operations">
           <template scope="props">
-            <router-link :to="{name: 'taskEdit', params: {id: props.row.pk }}" tag="span">
+            <router-link :to="{name: 'taskEdit', params: {id: props.row.id }}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
                 {{ $lang[$store.state.lang].buttons.edit }}
               </el-button>
             </router-link>
-            <el-button type="danger" size="mini" @click="onSingleDelete(props.row.pk)">
+            <el-button type="danger" size="mini" @click="onSingleDelete(props.row.id)">
               <i class="fa fa-remove"></i>
               {{ $lang[$store.state.lang].buttons.delete }}
             </el-button>
