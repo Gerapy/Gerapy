@@ -1,8 +1,11 @@
 {
-  "name": "vue-element-admin",
+  "name": "Gerapy",
   "version": "1.0.0",
-  "description": "A vue-element-admin project",
-  "author": "zzmhot <zzmhot@163.com>",
+  "description": "A Web Spider Management System",
+  "author": [
+    "zzmhot",
+    "Germey"
+  ],
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

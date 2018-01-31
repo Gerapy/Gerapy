@@ -108,13 +108,16 @@ export default {
     confirm: '确定要执行此操作?',
     reGenerate: '重新生成代码会清除之前的打包，确定要重新生成吗？',
     canceling: '正在取消，请稍后',
-    buildFirst: '请先打包项目'
+    buildFirst: '请先打包项目',
+    loadError: '加载失败',
+    select: '请选择'
   },
   descriptions: {
     normalClients: '主机正常运行',
     errorClients: '主机连接失败',
     countProjects: '项目',
-    notGenerated: '未生成'
+    notGenerated: '未生成',
+    chooseDateTime: '选择日期时间'
   },
   columns: {
     id: 'ID',
@@ -163,6 +166,24 @@ export default {
     project: '项目',
     clients: '主机',
     trigger: '调度方式',
+    year: '年',
+    years: '年',
+    month: '月',
+    months: '月',
+    week: '周',
+    weeks: '周',
+    day: '天',
+    days: '天',
+    hour: '时',
+    hours: '时',
+    minute: '分',
+    minutes: '分',
+    second: '秒',
+    seconds: '秒',
+    startDate: '开始日期',
+    endDate: '结束日期',
+    runDate: '运行时间',
+    dayOfWeek: '每周几'
   },
 
 }

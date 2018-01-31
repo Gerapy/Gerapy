@@ -5,17 +5,18 @@
          v-loading="loadData"
          :element-loading-text="$lang[$store.state.lang].messages.loading">
       <el-row>
-        <el-col :span="8">
-          <el-form ref="form" :model="form" label-width="100px">
+        <el-col :span="10">
+          <el-form ref="form" :model="form" :rules="rules" label-width="100px">
             <el-form-item :label="$lang[$store.state.lang].columns.name" prop="name">
               <el-input v-model="form.name"
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.name"
                         size="small"></el-input>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.clients">
-              <el-select v-model="clients" multiple placeholder="请选择" size="small">
+            <el-form-item :label="$lang[$store.state.lang].columns.clients" prop="clients">
+              <el-select v-model="form.clients" multiple :placeholder="$lang[$store.state.lang].messages.select"
+                         size="small">
                 <el-option
-                  v-for="item in options"
+                  v-for="item in clientOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -23,17 +24,17 @@
               </el-select>
             </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.project" prop="project">
-              <el-input v-model="project"
+              <el-input v-model="form.project"
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.project"
                         size="small"></el-input>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.spider" prop="project">
-              <el-input v-model="project"
+            <el-form-item :label="$lang[$store.state.lang].columns.spider" prop="spider">
+              <el-input v-model="form.spider"
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.spider"
                         size="small"></el-input>
             </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.trigger" prop="trigger">
-              <el-select v-model="trigger" placeholder="请选择" size="small">
+              <el-select v-model="form.trigger" :placeholder="$lang[$store.state.lang].messages.select" size="small">
                 <el-option
                   v-for="item in triggerOptions"
                   :key="item.value"
@@ -42,60 +43,96 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <div v-if="trigger=='date'">
-              <el-form-item label="Rundate" prop="timezone">
-                <el-date-picker v-model="configuration.run_date" type="date"
-                                placeholder="选择日期" size="small"
-                                :picker-options="dateOptions">
-                </el-date-picker>
-                <el-time-picker v-model="configuration.run_time"
-                                :picker-options="timeOptions"
-                                size="small"></el-time-picker>
-              </el-form-item>
-            </div>
-            <div v-if="trigger=='interval'">
-              <el-form-item label="run_date" prop="timezone" class="line-run-date">
-                <el-input v-model="configuration.weeks"
-                          placeholder="weeks"
-                          class="inline" type="number"
-                          size="small"></el-input>
-                <el-input v-model="configuration.days"
-                          class="inline" type="number"
-                          placeholder="days"
-                          size="small"></el-input>
-                <el-input v-model="configuration.hours"
-                          class="inline" type="number"
-                          placeholder="hours"
-                          size="small"></el-input>
-                <el-input v-model="configuration.minutes"
-                          class="inline" type="number"
-                          placeholder="minutes"
-                          size="small"></el-input>
-                <el-input v-model="configuration.seconds"
-                          class="inline" type="number"
-                          placeholder="seconds"
-                          size="small"></el-input>
-                <el-date-picker
-                  v-model="configuration.start_date"
-                  type="datetime" size="small"
-                  placeholder="Start date">
-                </el-date-picker>
-                <el-date-picker
-                  v-model="configuration.end_date"
-                  type="datetime" size="small"
-                  placeholder="end date">
+            <div v-if="form.trigger=='date'">
+              <el-form-item :label="$lang[$store.state.lang].columns.runDate">
+                <el-date-picker v-model="form.configuration.run_time"
+                                type="datetime" size="small" :picker-options="dateOptions"
+                                :placeholder="$lang[$store.state.lang].descriptions.chooseDateTime">
                 </el-date-picker>
               </el-form-item>
             </div>
-            <div v-if="trigger=='cron'">
-              <el-form-item label="run_date" prop="timezone">
-                <el-input v-model="configuration.run_time"
-                          :picker-options="timeOptions"
+            <div v-if="form.trigger=='interval'">
+              <el-form-item :label="$lang[$store.state.lang].columns.runDate">
+                <el-input v-model="form.configuration.months"
+                          :placeholder="$lang[$store.state.lang].columns.months"
+                          class="inline width-100" type="number"
                           size="small"></el-input>
+                <el-input v-model="form.configuration.weeks"
+                          :placeholder="$lang[$store.state.lang].columns.weeks"
+                          class="inline width-100" type="number"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.days"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.days"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.hours"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.hours"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.minutes"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.minutes"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.seconds"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.seconds"
+                          size="small"></el-input>
+                <el-date-picker
+                  v-model="form.configuration.start_date"
+                  type="datetime" size="small" :picker-options="dateOptions"
+                  :placeholder="$lang[$store.state.lang].columns.startDate">
+                </el-date-picker>
+                <el-date-picker
+                  v-model="form.configuration.end_date" :picker-options="dateOptions"
+                  type="datetime" size="small"
+                  :placeholder="$lang[$store.state.lang].columns.endDate">
+                </el-date-picker>
               </el-form-item>
-              <el-form-item label="timezone" prop="timezone">
-                <el-input v-model="configuration.timezone"
+            </div>
+            <div v-if="form.trigger=='cron'">
+              <el-form-item :label="$lang[$store.state.lang].columns.runDate">
+                <el-input v-model="form.configuration.year"
+                          :placeholder="$lang[$store.state.lang].columns.year"
+                          class="inline width-100" type="number"
                           size="small"></el-input>
+                <el-input v-model="form.configuration.month"
+                          :placeholder="$lang[$store.state.lang].columns.month"
+                          class="inline width-100" type="number"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.day"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.day"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.week"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.week"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.day_of_week"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.dayOfWeek"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.hour"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.hour"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.minute"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.minute"
+                          size="small"></el-input>
+                <el-input v-model="form.configuration.second"
+                          class="inline width-100" type="number"
+                          :placeholder="$lang[$store.state.lang].columns.second"
+                          size="small"></el-input>
+                <el-date-picker
+                  v-model="form.configuration.start_date"
+                  type="datetime" size="small" :picker-options="dateOptions"
+                  :placeholder="$lang[$store.state.lang].columns.startDate">
+                </el-date-picker>
+                <el-date-picker
+                  v-model="form.configuration.end_date" :picker-options="dateOptions"
+                  type="datetime" size="small"
+                  :placeholder="$lang[$store.state.lang].columns.endDate">
+                </el-date-picker>
               </el-form-item>
             </div>
             <el-form-item>
@@ -108,7 +145,6 @@
                 {{ $lang[$store.state.lang].buttons.return }}
               </el-button>
             </el-form-item>
-
           </el-form>
         </el-col>
       </el-row>
@@ -123,34 +159,39 @@
   export default{
     data(){
       return {
-        clients: [],
-        trigger: null,
-        configuration: {
-          run_date: null,
-          run_time: null,
-          weeks: null,
-          days: null,
-          hours: null,
-          minutes: null,
-          seconds: null,
-          start_date: null,
-          end_date: null,
+        form: {
+          name: null,
+          clients: [],
+          trigger: null,
+          project: null,
+          spider: null,
+          configuration: {
+            run_date: null,
+            run_time: null,
+            months: null,
+            weeks: null,
+            days: null,
+            hours: null,
+            minutes: null,
+            seconds: null,
+            start_date: null,
+            end_date: null,
+            month: null,
+            week: null,
+            day: null,
+            hour: null,
+            minute: null,
+            second: null,
+            year: null,
+            day_of_week: null,
+          }
         },
+        clientOptions: [],
         dateOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7
           }
         },
-        timeOptions: {
-          selectableRange: '00:00:00 - 23:59:59'
-        },
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '黄金糕2'
-        }],
         triggerOptions: [{
           value: 'date',
           label: 'Date',
@@ -161,29 +202,65 @@
           value: 'cron',
           label: 'Crontab'
         }],
-        form: {
-          name: '',
-          ip: '',
-          port: '',
-          description: '',
-          auth: false,
-          username: '',
-          password: ''
-        },
         loadData: false,
         onSubmitLoading: false,
+        rules: {
+          name: [
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.name + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            },
+          ],
+          project: [
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.project + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            }
+          ],
+          spider: [
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.spider + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            }
+          ],
+          trigger: [
+            {
+              required: true,
+              message: this.$lang[this.$store.state.lang].columns.trigger + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              trigger: 'blur'
+            }
+          ]
+        }
+
       }
     },
+    created() {
+      this.getClientData()
+    },
     methods: {
-      //提交
+      getClientData(){
+        this.$fetch.apiClient.index(
+        ).then(({data: clients}) => {
+          clients.forEach((item) => {
+            this.clientOptions.push({
+              value: item.pk,
+              label: item.fields.name
+            })
+          })
+        }).catch(() => {
+          this.clients = []
+          this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+        })
+      },
       onSubmitForm(){
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
           this.onSubmitLoading = true
-          this.$fetch.apiTask.create(
-            this.form
-          ).then(() => {
+          this.$fetch.apiTask.create(this.form).then(() => {
             this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {
@@ -195,15 +272,16 @@
     components: {
       ElFormItem,
       panelTitle
-    }
+    },
+    computed: {}
   }
 </script>
 <style>
-  .line-run-date {
-    width: 1000px
+  .width-100 {
+    width: 100px;
   }
 
-  .line-run-date .inline {
-    width: 200px
+  .width-200 {
+    width: 200px;
   }
 </style>

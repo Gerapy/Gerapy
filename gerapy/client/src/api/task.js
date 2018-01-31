@@ -8,3 +8,11 @@ export function index(params) {
     params,
   })
 }
+
+export function create(data) {
+  return fetch({
+    url: task.create,
+    method: 'post',
+    data,
+  })
+}

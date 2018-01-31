@@ -108,13 +108,16 @@ export default {
     confirm: 'Are You Sure?',
     reGenerate: 'ReGenerate Will Remove All Built Packages, Are You Sure to ReGenerate?',
     canceling: 'Canceling... Please Wait',
-    buildFirst: 'Please Build Project'
+    buildFirst: 'Please Build Project',
+    loadError: 'Load Error',
+    select: 'Please Select'
   },
   descriptions: {
     normalClients: 'Normal Clients',
     errorClients: 'Error Clients',
     countProjects: 'Projects',
-    notGenerated: 'Not Generated'
+    notGenerated: 'Not Generated',
+    chooseDateTime: 'Choose Date Time'
   },
   columns: {
     id: 'ID',
@@ -162,6 +165,24 @@ export default {
     spider: 'Spider',
     project: 'Project',
     clients: 'Clients',
-    trigger: 'Trigger'
+    trigger: 'Trigger',
+    year: 'Year',
+    years: 'Years',
+    month: 'Month',
+    months: 'Months',
+    week: 'Week',
+    weeks: 'Weeks',
+    day: 'Day',
+    days: 'Days',
+    hour: 'Hour',
+    hours: 'Hours',
+    minute: 'Minute',
+    minutes: 'Minutes',
+    second: 'Second',
+    seconds: 'Seconds',
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    runDate: 'Run Date',
+    dayOfWeek: 'Day Of Week'
   },
 }
