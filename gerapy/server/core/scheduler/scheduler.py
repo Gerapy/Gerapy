@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2018/1/23 23:09
 # @Author  : thsheep
-# @Site    : 
+# @Site    :
 # @File    : scheduler.py
 # @Software: PyCharm
 
@@ -33,7 +33,7 @@ def scheduler_job():
     每分钟检查一次定时任务
     :return:
     """
-    models = Task.objects.all()
+    # models = Task.objects.all()
     for model in models:
         scheduler_at = model.scheduler_at
         updated_at = model.updated_at
@@ -43,7 +43,7 @@ def scheduler_job():
             client_id = model.client_id
             project_name = model.project_name
             spider_name = model.spider_name
-            client = Client.objects.get(id=client_id)
+            # client = Client.objects.get(id=client_id)
             scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
             try:
                 job = scrapyd.schedule(project_name, spider_name)
