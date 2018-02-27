@@ -466,8 +466,9 @@ def project_file_read(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
-        with open(path, 'r') as f:
-            return HttpResponse(f.read())
+        # 二进制打开文件
+        with open(path, 'rb') as f:
+            return HttpResponse(f.read().decode('utf-8'))
 
 
 def project_file_update(request):
