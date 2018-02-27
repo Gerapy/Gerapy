@@ -1,13 +1,35 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Time    : 2018/1/23 23:09
-# @Author  : thsheep
-# @Site    :
-# @File    : scheduler.py
-# @Software: PyCharm
+# encoding: utf-8
 
+"""
+@version: ??
+@author: thsheep
+@file: scheduler.py
+@time: 2018/2/4 02:00
+@site:
+"""
+# 　　　┏┓　　　┏┓
+# 　　┏┛┻━━━┛┻┓
+# 　　┃　　　　　　　 ┃
+# 　　┃　　　━　　　 ┃
+# 　　┃　┳┛　┗┳　┃
+# 　　┃　　　　　　　 ┃
+# 　　┃　　　┻　　　 ┃
+# 　　┃　　　　　　　 ┃
+# 　　┗━┓　　　┏━┛Codes are far away from bugs with the animal protecting
+# 　　　　┃　　　┃    神兽保佑,代码无bug
+# 　　　　┃　　　┃
+# 　　　　┃　　　┗━━━┓
+# 　　　　┃　　　　　 ┣┓
+# 　　　　┃　　　　 ┏┛
+# 　　　　┗┓┓┏━┳┓┏┛
+# 　　　　　┃┫┫　┃┫┫
+# 　　　　　┗┻┛　┗┻┛
 import time
+import json
 import logging
+import threading
+
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
 from apscheduler.executors.pool import ThreadPoolExecutor
@@ -27,35 +49,69 @@ scheduler = BackgroundScheduler(executors=executors)
 scheduler.add_jobstore(DjangoJobStore(), "default")
 
 
-@scheduler.scheduled_job("interval", seconds=60, id="scheduler_job")
-def scheduler_job():
-    """
-    每分钟检查一次定时任务
-    :return:
-    """
-    # models = Task.objects.all()
-    for model in models:
-        scheduler_at = model.scheduler_at
-        updated_at = model.updated_at
-        scheduler_at_time_stamp = scheduler_at * 60
-        updated_at_time_stamp = time.mktime(updated_at.timetuple())
-        if time.time() - updated_at_time_stamp > scheduler_at_time_stamp:
-            client_id = model.client_id
-            project_name = model.project_name
-            spider_name = model.spider_name
-            # client = Client.objects.get(id=client_id)
-            scrapyd = ScrapydAPI(scrapyd_url(client.ip, client.port))
+def work_func(client, project, spider):
+    ip_port = Client.objects.get(id=client)
+    scrapyd = ScrapydAPI(scrapyd_url(ip_port.ip, ip_port.port))
+    scrapyd.schedule(project, spider)
+
+
+class CreateSchedulerWork(threading.Thread):
+
+    def __init__(self, scheduler):
+        super(CreateSchedulerWork, self).__init__()
+        self.lock = threading.Lock()
+        self.scheduler = scheduler
+        self.quit_flag = False
+        self.stop_flag = True
+        self.setDaemon(True)
+
+    def run(self):
+        logger.warning("CreateSchedulerWork")
+        while not self.quit_flag:
+            self.lock.acquire()
+            if self.stop_flag:
+                self.lock.release()
+                continue
             try:
-                job = scrapyd.schedule(project_name, spider_name)
-                model.success = 1
-            except ConnectionError:
-                model.success = 0
+                task_model = Task.objects.all()
+                for task in task_model:
+                    if task.success == 0:
+                        configuration = json.loads(task.configuration)
+                        configuration = {key: value for key, value in configuration.items() if value}
+                        if configuration.get('run_time', False):
+                            run_date = configuration.pop('run_time')
+                            configuration.update({'run_date': run_date})
+                        configuration.update({'id': f'{task.id}'})
+                        for client in json.loads(task.clients):
+                            self.scheduler.add_job(work_func,
+                                                   task.trigger,
+                                                   **configuration,
+                                                   args=[client, task.project, task.spider])
+                            Task.objects.filter(id=task.id).update(success=1)
+                scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
+                task_id = Task
+                time.sleep(5)
+            except Exception as ex:
+                self.lock.release()
+                raise RuntimeError("错误格式: %s" % (str(ex)))
             finally:
-                model.save()
+                self.lock.release()
+
+    def start_add_work(self):
+        self.lock.acquire()
+        if self.quit_flag:
+            self.lock.release()
+            return
+        self.stop_flag = False
+        self.lock.release()
 
 
 register_events(scheduler)
-
-# scheduler.start()
+scheduler.start()
 logger.info("Scheduler started!")
 print("Scheduler started!")
+add_work = CreateSchedulerWork(scheduler)
+add_work.start()
+add_work.start_add_work()
+logger.info("Add_Work started!")
+print("Add_Work started!")

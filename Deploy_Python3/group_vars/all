@@ -1,0 +1,5 @@
+# Python Install Path
+
+python_path : /usr/local/bin/gerapy
+
+install_pip_package : [selenium,]

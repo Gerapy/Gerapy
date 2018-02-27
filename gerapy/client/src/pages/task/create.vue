@@ -45,7 +45,7 @@
             </el-form-item>
             <div v-if="form.trigger=='date'">
               <el-form-item :label="$lang[$store.state.lang].columns.runDate">
-                <el-date-picker v-model="form.configuration.run_time"
+                <el-date-picker v-model="form.configuration.run_date"
                                 type="datetime" size="small" :picker-options="dateOptions"
                                 :placeholder="$lang[$store.state.lang].descriptions.chooseDateTime">
                 </el-date-picker>
@@ -167,7 +167,6 @@
           spider: null,
           configuration: {
             run_date: null,
-            run_time: null,
             months: null,
             weeks: null,
             days: null,

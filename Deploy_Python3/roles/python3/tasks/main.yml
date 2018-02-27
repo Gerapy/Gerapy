@@ -1,0 +1,37 @@
+---
+
+- name: Copy Python3 Install File
+  copy: src=Python-3.6.4.tar.xz dest=/opt/Python-3.6.4.tar.xz
+
+- name: Unzip
+  shell:  tar xvJf Python-3.6.4.tar.xz
+  args:
+    chdir:  /opt/
+
+- name: configure
+  shell:  ./configure --prefix={{python_path|quote}}/python3.6
+  args:
+    chdir:  /opt/Python-3.6.4
+
+- name: make
+  shell:  make
+  args:
+    chdir:  /opt/Python-3.6.4
+
+- name: make install
+  shell:  make install
+  args:
+    chdir:  /opt/Python-3.6.4
+
+- name: Set Python default version
+  shell:  ln -s {{python_path|quote}}/python3.6/bin/python3.6 /usr/bin/python3
+  ignore_errors: True
+
+- name: Set Pip default version
+  shell:  ln -s {{python_path|quote}}/python3.6/bin/pip3 /usr/bin/pip3
+  ignore_errors: True
+
+- name: Install pip package
+  shell: pip3 install {{item}}
+  with_items:
+    - "{{install_pip_package}}"

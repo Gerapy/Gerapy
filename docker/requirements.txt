@@ -18,3 +18,5 @@ DbUtils
 pika
 celery[redis,auth,msgpack]
 gerapy
+apscheduler>=3.5.1
+django-apscheduler>=0.2.3

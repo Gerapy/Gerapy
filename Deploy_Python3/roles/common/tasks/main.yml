@@ -1,0 +1,50 @@
+---
+- name: Copy the CentOS repository definition
+  copy: src=CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo force=yes
+
+- name: Create the repository for EPEL
+  copy: src=epel.repo dest=/etc/yum.repos.d/epel.repo
+
+- name: Create the GPG key for EPEL
+  copy: src=RPM-GPG-KEY-EPEL-7 dest=/etc/pki/rpm-gpg
+
+- name: Create Scrapyd 6800 Firewalld Rule
+  firewalld:  port=6800/tcp  permanent=true  state=enabled
+
+- name: Chronyd service stop
+  service:  name=chronyd state=stopped  enabled=no
+
+- name: Install Ansible Base package
+  yum: name={{item}}  state=installed
+  with_items:
+    - libselinux-python
+    - libsemanage-python
+    - ntp
+
+- name: Install Python3 Base package
+  yum: name={{item}}  state=installed
+  with_items:
+    - xz
+    - gcc
+    - zlib
+    - zlib-devel
+    - openssl-devel
+    - bzip2-devel
+    - expat-devel
+    - gdbm-devel
+    - readline-devel
+    - sqlite-devel
+    - bzip2
+
+- name: Configure SELinux to disable
+  selinux:  state=disabled
+
+- name: Change TimeZone
+  timezone:
+    name: Asia/Shanghai
+
+- name: Copy NTP conf
+  copy: src=ntp.conf dest=/etc/ntp.conf force=yes
+
+- name: NTP Start
+  service: name=ntpd  state=started  enabled=yes

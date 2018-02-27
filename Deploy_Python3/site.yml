@@ -1,0 +1,5 @@
+- hosts: python
+
+  roles:
+  - common
+  - python3
