@@ -56,6 +56,7 @@ npm run dev
 ```
 gerapy init
 cd gerapy
+gerapy migrate
 gerapy runserver
 ```
 
