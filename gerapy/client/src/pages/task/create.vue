@@ -251,6 +251,12 @@
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
+          var data_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','month', 'week', 'day', 'hour', 'minute', 'second','year']
+          for(var item in data_arr){
+            if (this.form.configuration[data_arr[item]]){
+              this.form.configuration[data_arr[item]] = parseInt(this.form.configuration[data_arr[item]])
+            }
+          }
           this.onSubmitLoading = true
           this.$fetch.apiTask.create(this.form).then(() => {
             this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
