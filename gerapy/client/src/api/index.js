@@ -8,7 +8,7 @@ const apiObj = {
   apiProject,
   apiHome,
   apiMonitor,
-  apiTask
+  apiTask,
 }
 const install = function (Vue) {
   if (install.installed) return
