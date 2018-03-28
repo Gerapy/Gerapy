@@ -130,8 +130,6 @@ def client_remove(request, client_id):
         client = Client.objects.get(id=client_id)
         # delete deploy
         Deploy.objects.filter(client=client).delete()
-        # delete task
-        Task.objects.filter(client_id=client_id).delete()
         # delete client
         Client.objects.filter(id=client_id).delete()
         return JsonResponse({'result': '1'})
@@ -275,8 +273,6 @@ def project_remove(request, project_name):
         Deploy.objects.filter(project=project).delete()
         # delete project
         result = Project.objects.filter(name=project_name).delete()
-        # delete scheduler
-        Task.objects.filter(project_name=project).delete()
         # get project path
         path = join(os.path.abspath(os.getcwd()), PROJECTS_FOLDER)
         project_path = join(path, project_name)
@@ -677,6 +673,7 @@ def task_update(request, task_id):
         print(data)
         data['clients'] = json.dumps(data.get('clients'))
         data['configuration'] = json.dumps(data.get('configuration'))
+        data['success'] = 0
         print(data)
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
