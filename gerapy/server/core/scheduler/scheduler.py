@@ -33,9 +33,8 @@ import threading
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
 from apscheduler.executors.pool import ThreadPoolExecutor
-from scrapyd_api import ScrapydAPI
 
-from gerapy.server.core.utils import scrapyd_url
+from gerapy.server.core.utils import get_scrapyd
 from gerapy.server.core.models import Task, Client
 
 logger = logging.getLogger(__name__)
@@ -51,29 +50,32 @@ scheduler.add_jobstore(DjangoJobStore(), "default")
 
 def work_func(client, project, spider):
     ip_port = Client.objects.get(id=client)
-    scrapyd = ScrapydAPI(scrapyd_url(ip_port.ip, ip_port.port))
-    scrapyd.schedule(project, spider)
+    scrapyd = get_scrapyd(ip_port)
+    logger.warning(f"开始在服务器：{ip_port.ip} 运行 {project}-{spider}")
+    try:
+        jobs = scrapyd.schedule(project, spider)
+        logger.warning(f"运行{project}-{spider}成功；作业ID为：{jobs}")
+    except Exception as err:
+        logger.error(f"请先部署项目到：{ip_port.ip}")
 
 
 class CreateSchedulerWork(threading.Thread):
 
     def __init__(self, scheduler):
         super(CreateSchedulerWork, self).__init__()
-        self.lock = threading.Lock()
         self.scheduler = scheduler
-        self.quit_flag = False
-        self.stop_flag = True
         self.setDaemon(True)
 
     def run(self):
         logger.warning("CreateSchedulerWork")
-        while not self.quit_flag:
-            self.lock.acquire()
-            if self.stop_flag:
-                self.lock.release()
-                continue
+        while True:
             try:
+                tmp = []
+                scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
                 task_model = Task.objects.all()
+                client_ids = Client.objects.values_list("id", flat=True)
+                client_difference = [i.split('-')[1] for i in scheduler_jobs_ids]
+                client_difference_set = [i for i in client_difference if int(i) not in client_ids]
                 for task in task_model:
                     if task.success == 0:
                         configuration = json.loads(task.configuration)
@@ -81,29 +83,29 @@ class CreateSchedulerWork(threading.Thread):
                         if configuration.get('run_time', False):
                             run_date = configuration.pop('run_time')
                             configuration.update({'run_date': run_date})
-                        configuration.update({'id': f'{task.id}'})
                         for client in json.loads(task.clients):
-                            self.scheduler.add_job(work_func,
-                                                   task.trigger,
-                                                   **configuration,
-                                                   args=[client, task.project, task.spider])
-                            Task.objects.filter(id=task.id).update(success=1)
-                scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
-                task_id = Task
+                            job_id = f"{task.id}-{client}"
+                            configuration.update({'id': job_id})
+                            tmp.append(job_id)
+                            if job_id not in scheduler_jobs_ids:
+                                if Client.objects.filter(pk=client):
+                                    logger.warning(f"创建定时任务：{task.project}: {task.spider}")
+                                    self.scheduler.add_job(work_func,
+                                                           task.trigger,
+                                                           **configuration,
+                                                           args=[client, task.project, task.spider])
+                        Task.objects.filter(id=task.id).update(success=1)
+                    #  更新已创建的定时任务
+                    remove_jobs = [i for i in scheduler_jobs_ids if i.split('-')[1] in client_difference_set]
+                    remove_jobs.extend([i for i in tmp if i not in scheduler_jobs_ids])
+                    if remove_jobs:
+                        for jobs in remove_jobs:
+                            if jobs in scheduler_jobs_ids:
+                                self.scheduler.remove_job(jobs)
+                                logger.warning(f"删除作业ID：{jobs}")
                 time.sleep(5)
             except Exception as ex:
-                self.lock.release()
-                raise RuntimeError("错误格式: %s" % (str(ex)))
-            finally:
-                self.lock.release()
-
-    def start_add_work(self):
-        self.lock.acquire()
-        if self.quit_flag:
-            self.lock.release()
-            return
-        self.stop_flag = False
-        self.lock.release()
+                logger.error(str(ex))
 
 
 register_events(scheduler)
@@ -112,6 +114,5 @@ logger.info("Scheduler started!")
 print("Scheduler started!")
 add_work = CreateSchedulerWork(scheduler)
 add_work.start()
-add_work.start_add_work()
 logger.info("Add_Work started!")
 print("Add_Work started!")
