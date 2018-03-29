@@ -51,12 +51,12 @@ scheduler.add_jobstore(DjangoJobStore(), "default")
 def work_func(client, project, spider):
     ip_port = Client.objects.get(id=client)
     scrapyd = get_scrapyd(ip_port)
-    logger.warning(f"开始在服务器：{ip_port.ip} 运行 {project}-{spider}")
+    logger.warning(f"Run {project}: {spider} on server{ip_port.ip}")
     try:
         jobs = scrapyd.schedule(project, spider)
         logger.warning(f"运行{project}-{spider}成功；作业ID为：{jobs}")
     except Exception as err:
-        logger.error(f"请先部署项目到：{ip_port.ip}")
+        logger.error(f"Please deploy the project to：{ip_port.ip}")
 
 
 class CreateSchedulerWork(threading.Thread):
@@ -73,36 +73,39 @@ class CreateSchedulerWork(threading.Thread):
                 tmp = []
                 scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
                 task_model = Task.objects.all()
-                client_ids = Client.objects.values_list("id", flat=True)
-                client_difference = [i.split('-')[1] for i in scheduler_jobs_ids]
-                client_difference_set = [i for i in client_difference if int(i) not in client_ids]
                 for task in task_model:
                     if task.success == 0:
                         configuration = json.loads(task.configuration)
                         configuration = {key: value for key, value in configuration.items() if value}
-                        if configuration.get('run_time', False):
-                            run_date = configuration.pop('run_time')
-                            configuration.update({'run_date': run_date})
                         for client in json.loads(task.clients):
                             job_id = f"{task.id}-{client}"
                             configuration.update({'id': job_id})
                             tmp.append(job_id)
                             if job_id not in scheduler_jobs_ids:
                                 if Client.objects.filter(pk=client):
-                                    logger.warning(f"创建定时任务：{task.project}: {task.spider}")
+                                    logger.warning(f"Create a scheduled task：{task.project}: {task.spider}")
                                     self.scheduler.add_job(work_func,
                                                            task.trigger,
                                                            **configuration,
                                                            args=[client, task.project, task.spider])
                         Task.objects.filter(id=task.id).update(success=1)
-                    #  更新已创建的定时任务
+
+                    scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
+                    client_ids = Client.objects.values_list("id", flat=True)
+                    client_difference = [i.split('-')[1] for i in scheduler_jobs_ids]
+                    client_difference_set = [i for i in client_difference if int(i) not in client_ids]
                     remove_jobs = [i for i in scheduler_jobs_ids if i.split('-')[1] in client_difference_set]
-                    remove_jobs.extend([i for i in tmp if i not in scheduler_jobs_ids])
+                    if scheduler_jobs_ids:
+                        for i in tmp:
+                            if i not in scheduler_jobs_ids:
+                                remove_jobs.append(i)
+                    #  更新已创建的定时任务
                     if remove_jobs:
                         for jobs in remove_jobs:
                             if jobs in scheduler_jobs_ids:
                                 self.scheduler.remove_job(jobs)
-                                logger.warning(f"删除作业ID：{jobs}")
+                                logger.warning(f"Delete job ID：{jobs}")
+                tmp.clear()
                 time.sleep(5)
             except Exception as ex:
                 logger.error(str(ex))
