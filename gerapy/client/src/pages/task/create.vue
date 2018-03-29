@@ -12,26 +12,15 @@
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.name"
                         size="small"></el-input>
             </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.clients" prop="clients">
-              <el-select v-model="form.clients" multiple :placeholder="$lang[$store.state.lang].messages.select"
-                         size="small">
-                <el-option
-                  v-for="item in clientOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.project" prop="project">
-              <el-input v-model="form.project"
-                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.project"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item :label="$lang[$store.state.lang].columns.spider" prop="spider">
-              <el-input v-model="form.spider"
-                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.spider"
-                        size="small"></el-input>
+              <el-cascader
+                @change="onSelected"
+                v-model="form.cascader_value"
+                :placeholder="$lang[$store.state.lang].columns.project"
+                :options="options"
+                filterable
+                change-on-select
+              ></el-cascader>
             </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.trigger" prop="trigger">
               <el-select v-model="form.trigger" :placeholder="$lang[$store.state.lang].messages.select" size="small">
@@ -162,7 +151,9 @@
         form: {
           name: null,
           clients: [],
+          projects:[],
           trigger: null,
+          cascader_value:null,
           project: null,
           spider: null,
           configuration: {
@@ -185,7 +176,9 @@
             day_of_week: null,
           }
         },
+        options:[],
         clientOptions: [],
+        // selectedOptions: [],
         dateOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7
@@ -242,7 +235,40 @@
               label: item.fields.name
             })
           })
-        }).catch(() => {
+          this.clientOptions.forEach((client) => {
+            //获取主机信息
+            var option1 = {value:null,label:null,children:[]}
+            option1.value =  client.value
+            option1.label =client.label
+            this.options.push(option1)
+            this.$fetch.apiClient.projects({
+              //获取爬虫项目
+              id:client.value
+            }).then(({data: projects}) => {
+              projects.forEach((project) => {
+                var option2 = {value:null,label:null,children:[]}
+                option2.value = option2.label = project
+                option1.children.push(option2)
+                this.$fetch.apiClient.listSpiders({
+                  id: client.value,
+                  project: project
+                }).then(({data: spiders}) => {
+                  spiders.forEach((spider)=>{
+                    var option3 = {value:null,label:null}
+                    option3.value = option3.label = spider.name
+                    option2.children.push(option3)
+                  })
+                }).catch((data) => {
+                  this.clients = []
+                  this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+                })
+              })
+            }).catch((data) => {
+              this.clients = []
+              this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+            })
+          })
+        }).catch((data) => {
           this.clients = []
           this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
         })
@@ -264,7 +290,13 @@
           }).catch(() => {
             this.onSubmitLoading = false
           })
+          this.$router.back()
         })
+      },
+      onSelected(){
+        this.form.clients.push(this.form.cascader_value[0])
+        this.form.project = this.form.cascader_value[1]
+        this.form.spider = this.form.cascader_value[2]
       }
     },
     components: {
