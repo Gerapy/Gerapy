@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class="panel">
+      <el-button @click="showBrowser=true" type="primary" class="show-browser">
+        <i class="fa fa-edge"></i>
+      </el-button>
       <panel-title :title="$lang[$store.state.lang].titles.configureProject">
         <el-button type="primary" size="mini" @click="saveProject()">
           <i class="fa fa-check"></i>
@@ -548,7 +551,7 @@
         </el-row>
       </div>
     </div>
-    <browser></browser>
+    <browser :show="showBrowser"></browser>
   </div>
 </template>
 <script type="text/javascript">
@@ -557,9 +560,11 @@
   import ElCollapseItem from "../../../node_modules/element-ui/packages/collapse/src/collapse-item";
   import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item";
   import ElInput from "../../../node_modules/element-ui/packages/input/src/input";
+  import ElButton from "../../../node_modules/element-ui/packages/button/src/button";
   export default{
     data(){
       return {
+        showBrowser: false,
         projectName: this.$route.params.name,
         projectDescription: null,
         projectGeneratedAt: null,
@@ -697,6 +702,7 @@
       }
     },
     components: {
+      ElButton,
       ElInput,
       ElFormItem,
       ElCollapseItem,
@@ -862,5 +868,15 @@
     position: fixed;
     top: 100px;
     width: 80%;
+  }
+
+  .show-browser {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
   }
 </style>
