@@ -2,29 +2,12 @@
 # encoding: utf-8
 
 """
-@version: ??
 @author: thsheep
 @file: scheduler.py
 @time: 2018/2/4 02:00
 @site:
 """
-# 　　　┏┓　　　┏┓
-# 　　┏┛┻━━━┛┻┓
-# 　　┃　　　　　　　 ┃
-# 　　┃　　　━　　　 ┃
-# 　　┃　┳┛　┗┳　┃
-# 　　┃　　　　　　　 ┃
-# 　　┃　　　┻　　　 ┃
-# 　　┃　　　　　　　 ┃
-# 　　┗━┓　　　┏━┛Codes are far away from bugs with the animal protecting
-# 　　　　┃　　　┃    神兽保佑,代码无bug
-# 　　　　┃　　　┃
-# 　　　　┃　　　┗━━━┓
-# 　　　　┃　　　　　 ┣┓
-# 　　　　┃　　　　 ┏┛
-# 　　　　┗┓┓┏━┳┓┏┛
-# 　　　　　┃┫┫　┃┫┫
-# 　　　　　┗┻┛　┗┻┛
+
 import time
 import json
 import logging
@@ -60,12 +43,11 @@ def work_func(client, project, spider):
 
 
 class CreateSchedulerWork(threading.Thread):
-
     def __init__(self, scheduler):
         super(CreateSchedulerWork, self).__init__()
         self.scheduler = scheduler
         self.setDaemon(True)
-
+    
     def run(self):
         logger.warning("CreateSchedulerWork")
         while True:
@@ -89,7 +71,7 @@ class CreateSchedulerWork(threading.Thread):
                                                            **configuration,
                                                            args=[client, task.project, task.spider])
                         Task.objects.filter(id=task.id).update(success=1)
-
+                    
                     scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
                     client_ids = Client.objects.values_list("id", flat=True)
                     client_difference = [i.split('-')[1] for i in scheduler_jobs_ids]
@@ -99,7 +81,7 @@ class CreateSchedulerWork(threading.Thread):
                         for i in tmp:
                             if i not in scheduler_jobs_ids:
                                 remove_jobs.append(i)
-                    #  更新已创建的定时任务
+                    # 更新已创建的定时任务
                     if remove_jobs:
                         for jobs in remove_jobs:
                             if jobs in scheduler_jobs_ids:

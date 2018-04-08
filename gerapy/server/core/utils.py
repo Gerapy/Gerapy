@@ -6,6 +6,7 @@ from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
 from jinja2 import Template
 from scrapyd_api import ScrapydAPI
+from pyquery import PyQuery as pq
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -164,3 +165,9 @@ def get_traceback():
             return info[-1]
         return None
     return info
+
+
+def process_html(html):
+    doc = pq(html)
+    doc.find('script').remove()
+    return str(doc)

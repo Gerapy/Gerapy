@@ -15,7 +15,7 @@ from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd
+    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html
 
 
 def index(request):
@@ -719,3 +719,20 @@ def task_index(request):
     if request.method == 'GET':
         tasks = Task.objects.values()
         return JsonResponse({'result': '1', 'data': tasks})
+
+
+def render_html(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        print(type(data))
+        url = data.get('url')
+        js = data.get('js')
+        if not js:
+            try:
+                response = requests.get(url, timeout=5)
+                response.encoding = response.apparent_encoding
+                html = process_html(response.text)
+                return JsonResponse({'result': '1', 'data': html})
+            except:
+                return JsonResponse({'result': '0'}, status=500)

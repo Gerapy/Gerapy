@@ -11,5 +11,5 @@ export {
   mainContent,
   panelTitle,
   simpleImageUpload,
-  bottomToolBar
+  bottomToolBar,
 }

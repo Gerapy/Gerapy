@@ -1,0 +1,1 @@
+exports.render = '/api/render'
