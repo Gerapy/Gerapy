@@ -237,7 +237,7 @@
           })
           this.clientOptions.forEach((client) => {
             //获取主机信息
-            var option1 = {value:null,label:null,children:[]}
+            let option1 = {value:null,label:null,children:[]}
             option1.value =  client.value
             option1.label =client.label
             this.options.push(option1)
@@ -246,7 +246,7 @@
               id:client.value
             }).then(({data: projects}) => {
               projects.forEach((project) => {
-                var option2 = {value:null,label:null,children:[]}
+                let option2 = {value:null,label:null,children:[]}
                 option2.value = option2.label = project
                 option1.children.push(option2)
                 this.$fetch.apiClient.listSpiders({
@@ -254,7 +254,7 @@
                   project: project
                 }).then(({data: spiders}) => {
                   spiders.forEach((spider)=>{
-                    var option3 = {value:null,label:null}
+                    let option3 = {value:null,label:null}
                     option3.value = option3.label = spider.name
                     option2.children.push(option3)
                   })
@@ -277,11 +277,56 @@
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
-          var data_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','month', 'week', 'day', 'hour', 'minute', 'second','year']
-          for(var item in data_arr){
+          switch(this.form.trigger)
+          {
+            case 'date':
+              if (this.form.configuration.run_date==null){
+                this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+                return false
+              }
+              break;
+            case 'interval':
+                let interval_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','start_date','end_date']
+                try {
+                  interval_arr.forEach((item)=>{
+                    if (this.form.configuration[item]==null){
+                      throw "Date vacancy"
+                    }
+                  })
+                }
+                catch (err){
+                  this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+                  return false
+                }
+              break;
+            case 'cron':
+              let cron_arr = ['year','month','day','week','day_of_week','hour','minute','second']
+              try {
+                cron_arr.forEach((item)=>{
+                  if (this.form.configuration[item]==null){
+                    throw "Date vacancy"
+                  }
+                })
+              }
+              catch (err){
+                this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+                return false
+              }
+              break;
+            default:
+              this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+              return false
+          }
+
+          let data_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','month', 'week', 'day', 'hour', 'minute', 'second','year']
+          for(let item in data_arr){
             if (this.form.configuration[data_arr[item]]){
               this.form.configuration[data_arr[item]] = parseInt(this.form.configuration[data_arr[item]])
             }
+          }
+          if (this.form.spider == null){
+            this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+            return false
           }
           this.onSubmitLoading = true
           this.$fetch.apiTask.create(this.form).then(() => {
@@ -294,6 +339,7 @@
         })
       },
       onSelected(){
+        this.form.clients = []
         this.form.clients.push(this.form.cascader_value[0])
         this.form.project = this.form.cascader_value[1]
         this.form.spider = this.form.cascader_value[2]
