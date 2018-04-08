@@ -12,15 +12,26 @@
                         :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.name"
                         size="small"></el-input>
             </el-form-item>
+            <el-form-item :label="$lang[$store.state.lang].columns.clients" prop="clients">
+              <el-select v-model="form.clients" multiple :placeholder="$lang[$store.state.lang].messages.select"
+                         size="small">
+                <el-option
+                  v-for="item in clientOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.project" prop="project">
-              <el-cascader
-                @change="onSelected"
-                v-model="form.cascader_value"
-                :placeholder="$lang[$store.state.lang].columns.project"
-                :options="options"
-                filterable
-                change-on-select
-              ></el-cascader>
+              <el-input v-model="form.project"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.project"
+                        size="small"></el-input>
+            </el-form-item>
+            <el-form-item :label="$lang[$store.state.lang].columns.spider" prop="spider">
+              <el-input v-model="form.spider"
+                        :placeholder="$lang[$store.state.lang].messages.enter + ' ' + $lang[$store.state.lang].columns.spider"
+                        size="small"></el-input>
             </el-form-item>
             <el-form-item :label="$lang[$store.state.lang].columns.trigger" prop="trigger">
               <el-select v-model="form.trigger" :placeholder="$lang[$store.state.lang].messages.select" size="small">
@@ -145,15 +156,14 @@
   import {ip, port} from '../../common/tools/regex'
   import regex from '../../common/tools/regex'
   import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item";
-  export default{
-    data(){
+
+  export default {
+    data() {
       return {
         form: {
           name: null,
           clients: [],
-          projects:[],
           trigger: null,
-          cascader_value:null,
           project: null,
           spider: null,
           configuration: {
@@ -176,9 +186,7 @@
             day_of_week: null,
           }
         },
-        options:[],
         clientOptions: [],
-        // selectedOptions: [],
         dateOptions: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7
@@ -226,7 +234,7 @@
       this.getClientData()
     },
     methods: {
-      getClientData(){
+      getClientData() {
         this.$fetch.apiClient.index(
         ).then(({data: clients}) => {
           clients.forEach((item) => {
@@ -235,80 +243,46 @@
               label: item.fields.name
             })
           })
-          this.clientOptions.forEach((client) => {
-            //获取主机信息
-            let option1 = {value:null,label:null,children:[]}
-            option1.value =  client.value
-            option1.label =client.label
-            this.options.push(option1)
-            this.$fetch.apiClient.projects({
-              //获取爬虫项目
-              id:client.value
-            }).then(({data: projects}) => {
-              projects.forEach((project) => {
-                let option2 = {value:null,label:null,children:[]}
-                option2.value = option2.label = project
-                option1.children.push(option2)
-                this.$fetch.apiClient.listSpiders({
-                  id: client.value,
-                  project: project
-                }).then(({data: spiders}) => {
-                  spiders.forEach((spider)=>{
-                    let option3 = {value:null,label:null}
-                    option3.value = option3.label = spider.name
-                    option2.children.push(option3)
-                  })
-                }).catch((data) => {
-                  this.clients = []
-                  this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
-                })
-              })
-            }).catch((data) => {
-              this.clients = []
-              this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
-            })
-          })
         }).catch((data) => {
           this.clients = []
           this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
         })
       },
-      onSubmitForm(){
+      onSubmitForm() {
         this.$refs.form.validate((valid) => {
           if (!valid)
             return false
-          switch(this.form.trigger)
-          {
+          switch (this.form.trigger) {
             case 'date':
-              if (this.form.configuration.run_date==null){
+              if (this.form.configuration.run_date == null) {
                 this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
                 return false
               }
               break;
             case 'interval':
-                let interval_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','start_date','end_date']
-                try {
-                  interval_arr.forEach((item)=>{
-                    if (this.form.configuration[item]==null){
-                      throw "Date vacancy"
-                    }
-                  })
-                }
-                catch (err){
-                  this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
-                  return false
-                }
-              break;
-            case 'cron':
-              let cron_arr = ['year','month','day','week','day_of_week','hour','minute','second']
+              let interval_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'start_date', 'end_date']
               try {
-                cron_arr.forEach((item)=>{
-                  if (this.form.configuration[item]==null){
+                interval_arr.forEach((item) => {
+                  if (this.form.configuration[item] == null) {
                     throw "Date vacancy"
                   }
                 })
               }
-              catch (err){
+              catch (err) {
+                this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
+                return false
+              }
+              break;
+            case 'cron':
+              let cron_arr = ['year', 'month', 'day', 'week', 'day_of_week', 'hour', 'minute', 'second']
+              try {
+                cron_arr.forEach((item) => {
+                  if (this.form.configuration[item] == null) {
+                    throw "Date vacancy"
+                  }
+                })
+              }
+              catch (err) {
                 this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
                 return false
               }
@@ -317,16 +291,11 @@
               this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
               return false
           }
-
-          let data_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds','month', 'week', 'day', 'hour', 'minute', 'second','year']
-          for(let item in data_arr){
-            if (this.form.configuration[data_arr[item]]){
+          let data_arr = ['months', 'weeks', 'days', 'hours', 'minutes', 'seconds', 'month', 'week', 'day', 'hour', 'minute', 'second', 'year']
+          for (let item in data_arr) {
+            if (this.form.configuration[data_arr[item]]) {
               this.form.configuration[data_arr[item]] = parseInt(this.form.configuration[data_arr[item]])
             }
-          }
-          if (this.form.spider == null){
-            this.$message.error(this.$lang[this.$store.state.lang].messages.isNull)
-            return false
           }
           this.onSubmitLoading = true
           this.$fetch.apiTask.create(this.form).then(() => {
@@ -338,12 +307,6 @@
           this.$router.back()
         })
       },
-      onSelected(){
-        this.form.clients = []
-        this.form.clients.push(this.form.cascader_value[0])
-        this.form.project = this.form.cascader_value[1]
-        this.form.spider = this.form.cascader_value[2]
-      }
     },
     components: {
       ElFormItem,
