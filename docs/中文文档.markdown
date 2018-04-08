@@ -126,15 +126,18 @@ chmod a+x copy_ssh.sh
 
 **install_pip_package**  需要在目标服务器安装的pip包（需要注意的是 你Scrapy项目所使用到包 都需要安装）以列表的形式写入。
 
+#### 由于scrapyd本身不支持认证 故而使用Nginx反向代理实现认证
+
+**roles/openresty/scrapyd.passwd** 为认证用户名和密码（默认为 scrapyd  scrapyd）；使用http-tools工具生成(文件名必须为：scrapyd.passwd)
+
 现在执行以下命令：
 
 ```bash
 ansible-playbooks -i host site.yml
 ```
 
-等待部署完毕即可。
+等待部署完毕即可使用Gerapy连接管理（注意认证）。
 
 默认pip3 python3
 
-然后你就可以愉快的去弄Scrapyd啦（后续会将Scrapyd 和 守护进程Supervisor自动部署也更新上）
-
+安装完成后会有Supervisor对scrapyd进程进行守护，不必担心scrapyd进程死掉啦

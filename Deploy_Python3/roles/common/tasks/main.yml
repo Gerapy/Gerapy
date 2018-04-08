@@ -11,8 +11,11 @@
 - name: Create Scrapyd 6800 Firewalld Rule
   firewalld:  port=6800/tcp  permanent=true  state=enabled
 
-- name: Chronyd service stop
-  service:  name=chronyd state=stopped  enabled=no
+- name: Create Scrapyd 6800 Firewalld Rule
+  firewalld:  port=6800/udp  permanent=true  state=enabled
+
+#- name: Chronyd service stop
+#  service:  name=chronyd state=stopped  enabled=no
 
 - name: Install Ansible Base package
   yum: name={{item}}  state=installed
@@ -39,12 +42,12 @@
 - name: Configure SELinux to disable
   selinux:  state=disabled
 
-- name: Change TimeZone
-  timezone:
-    name: Asia/Shanghai
-
-- name: Copy NTP conf
-  copy: src=ntp.conf dest=/etc/ntp.conf force=yes
-
-- name: NTP Start
-  service: name=ntpd  state=started  enabled=yes
+#- name: Change TimeZone
+#  timezone:
+#    name: Asia/Shanghai
+#
+#- name: Copy NTP conf
+#  copy: src=ntp.conf dest=/etc/ntp.conf force=yes
+#
+#- name: NTP Start
+#  service: name=ntpd  state=started  enabled=yes

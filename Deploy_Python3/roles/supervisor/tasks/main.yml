@@ -1,0 +1,17 @@
+---
+
+- name: Copy Python3 Install File
+  copy: src=get-pip.py dest=/opt/get-pip.py
+
+- name: Install Pip for Python2
+  shell: python /opt/get-pip.py
+
+- name: Install Supervisor
+  shell: pip2 install supervisor
+
+- name: Copy Supervisor Conf
+  copy: src=supervisord.conf dest=/etc/supervisord.conf
+
+- name: Supervisor Start
+  shell: supervisord -c /etc/supervisord.conf
+  ignore_errors: True

@@ -2,4 +2,7 @@
 
   roles:
   - common
+  - openresty
   - python3
+  - scrapyd
+  - supervisor

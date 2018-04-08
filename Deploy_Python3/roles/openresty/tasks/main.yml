@@ -1,0 +1,17 @@
+---
+- name: Copy the CentOS repository definition
+  copy: src=openresty.repo dest=/etc/yum.repos.d/openresty.repo force=yes
+
+- name: Install openresty
+  yum: name=openresty  state=installed disable_gpg_check=no
+
+- name: Copy OpenResty Conf
+  copy: src=nginx.conf dest=/usr/local/openresty/nginx/conf/nginx.conf force=yes
+
+- name: Copy Auth
+  copy: src=scrapyd.passwd dest=/usr/local/openresty/nginx/conf/scrapyd.passwd force=yes
+
+- name: openresty Start
+  service: name=openresty  state=started  enabled=yes
+
+

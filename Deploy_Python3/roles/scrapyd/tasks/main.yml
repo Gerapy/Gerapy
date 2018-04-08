@@ -1,0 +1,7 @@
+---
+
+- name: Mkdir Scrapyd directory
+  file: path=/etc/scrapyd state=directory
+
+- name: Copy Scrapyd Conf
+  copy: src=scrapyd.conf dest=/etc/scrapyd/scrapyd.conf force=yes

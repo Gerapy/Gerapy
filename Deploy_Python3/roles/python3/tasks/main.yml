@@ -31,7 +31,26 @@
   shell:  ln -s {{python_path|quote}}/python3.6/bin/pip3 /usr/bin/pip3
   ignore_errors: True
 
+- name: create pip directory
+  file: path=~/.pip state=directory
+
+- name: add Pip conf
+  copy: src=pip.conf dest=~/.pip/pip.conf
+
 - name: Install pip package
   shell: pip3 install {{item}}
   with_items:
     - "{{install_pip_package}}"
+
+- name: Update "/etc/profile"
+  blockinfile:
+    path: /etc/profile
+    backup: yes
+    block: |
+      export PATH="{{python_path|quote}}/python3.6/bin:$PATH"
+
+- name: Source "/etc/profile"
+  shell: source /etc/profile
+
+- name: ln scrapyd
+  shell: ln -s {{python_path|quote}}/python3.6/bin/scrapyd /usr/bin/scrapyd
