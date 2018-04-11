@@ -1,0 +1,18 @@
+[
+    {
+        "auth": 0,
+        "description": "desc",
+        "ip": "192.168.99.99",
+        "name": "testName",
+        "port": "6800"
+    },
+    {
+        "auth": 1,
+        "description": "desc",
+        "ip": "192.168.99.100",
+        "name": "testName2",
+        "password": "pass",
+        "port": "6800",
+        "username": "user"
+    }
+]
