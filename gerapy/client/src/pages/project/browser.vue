@@ -1,5 +1,4 @@
 <template>
-
   <div class="panel" id="browser" v-if="show">
     <panel-title title="Browser">
       <el-button type="primary" size="mini" @click="createProjectDialog=true">
@@ -23,7 +22,7 @@
           {{ xpathSelector }}
         </el-col>
         <el-col span="1">
-          <el-button type="primary" size="mini" @click="copy(xpathSelector)">复制</el-button>
+          <el-button type="primary" size="mini"  v-clipboard:copy="xpathSelector" v-clipboard:success="onCopy" v-clipboard:error="onError">>复制</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -34,7 +33,7 @@
           {{ cssSelector }}
         </el-col>
         <el-col span="1">
-          <el-button type="primary" size="mini" @click="copy(cssSelector)">复制</el-button>
+          <el-button type="primary" size="mini"  v-clipboard:copy="cssSelector" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</el-button>
         </el-col>
       </el-row>
       <div v-html="html" class="m-t-md" id="render-result" @click="select">
@@ -49,6 +48,9 @@
   import {panelTitle, bottomToolBar} from 'components'
   import ElRow from "element-ui/packages/row/src/row";
   import ElCol from "element-ui/packages/col/src/col";
+  import Vue from 'vue';
+  import VueClipboard from 'vue-clipboard2';
+  Vue.use(VueClipboard)
   export default{
     props: {
       show: Boolean
@@ -59,6 +61,7 @@
         html: null,
         cssSelector: null,
         xpathSelector: null,
+        gerapy_selected:[],
       }
     },
     created() {
@@ -67,8 +70,17 @@
       console.log(cssGenerator)
     },
     methods: {
+      onCopy: function (e) {
+        console.log('你刚刚复制: ' + e.text)
+        this.$message.success(this.$lang[this.$store.state.lang].messages.successCopy)
+      },
+      onError: function (e) {
+        console.log('无法复制文本！')
+        this.$message.error(this.$lang[this.$store.state.lang].messages.errorCopy)
+      },
       hide(){
-        this.show = false
+        // this.show = false
+        this.$emit('hide',false)
       },
       render() {
         this.$fetch.apiUtil.render({
@@ -80,24 +92,23 @@
         })
       },
       select(event) {
-        let selected = document.getElementsByClassName('gerapy-selected')
-        for (let index = 0; index < selected.length; index++) {
-          let element = selected[index]
-          element.classList.remove('gerapy-selected')
-          element.style.borderStyle = null
-          element.style.borderColor = null
-        }
-        event.target.className += ' gerapy-selected'
-        event.target.style.borderStyle = 'solid'
-        event.target.style.borderColor = 'red'
+        this.gerapy_selected.forEach(element => {
+          element.target.style.borderStyle=''
+          element.target.style.borderColor=''
+        });
+        this.gerapy_selected = []
+        event.target.style.borderStyle='solid'
+        event.target.style.borderColor='red'
+        this.gerapy_selected.push(event)
         this.cssSelector = cssGenerator.getSelector(event.target)
         this.xpathSelector = xpathGenerator.getElementXPath(event.target)
         console.log('css-selector', this.cssSelector)
         console.log('xpath-selector', this.xpathSelector)
+        if(event.target.href){
+          console.log(event.target.href)
+          event.target.href = '#'
+        }
       },
-      copy(value) {
-        console.log(value)
-      }
     },
     components: {
       ElCol,
