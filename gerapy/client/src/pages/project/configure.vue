@@ -551,7 +551,7 @@
         </el-row>
       </div>
     </div>
-    <browser :show="showBrowser"></browser>
+    <browser @hide="hideBrowser" :show="showBrowser"></browser>
   </div>
 </template>
 <script type="text/javascript">
@@ -714,6 +714,9 @@
       this.getProject()
     },
     methods: {
+      hideBrowser(){
+        this.showBrowser = false
+      },
       getProject() {
         this.$fetch.apiProject.projectGetConfiguration({
           name: this.projectName

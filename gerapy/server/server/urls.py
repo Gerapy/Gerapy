@@ -23,4 +23,4 @@ urlpatterns = [
 ]
 
 if 'runserver' in sys.argv:
-    import gerapy.server.core.scheduler.scheduler
+     import gerapy.server.core.scheduler.scheduler

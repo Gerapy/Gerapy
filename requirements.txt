@@ -1,7 +1,9 @@
+apscheduler>=3.5.1
 cryptography>=2.1.1
 docopt
 django>=1.11
 django-cors-headers
+django-apscheduler>=0.2.3
 jinja2
 scrapy>=1.4.0
 scrapy-redis==0.6.8
@@ -11,5 +13,4 @@ redis
 requests>=2.14.0
 pymongo>=3.2.0
 pymysql>=0.7.10
-apscheduler>=3.5.1
-django-apscheduler>=0.2.3
+pyquery

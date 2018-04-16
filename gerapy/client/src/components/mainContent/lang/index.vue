@@ -12,6 +12,11 @@
       changeLang(lang) {
         console.log(lang)
         this.$store.dispatch('setLang', lang)
+        if (typeof(Storage) !== "undefined") {
+          localStorage.setItem("gerapy-lang", lang)
+        }else {
+          console.log('您的浏览器不支持localStorage')
+        }
       }
     }
   }
