@@ -1,17 +1,18 @@
 <template>
   <div class="panel" id="browser" v-if="show">
-    <panel-title title="Browser">
+    <panel-title :title="$lang[$store.state.lang].columns.url">
       <el-button type="primary" size="mini" @click="createProjectDialog=true">
         <i class="fa fa-close" @click="hide"></i>
       </el-button>
     </panel-title>
     <div class="panel-body">
       <el-form :inline="true">
-        <el-form-item label="链接">
+        <el-form-item :label="$lang[$store.state.lang].columns.url">
           <el-input v-model="url" placeholder="请输入链接" size="small"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="render" size="small">加载</el-button>
+          <el-button type="primary" @click="render" size="small">{{ $lang[$store.state.lang].buttons.render }}
+          </el-button>
         </el-form-item>
       </el-form>
       <el-row class="m-b-sm">
@@ -22,7 +23,9 @@
           {{ xpathSelector }}
         </el-col>
         <el-col span="1">
-          <el-button type="primary" size="mini"  v-clipboard:copy="xpathSelector" v-clipboard:success="onCopy" v-clipboard:error="onError">>复制</el-button>
+          <el-button type="primary" size="mini" v-clipboard:copy="xpathSelector" v-clipboard:success="onCopy"
+                     v-clipboard:error="onError">{{ $lang[$store.state.lang].buttons.copy }}
+          </el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -33,7 +36,9 @@
           {{ cssSelector }}
         </el-col>
         <el-col span="1">
-          <el-button type="primary" size="mini"  v-clipboard:copy="cssSelector" v-clipboard:success="onCopy" v-clipboard:error="onError">复制</el-button>
+          <el-button type="primary" size="mini" v-clipboard:copy="cssSelector" v-clipboard:success="onCopy"
+                     v-clipboard:error="onError">{{ $lang[$store.state.lang].buttons.copy }}
+          </el-button>
         </el-col>
       </el-row>
       <div v-html="html" class="m-t-md" id="render-result" @click="select">
@@ -51,6 +56,7 @@
   import Vue from 'vue';
   import VueClipboard from 'vue-clipboard2';
   Vue.use(VueClipboard)
+
   export default{
     props: {
       show: Boolean
@@ -61,26 +67,23 @@
         html: null,
         cssSelector: null,
         xpathSelector: null,
-        gerapy_selected:[],
+        gerapy_selected: [],
       }
     },
     created() {
-      console.log('666')
       console.log(xpathGenerator)
       console.log(cssGenerator)
     },
     methods: {
       onCopy: function (e) {
-        console.log('你刚刚复制: ' + e.text)
         this.$message.success(this.$lang[this.$store.state.lang].messages.successCopy)
       },
       onError: function (e) {
-        console.log('无法复制文本！')
         this.$message.error(this.$lang[this.$store.state.lang].messages.errorCopy)
       },
       hide(){
         // this.show = false
-        this.$emit('hide',false)
+        this.$emit('hide', false)
       },
       render() {
         this.$fetch.apiUtil.render({
@@ -93,18 +96,18 @@
       },
       select(event) {
         this.gerapy_selected.forEach(element => {
-          element.target.style.borderStyle=''
-          element.target.style.borderColor=''
+          element.target.style.borderStyle = ''
+          element.target.style.borderColor = ''
         });
         this.gerapy_selected = []
-        event.target.style.borderStyle='solid'
-        event.target.style.borderColor='red'
+        event.target.style.borderStyle = 'solid'
+        event.target.style.borderColor = 'red'
         this.gerapy_selected.push(event)
         this.cssSelector = cssGenerator.getSelector(event.target)
         this.xpathSelector = xpathGenerator.getElementXPath(event.target)
         console.log('css-selector', this.cssSelector)
         console.log('xpath-selector', this.xpathSelector)
-        if(event.target.href){
+        if (event.target.href) {
           console.log(event.target.href)
           event.target.href = '#'
         }

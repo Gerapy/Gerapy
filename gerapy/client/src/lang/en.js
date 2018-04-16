@@ -17,7 +17,9 @@ export default {
   },
   buttons: {
     confirm: 'confirm',
+    render: 'render',
     yes: 'yes',
+    copy: 'copy',
     no: 'no',
     save: 'save',
     create: 'create',
@@ -72,6 +74,7 @@ export default {
     newFile: 'New File',
     renameFile: 'Rename File',
     createFile: 'Create File',
+    browser: 'Browser'
   },
   menus: {
     clients: 'Clients',
@@ -127,7 +130,7 @@ export default {
     name: 'Name',
     ip: 'IP',
     value: 'Value',
-    port: 'Port',
+    url: 'URL',
     operations: 'Operations',
     jobID: 'Job ID',
     spiderName: 'Spider Name',
@@ -158,6 +161,7 @@ export default {
     attrValue: 'Attr Value',
     list: 'List',
     code: 'Code',
+    port: 'Port',
     host: 'Host',
     database: 'Database',
     user: 'User',
