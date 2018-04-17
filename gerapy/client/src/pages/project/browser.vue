@@ -41,7 +41,8 @@
           </el-button>
         </el-col>
       </el-row>
-      <div v-html="html" class="m-t-md" id="render-result" @click="select">
+      <div class="m-t-md" id="render-result" @click="select">
+        <iframe sandbox="allow-same-origin allow-scripts" scrolling="yes" width="100%" :srcdoc="html" class="iframe-box"></iframe>
       </div>
     </div>
   </div>
@@ -138,5 +139,7 @@
       border: 1px dashed #CCC;
     }
   }
-
+  .iframe-box {
+    min-height: 500px;
+  }
 </style>

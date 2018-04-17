@@ -1,7 +1,7 @@
 export default {
   timeout: null,
   intervals: [],
-  lang: onLoad(),
+  lang: 'en',
 }
 function onLoad() {
   if (typeof(Storage) !== 'undefined' && localStorage.getItem('gerapy-lang') !== 'undefined') {

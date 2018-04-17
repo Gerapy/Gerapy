@@ -540,7 +540,6 @@
                           :placeholder="$lang[$store.state.lang].columns.database"
                           size="small"></el-input>
                       </el-form-item>
-
                     </div>
                   </el-form-item>
                   <!-- 存储结束 -->
