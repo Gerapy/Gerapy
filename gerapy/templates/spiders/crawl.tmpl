@@ -22,7 +22,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
             'gerapy.pipelines.MySQLPipeline': 300,
-            {% endif -%}
+            {%- endif %}
         }
     }
     {% if spider.start_urls -%}

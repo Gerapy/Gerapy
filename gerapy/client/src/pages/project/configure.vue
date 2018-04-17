@@ -513,7 +513,7 @@
                         <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.port }}</h4>
                         <el-input
                           v-model="spider.storage.mysql.port" class="inline"
-                          placeholder="$lang[$store.state.lang].columns.port"
+                          :placeholder="$lang[$store.state.lang].columns.port"
                           size="small"></el-input>
                       </el-form-item>
 
@@ -540,7 +540,6 @@
                           :placeholder="$lang[$store.state.lang].columns.database"
                           size="small"></el-input>
                       </el-form-item>
-
                     </div>
                   </el-form-item>
                   <!-- 存储结束 -->
