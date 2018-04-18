@@ -5,8 +5,10 @@ import traceback
 from os.path import join, abspath, dirname
 from shutil import ignore_patterns, copy2, copystat
 from jinja2 import Template
+from html import unescape
 from scrapyd_api import ScrapydAPI
 from pyquery import PyQuery as pq
+from bs4 import BeautifulSoup
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -19,6 +21,9 @@ TEMPLATES_TO_RENDER = (
     ('${project_name}', 'pipelines.py.tmpl'),
     ('${project_name}', 'middlewares.py.tmpl'),
 )
+
+NO_REFERRER = '<meta name="referrer" content="never">'
+NO_POINTER_EVENTS = '<style>a{pointer-events:none!important}</style>'
 
 
 def get_scrapyd(client):
@@ -168,6 +173,14 @@ def get_traceback():
 
 
 def process_html(html):
-    doc = pq(html)
-    doc.find('script').remove()
-    return str(doc)
+    """
+    process html, add some tricks such as no referrer
+    :param html: source html
+    :return: processed html
+    """
+    dom = BeautifulSoup(html, 'lxml')
+    dom.find('head').insert(0, BeautifulSoup(NO_REFERRER, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(NO_POINTER_EVENTS, 'lxml'))
+    html = str(dom)
+    # html = unescape(html)
+    return html

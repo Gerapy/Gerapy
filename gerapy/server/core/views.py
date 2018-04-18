@@ -722,6 +722,11 @@ def task_index(request):
 
 
 def render_html(request):
+    """
+    render html with url
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         print(data)
@@ -736,3 +741,14 @@ def render_html(request):
                 return JsonResponse({'result': '1', 'data': html})
             except:
                 return JsonResponse({'result': '0'}, status=500)
+    if request.method == 'GET':
+        url = request.GET.get('url')
+        js = request.GET.get('js', 0)
+        script = request.GET.get('script')
+        try:
+            response = requests.get(url, timeout=5)
+            response.encoding = response.apparent_encoding
+            html = process_html(response.text)
+            return HttpResponse(html)
+        except:
+            return HttpResponse(status=500)
