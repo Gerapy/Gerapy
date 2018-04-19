@@ -24,6 +24,7 @@ TEMPLATES_TO_RENDER = (
 
 NO_REFERRER = '<meta name="referrer" content="never">'
 NO_POINTER_EVENTS = '<style>a{pointer-events:none!important}</style>'
+GENERATOR = '<script src="http://localhost:8000/static/dist/selector.js"></script>'
 
 
 def get_scrapyd(client):
@@ -181,6 +182,7 @@ def process_html(html):
     dom = BeautifulSoup(html, 'lxml')
     dom.find('head').insert(0, BeautifulSoup(NO_REFERRER, 'lxml'))
     dom.find('head').insert(0, BeautifulSoup(NO_POINTER_EVENTS, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(GENERATOR, 'lxml'))
     html = str(dom)
     # html = unescape(html)
     return html
