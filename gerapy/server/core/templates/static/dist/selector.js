@@ -313,7 +313,7 @@
 
 }).call(this);
 
-cssGenerator = new CssSelectorGenerator;
+var cssGenerator = new CssSelectorGenerator;
 
 /* See license.txt for terms of usage */
 "use strict";

@@ -1,5 +1,7 @@
 import sys
 import traceback
+from urllib.parse import unquote
+import base64
 import json, os, requests, time, pytz, pymongo, string
 from shutil import move, copy, rmtree
 from requests.exceptions import ConnectionError
@@ -743,6 +745,8 @@ def render_html(request):
                 return JsonResponse({'result': '0'}, status=500)
     if request.method == 'GET':
         url = request.GET.get('url')
+        url = unquote(base64.b64decode(url).decode('utf-8'))
+        print('Decoded', url)
         js = request.GET.get('js', 0)
         script = request.GET.get('script')
         try:
@@ -750,5 +754,5 @@ def render_html(request):
             response.encoding = response.apparent_encoding
             html = process_html(response.text)
             return HttpResponse(html)
-        except:
-            return HttpResponse(status=500)
+        except Exception as e:
+            return JsonResponse({'message': e.args}, status=500)

@@ -42,9 +42,8 @@
         </el-col>
       </el-row>
       <div class="m-t-md" id="render-result">
-        <div ref="xxxxx">xx</div>
         <iframe sandbox="allow-same-origin allow-scripts" scrolling="yes" width="100%" :src="src"
-                class="iframe-box" id="iframe-box" ref="iframe"></iframe>
+                class="iframe-box" id="iframe-box"></iframe>
       </div>
     </div>
   </div>
@@ -59,13 +58,10 @@
   import Vue from 'vue'
   import VueClipboard from 'vue-clipboard2'
   import {render as renderUrl} from 'common/uri/util'
-  import $ from "jquery"
-
+  import $ from 'jquery'
+  import {Base64} from 'js-base64';
 
   Vue.use(VueClipboard)
-  console.log(renderUrl)
-  console.log($)
-
 
   export default{
     props: {
@@ -80,31 +76,6 @@
         gerapy_selected: [],
       }
     },
-    created() {
-      console.log(xpathGenerator)
-      console.log(cssGenerator)
-
-    },
-    mounted() {
-      console.log('MMM')
-//      x = this.$refs('#iframe-box')
-//      console.log('XXXXXX', x)
-//      setTimeout(function () {
-      var iframe = document.getElementById('iframe-box');
-      console.log('FFFFF', iframe, $('#iframe-box'))
-//      iframe.onload = function () {
-      console.log('^^^^^^^^^^^^^')
-      iframe.contentDocument.onclick = function () {
-        console.log('???????????????')
-        let xpath = $('#iframe-box')[0].contentWindow.xpath
-        console.log('XP', xpath)
-      };
-//      }
-//      }, 1000)
-      console.log('XXX', this.$refs.iframe)
-      console.log('XXX', this.$refs.xxxxx)
-
-    },
     methods: {
       onCopy: function (e) {
         this.$message.success(this.$lang[this.$store.state.lang].messages.successCopy)
@@ -113,54 +84,20 @@
         this.$message.error(this.$lang[this.$store.state.lang].messages.errorCopy)
       },
       hide(){
-        // this.show = false
         this.$emit('hide', false)
       },
       render() {
-        this.src = renderUrl + '?url=' + this.url
-        var iframe = document.getElementById('iframe-box');
-        console.log('FFFFF', iframe, $('#iframe-box'))
+        let that = this
+        this.src = renderUrl + '?url=' + Base64.encode(this.url)
+        let iframe = document.getElementById('iframe-box');
         iframe.onload = function () {
-          console.log('^^^^^^^^^^^^^')
           iframe.contentDocument.onclick = function () {
-            console.log('???????????????')
-            let xpath = $('#iframe-box')[0].contentWindow.xpath
-            console.log('XP', xpath)
+            let xpathSelector = $('#iframe-box')[0].contentWindow.xpathSelector
+            let cssSelector = $('#iframe-box')[0].contentWindow.cssSelector
+            that.cssSelector = cssSelector
+            that.xpathSelector = xpathSelector
           };
         }
-      },
-      select(event) {
-        console.log(event)
-        console.log($(event.target))
-        let that = this
-
-//        $(event.target).contents().find('*').on('click', (e) => {
-//          console.log(e.target)
-//          let xpath = $('#iframe-box')[0].contentWindow.xpath
-//          console.log(xpath)
-//          that.xpathSelector = xpath
-//
-//
-//        })
-
-//        console.log(jquery)
-
-//        this.gerapy_selected.forEach(element => {
-//          element.target.style.borderStyle = ''
-//          element.target.style.borderColor = ''
-//        });
-//        this.gerapy_selected = []
-//        event.target.style.borderStyle = 'solid'
-//        event.target.style.borderColor = 'red'
-//        this.gerapy_selected.push(event)
-//        this.cssSelector = cssGenerator.getSelector(event.target)
-//        this.xpathSelector = xpathGenerator.getElementXPath(event.target)
-//        console.log('css-selector', this.cssSelector)
-//        console.log('xpath-selector', this.xpathSelector)
-//        if (event.target.href) {
-//          console.log(event.target.href)
-//          event.target.href = '#'
-//        }
       },
     },
     components: {
