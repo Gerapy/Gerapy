@@ -598,6 +598,28 @@ def job_cancel(request, client_id, project_name, job_id):
             return JsonResponse({'message': 'Connect Error'})
 
 
+def del_version(request, client_id, project, version):
+    if request.method == 'GET':
+        client = Client.objects.get(id=client_id)
+        try:
+            scrapyd = get_scrapyd(client)
+            result = scrapyd.delete_version(project=project, version=version)
+            return JsonResponse(result)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'})
+
+
+def del_project(request, client_id, project):
+    if request.method == 'GET':
+        client = Client.objects.get(id=client_id)
+        try:
+            scrapyd = get_scrapyd(client)
+            result = scrapyd.delete_project(project=project)
+            return JsonResponse(result)
+        except ConnectionError:
+            return JsonResponse({'message': 'Connect Error'})
+
+
 def monitor_db_list(request):
     """
     get monitor db list
@@ -677,7 +699,6 @@ def task_update(request, task_id):
         data['clients'] = json.dumps(data.get('clients'))
         data['configuration'] = json.dumps(data.get('configuration'))
         data['success'] = 0
-        print(data)
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
 
