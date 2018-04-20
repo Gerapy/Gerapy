@@ -4,15 +4,13 @@ var xpathSelector = null
 var mode = 'single'
 
 $(function () {
-    buttons = '<div id="function-buttons"><button class="active" id="single-mode"><i class="fa fa-square-o"></i></button> <button id="multi-mode"><i class="fa fa-clone"></i></button> <button id="detect"><i class="fa fa-magic"></i></button> </div>'
+    buttons = '<div id="function-buttons"><button class="active" id="gerapy-single"><i class="fa fa-square-o"></i></button> <button id="gerapy-multi"><i class="fa fa-clone"></i></button> <button id="gerapy-detect"><i class="fa fa-magic"></i></button> <button id="gerapy-reset"><i class="fa fa-retweet"></i></button> </div>'
     $(buttons).appendTo($('body'))
 })
 
 
 function reset() {
-    gerapySelected.forEach(element => {
-        removeStyle(element)
-    })
+    $('.gerapy-chosen').removeClass('gerapy-chosen')
     gerapySelected = []
     cssSelector = xpathSelector = null
 }
@@ -47,24 +45,22 @@ $(function () {
 
     })
 
-    $('#single-mode').on('click', function () {
+    $('#gerapy-single').on('click', function () {
         mode = 'single';
-        $('#single-mode').addClass('active');
-        $('#multi-mode').removeClass('active');
-        $('#mode').text(mode);
+        $('#gerapy-single').addClass('active');
+        $('#gerapy-multi').removeClass('active');
         reset();
     });
 
-    $('#multi-mode').on('click', function () {
+    $('#gerapy-multi').on('click', function () {
         mode = 'multi';
-        $('#multi-mode').addClass('active');
-        $('#single-mode').removeClass('active');
-        $('#mode').text(mode);
+        $('#gerapy-multi').addClass('active');
+        $('#gerapy-single').removeClass('active');
         reset();
     });
 
 
-    $('#detect').on('click', function () {
+    $('#gerapy-detect').on('click', function () {
         // set mode
         selectedXPaths = [];
         gerapySelected.forEach((element) => {
@@ -99,6 +95,10 @@ $(function () {
         console.log('XPath-selector', xpathSelector);
 
     });
+
+    $('#gerapy-reset').on('click', function () {
+        reset()
+    })
 })
 
 

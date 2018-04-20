@@ -1,6 +1,6 @@
 <template>
   <div class="panel" id="browser" v-show="show">
-    <panel-title :title="$lang[$store.state.lang].columns.url">
+    <panel-title :title="$lang[$store.state.lang].titles.browser">
       <el-button type="primary" size="mini" @click="createProjectDialog=true">
         <i class="fa fa-close" @click="hide"></i>
       </el-button>
@@ -19,7 +19,7 @@
         <el-col :span="1">
           <el-button type="primary" size="mini">XPath</el-button>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="18">
           {{ xpathSelector }}
         </el-col>
         <el-col :span="1">
@@ -32,7 +32,7 @@
         <el-col :span="1">
           <el-button type="primary" size="mini">CSS</el-button>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="18">
           {{ cssSelector }}
         </el-col>
         <el-col :span="1">

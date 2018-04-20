@@ -9,7 +9,7 @@ jQuery.fn.extend({
             if (classes) {
                 classes = classes.split(' ');
                 for (let i = 0; i < classes.length; i++) {
-                    if (classes[i]) {
+                    if (classes[i] && classes[i] !== 'gerapy-chosen') {
                         cls += '.' + classes[i];
                     }
                 }
@@ -639,13 +639,10 @@ function exists(array, target) {
     return -1;
 }
 
-
 function removeStyle(element) {
-    element.style.borderStyle = '';
-    element.style.borderColor = '';
+    $(element).removeClass('gerapy-chosen')
 }
 
 function addStyle(element) {
-    element.style.borderStyle = 'solid';
-    element.style.borderColor = 'red';
+    $(element).addClass('gerapy-chosen')
 }
