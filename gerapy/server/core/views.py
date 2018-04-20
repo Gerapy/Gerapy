@@ -729,20 +729,6 @@ def render_html(request):
     :param request:
     :return:
     """
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        print(data)
-        print(type(data))
-        url = data.get('url')
-        js = data.get('js')
-        if not js:
-            try:
-                response = requests.get(url, timeout=5)
-                response.encoding = response.apparent_encoding
-                html = process_html(response.text)
-                return JsonResponse({'result': '1', 'data': html})
-            except:
-                return JsonResponse({'result': '0'}, status=500)
     if request.method == 'GET':
         url = request.GET.get('url')
         url = unquote(base64.b64decode(url).decode('utf-8'))

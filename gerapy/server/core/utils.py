@@ -25,6 +25,9 @@ TEMPLATES_TO_RENDER = (
 NO_REFERRER = '<meta name="referrer" content="never">'
 NO_POINTER_EVENTS = '<style>a{pointer-events:none!important}</style>'
 GENERATOR = '<script src="/static/dist/selector.js"></script>'
+JQUERY = '<script src="/static/dist/jquery.min.js"></script>'
+MAIN = '<script src="/static/dist/main.js"></script>'
+STYLE = '<link href="/static/dist/style.css" rel="stylesheet"><link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">'
 
 
 def get_scrapyd(client):
@@ -182,7 +185,10 @@ def process_html(html):
     dom = BeautifulSoup(html, 'lxml')
     dom.find('head').insert(0, BeautifulSoup(NO_REFERRER, 'lxml'))
     dom.find('head').insert(0, BeautifulSoup(NO_POINTER_EVENTS, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(MAIN, 'lxml'))
     dom.find('head').insert(0, BeautifulSoup(GENERATOR, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(JQUERY, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(STYLE, 'lxml'))
     html = str(dom)
     # html = unescape(html)
     return html

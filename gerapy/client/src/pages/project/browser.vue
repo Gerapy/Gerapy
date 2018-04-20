@@ -16,26 +16,26 @@
         </el-form-item>
       </el-form>
       <el-row class="m-b-sm">
-        <el-col span="1">
+        <el-col :span="1">
           <el-button type="primary" size="mini">XPath</el-button>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           {{ xpathSelector }}
         </el-col>
-        <el-col span="1">
+        <el-col :span="1">
           <el-button type="primary" size="mini" v-clipboard:copy="xpathSelector" v-clipboard:success="onCopy"
                      v-clipboard:error="onError">{{ $lang[$store.state.lang].buttons.copy }}
           </el-button>
         </el-col>
       </el-row>
       <el-row>
-        <el-col span="1">
+        <el-col :span="1">
           <el-button type="primary" size="mini">CSS</el-button>
         </el-col>
-        <el-col span="10">
+        <el-col :span="10">
           {{ cssSelector }}
         </el-col>
-        <el-col span="1">
+        <el-col :span="1">
           <el-button type="primary" size="mini" v-clipboard:copy="cssSelector" v-clipboard:success="onCopy"
                      v-clipboard:error="onError">{{ $lang[$store.state.lang].buttons.copy }}
           </el-button>

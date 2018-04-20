@@ -1,3 +1,48 @@
+jQuery.fn.extend({
+    getPath: function () {
+        var path, node = this;
+        while (node.length) {
+            var realNode = node[0], name = realNode.localName;
+
+            var classes = jQuery(realNode).attr('class');
+            var cls = '';
+            if (classes) {
+                classes = classes.split(' ');
+                for (let i = 0; i < classes.length; i++) {
+                    if (classes[i]) {
+                        cls += '.' + classes[i];
+                    }
+                }
+            }
+
+            if (!name) break;
+            name = name.toLowerCase();
+
+            if (cls) {
+                name = name + cls;
+            }
+
+            var parent = node.parent();
+
+            var sameTagSiblings = parent.children(name);
+            if (sameTagSiblings.length > 1) {
+                var allSiblings = parent.children();
+                var index = allSiblings.index(realNode) + 1;
+                if (index > 1) {
+                    name += ':nth-child(' + index + ')';
+                }
+            }
+
+            if (name !== 'html') {
+                path = name + (path ? ' > ' + path : '');
+            }
+            node = parent;
+
+        }
+        return path;
+    }
+});
+
 (function () {
     var CssSelectorGenerator, root,
         indexOf = [].indexOf || function (item) {
@@ -13,7 +58,7 @@
         };
 
         function CssSelectorGenerator(options) {
-            if (options == null) {
+            if (options === null) {
                 options = {};
             }
             this.options = {};
@@ -313,7 +358,7 @@
 
 }).call(this);
 
-var cssGenerator = new CssSelectorGenerator;
+cssGenerator = new CssSelectorGenerator;
 
 /* See license.txt for terms of usage */
 "use strict";
@@ -523,28 +568,84 @@ Xpath.getRuleMatchingElements = function (rule, doc) {
     return Xpath.getElementsByXPath(doc, xpath);
 };
 
-var xpathGenerator = Xpath
+var xpathGenerator = Xpath;
 
 
-var cssSelector = null
-var xpathSelector = null
+function getXPathByElement(element) {
+    return xpathGenerator.getElementXPath(element);
+}
 
-var selector = null, xpath = null, gerapy_selected = []
-document.addEventListener(
-    'click',
-    function (event) {
-        gerapy_selected.forEach(element => {
-            element.target.style.borderStyle = ''
-            element.target.style.borderColor = ''
-        })
-        gerapy_selected = []
-        event.target.style.borderStyle = 'solid'
-        event.target.style.borderColor = 'red'
-        gerapy_selected.push(event)
-        cssSelector = cssGenerator.getSelector(event.target)
-        xpathSelector = xpathGenerator.getElementXPath(event.target)
-        console.log('css-selector', cssSelector)
-        console.log('xpath-selector', xpathSelector)
-    },
-    false
-)
+
+function getCSSSelectorByElement(element) {
+    return jQuery(element).getPath();
+}
+
+function getElementsByXPath(XPath) {
+    var xresult = document.evaluate(XPath, document, null, XPathResult.ANY_TYPE, null)
+    var xnodes = [];
+    var xres;
+    while (xres = xresult.iterateNext()) {
+        xnodes.push(xres);
+    }
+    return xnodes;
+}
+
+function getElementsByCSSSelector(CSSSelector) {
+    return document.querySelectorAll(CSSSelector);
+}
+
+
+function reverse(s) {
+    return s.split("").reverse().join("");
+}
+
+function commonSubstring(string1, string2) {
+    let forward = '';
+    let length1 = string1.length;
+
+    for (let i = 0; i < length1; i++) {
+        if (string1[i] === string2[i]) {
+            forward += string1[i];
+        } else {
+            break;
+        }
+    }
+
+    string1 = reverse(string1);
+    string2 = reverse(string2);
+
+    let backward = '';
+    length1 = string1.length;
+
+    for (let i = 0; i < length1; i++) {
+        if (string1[i] === string2[i]) {
+            backward += string1[i];
+        } else {
+            break;
+        }
+    }
+    return forward + reverse(backward);
+}
+
+function exists(array, target) {
+    var length = array.length;
+    for (var i = 0; i < length; i++) {
+        element = array[i];
+        if ($(element).is($(target))) {
+            console.log('IS', $(element).is($(target)));
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+function removeStyle(element) {
+    element.style.borderStyle = '';
+    element.style.borderColor = '';
+}
+
+function addStyle(element) {
+    element.style.borderStyle = 'solid';
+    element.style.borderColor = 'red';
+}
