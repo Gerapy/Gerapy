@@ -37,7 +37,7 @@ def work_func(client, project, spider):
     logger.warning("Run {}: {} on server{}".format(project, spider, ip_port.ip))
     try:
         jobs = scrapyd.schedule(project, spider)
-        logger.warning("运行{}  {}成功；作业ID为：{}".format(project, spider, jobs))
+        logger.warning("{}:  {}；Jobs：{}".format(project, spider, jobs))
     except Exception as err:
         logger.error("Please deploy the project to：{}".format(ip_port.ip))
 
