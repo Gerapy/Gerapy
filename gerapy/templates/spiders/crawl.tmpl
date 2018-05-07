@@ -19,9 +19,14 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif -%}
         {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif -%}
         {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif -%}
+        {% if spider.storage.mongo.url -%}"MONGO_URL": "{{ spider.storage.mongo.url }}",{%- endif -%}
+        {% if spider.storage.mongo.db -%}"MONGO_DB": "{{ spider.storage.mongo.db }}",{%- endif -%}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
             'gerapy.pipelines.MySQLPipeline': 300,
+            {%- endif %}
+            {% if spider.storage.mongo.enable -%}
+            'gerapy.pipelines.MongoPipeline': 300,
             {%- endif %}
         }
     }

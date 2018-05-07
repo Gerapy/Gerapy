@@ -118,7 +118,7 @@
               <h4 class="inline m-b-sm">{{ $lang[$store.state.lang].titles.listSpider }}</h4>
 
               <el-button type="primary" class="inline" size="mini"
-                         @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {mysql: {enable: false}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
+                         @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {mysql: {enable: false}, mongo: {enable: false}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
                 <i class="fa fa-plus"></i>
                 {{ $lang[$store.state.lang].buttons.addSpider }}
               </el-button>
@@ -542,6 +542,30 @@
                       </el-form-item>
                     </div>
                   </el-form-item>
+
+                  <div>
+                    <h5 class="inline m-v-sm">MongoDB</h5>
+                    <el-switch
+                      v-model="spider.storage.mongo.enable">
+                    </el-switch>
+                  </div>
+                  <div v-if="spider.storage.mongo.enable">
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.url }}</h4>
+                      <el-input
+                        v-model="spider.storage.mongo.url" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.url"
+                        size="small"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.database }}</h4>
+                      <el-input
+                        v-model="spider.storage.mongo.db" class="inline"
+                        :placeholder="$lang[$store.state.lang].columns.database"
+                        size="small"></el-input>
+                    </el-form-item>
+                  </div>
+
                   <!-- 存储结束 -->
                 </el-collapse-item>
               </el-collapse>
@@ -720,6 +744,13 @@
         this.$fetch.apiProject.projectGetConfiguration({
           name: this.projectName
         }).then(({data: data}) => {
+          if (data.configuration.spiders && data.configuration.spiders.length) {
+            data.configuration.spiders.forEach(spider => {
+              if (!spider.storage.mongo) {
+                spider.storage.mongo = { enable: false }
+              }
+            })
+          }
           this.projectDescription = data.description
           this.projectGeneratedAt = data.generated_at
           this.projectBuiltAt = data.built_at
