@@ -28,42 +28,45 @@
                 </el-button>
               </el-form-item>
 
+
+              <div class="hr-line-dashed"></div>
+
               <!-- 提取实体 -->
-              <el-form-item>
-                <h4 class="inline">{{ $lang[$store.state.lang].titles.items }}</h4>
-                <!-- 添加规则配置浮窗 -->
-                <el-dialog :visible.sync="addItem" size="tiny">
-                  <el-form>
-                    <el-form-item :label="$lang[$store.state.lang].columns.column">
-                      <el-input size="small" v-model="item" class="inline"
-                                :placeholder="$lang[$store.state.lang].columns.column">
-                      </el-input>
-                    </el-form-item>
-                  </el-form>
-                  <div slot="footer">
-                    <el-button @click="addItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
-                    </el-button>
-                    <el-button @click="onAddItem()"
-                               type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
-                    </el-button>
-                  </div>
-                </el-dialog>
-                <!-- 添加规则配置浮窗 -->
-                <el-button type="primary" class="inline" size="mini"
-                           @click="onAddInput(configuration.items, {name:'', attrs:{}})">
-                  <i class="fa fa-plus"></i>
-                  {{ $lang[$store.state.lang].buttons.addItem }}
-                </el-button>
-                <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
-                             v-if="configuration.items.length">
-                  <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey"
-                                    :key="itemKey">
-                    <!-- 每个实体配置 -->
-                    <template slot="title">
+              <h4 class="inline m-v-md">{{ $lang[$store.state.lang].titles.items }}</h4>
+              <!-- 添加规则配置浮窗 -->
+              <el-dialog :visible.sync="addItem" size="tiny">
+                <el-form>
+                  <el-form-item :label="$lang[$store.state.lang].columns.column">
+                    <el-input size="small" v-model="item" class="inline"
+                              :placeholder="$lang[$store.state.lang].columns.column">
+                    </el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer">
+                  <el-button @click="addItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
+                  </el-button>
+                  <el-button @click="onAddItem()"
+                             type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
+                  </el-button>
+                </div>
+              </el-dialog>
+
+              <!-- 添加配置浮窗 -->
+              <el-button type="primary" class="inline" size="mini"
+                         @click="onAddInput(configuration.items, {name:'', attrs:{}})">
+                <i class="fa fa-plus"></i>
+                {{ $lang[$store.state.lang].buttons.addItem }}
+              </el-button>
+              <el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
+                           v-if="configuration.items.length">
+                <el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey"
+                                  :key="itemKey">
+                  <!-- 每个实体配置 -->
+                  <template slot="title">
                     <span>
                       {{ $lang[$store.state.lang].titles.item }} {{ itemKey + 1 }}
                     </span>
-                      <span class="pull-right">
+                    <span class="pull-right">
                       <el-button type="primary" class="inline" size="mini"
                                  @click.stop="addItem=true,activeItem=itemKey">
                         <i class="fa fa-plus"></i>
@@ -75,47 +78,45 @@
                           {{ $lang[$store.state.lang].buttons.delete }}
                       </el-button>
                     </span>
-                    </template>
-                    <!-- 每个实体配置 -->
-                    <el-form-item>
-                      <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.name }}</h4>
+                  </template>
+                  <!-- 每个实体配置 -->
+                  <el-form-item>
+                    <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.name }}</h4>
+                    <el-input
+                      v-model="item['name']" class="inline" :placeholder="$lang[$store.state.lang].columns.name"
+                      size="small"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey" class="item">
+                      <el-button class="inline inline-first m-r-sm" type="primary" size="mini">
+                        {{ attrIndex + 1 }}
+                      </el-button>
+                      <span class="inline inline-second">{{ attrKey }}</span>
                       <el-input
-                        v-model="item['name']" class="inline" :placeholder="$lang[$store.state.lang].columns.name"
+                        v-model="attr['value']" class="inline inline-third"
+                        :placeholder="$lang[$store.state.lang].columns.value"
                         size="small"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                      <div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey" class="item">
-                        <el-button class="inline inline-first m-r-sm" type="primary" size="mini">
-                          {{ attrIndex + 1 }}
-                        </el-button>
-                        <span class="inline inline-second">{{ attrKey }}</span>
-                        <el-input
-                          v-model="attr['value']" class="inline inline-third"
-                          :placeholder="$lang[$store.state.lang].columns.value"
-                          size="small"></el-input>
-                        <el-input
-                          v-model="attr['in_processor']" class="inline inline-fourth"
-                          :placeholder="$lang[$store.state.lang].columns.inProcessor"
-                          size="small"></el-input>
-                        <el-input
-                          v-model="attr['out_processor']" class="inline inline-fifth"
-                          :placeholder="$lang[$store.state.lang].columns.outProcessor"
-                          size="small"></el-input>
-                        <el-button type="danger" size="mini" class="m-r-md"
-                                   @click="onDeleteInput(item.attrs, attrKey)">
-                          <i class="fa fa-remove"></i>
-                          {{ $lang[$store.state.lang].buttons.delete }}
-                        </el-button>
-                      </div>
-                    </el-form-item>
-                  </el-collapse-item>
-                </el-collapse>
-              </el-form-item>
+                      <el-input
+                        v-model="attr['in_processor']" class="inline inline-fourth"
+                        :placeholder="$lang[$store.state.lang].columns.inProcessor"
+                        size="small"></el-input>
+                      <el-input
+                        v-model="attr['out_processor']" class="inline inline-fifth"
+                        :placeholder="$lang[$store.state.lang].columns.outProcessor"
+                        size="small"></el-input>
+                      <el-button type="danger" size="mini" class="m-r-md"
+                                 @click="onDeleteInput(item.attrs, attrKey)">
+                        <i class="fa fa-remove"></i>
+                        {{ $lang[$store.state.lang].buttons.delete }}
+                      </el-button>
+                    </div>
+                  </el-form-item>
+                </el-collapse-item>
+              </el-collapse>
               <!-- 提取实体结束 -->
 
-              <div class="hr-line-dashed"></div>
-
-              <h4 class="inline m-b-sm">{{ $lang[$store.state.lang].titles.listSpider }}</h4>
+              <!-- 爬虫配置 -->
+              <h4 class="inline m-v-md">{{ $lang[$store.state.lang].titles.listSpider }}</h4>
 
               <el-button type="primary" class="inline" size="mini"
                          @click="onAddSpider">
@@ -124,6 +125,7 @@
               </el-button>
 
               <el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
+
                 <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey"
                                   :key="spiderKey">
                   <spider :spider="spider" :spiderKey="spiderKey" :items="configuration.items" :onAddInput="onAddInput"
@@ -145,9 +147,9 @@
                     </el-button>
                     </span>
                   </template>
-                  <!-- 存储结束 -->
                 </el-collapse-item>
               </el-collapse>
+              <!-- 爬虫配置结束 -->
             </el-form>
           </el-col>
         </el-row>
