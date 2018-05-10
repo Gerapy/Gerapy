@@ -115,7 +115,8 @@
 
     <!-- 提取规则开始 -->
     <el-form-item>
-      <extractors :extractors="spider.extractors" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></extractors>
+      <extractors :extractors="spider.extractors" :items="items" :onAddInput="onAddInput"
+                  :onDeleteInput="onDeleteInput"></extractors>
     </el-form-item>
     <!-- 提取规则结束 -->
 
@@ -178,22 +179,8 @@
 <script>
   import rules from 'pages/project/rules'
   import extractors from 'pages/project/extractors'
-  import test from 'pages/project/test'
   export default {
     name: 'Spider',
-    data() {
-      return {
-        // 提取实体
-        addItem: false,
-        activeItem: null,
-        item: null,
-
-        configuration: {
-          spiders: [],
-          items: []
-        }
-      }
-    },
     props: {
       spider: {
         type: Object,
@@ -214,8 +201,6 @@
     components: {
       rules,
       extractors,
-      test
-    },
-
+    }
   }
 </script>
