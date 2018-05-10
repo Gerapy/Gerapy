@@ -115,60 +115,7 @@
 
     <!-- 提取规则开始 -->
     <el-form-item>
-      <h4 class="inline">{{ $lang[$store.state.lang].titles.extractors }}</h4>
-      <!-- 添加规则配置浮窗 -->
-      <el-dialog :visible.sync="addExtractorItem" size="tiny">
-        <el-form>
-          <el-form-item :label="$lang[$store.state.lang].titles.selectConfig">
-            <el-cascader
-              expand-trigger="hover"
-              :options="extractorItemOptions"
-              v-model="extractorItem">
-            </el-cascader>
-          </el-form-item>
-        </el-form>
-        <div slot="footer">
-          <el-button @click="addExtractorItem=false" size="small">
-            {{ $lang[$store.state.lang].buttons.cancel }}
-          </el-button>
-          <el-button @click="onAddExtractorItem()"
-                     type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
-          </el-button>
-        </div>
-      </el-dialog>
-      <!-- 添加规则配置浮窗 -->
-      <el-button type="primary" class="inline" size="mini"
-                 @click="onAddInput(spider.extractors, {callback:'', item: '', attrs:{}})">
-        <i class="fa fa-plus"></i>
-        {{ $lang[$store.state.lang].buttons.addExtractor }}
-      </el-button>
-      <el-collapse :value="parseInt(spider.extractors.length-1)"
-                   v-if="spider.extractors.length">
-        <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in spider.extractors"
-                          :name="extractorKey" :key="extractorKey">
-          <!-- 每条规则标题及操作配置 -->
-          <template slot="title">
-            <span>
-              {{ $lang[$store.state.lang].titles.extractor }} {{ extractorKey + 1 }}
-            </span>
-            <span class="pull-right">
-              <el-button type="primary" class="inline" size="mini"
-                         @click.stop="addExtractorItem=true,activeExtractorItem=extractorKey">
-                <i class="fa fa-plus"></i>
-                {{ $lang[$store.state.lang].buttons.addColumn }}
-              </el-button>
-              <el-button type="danger" size="mini" class="m-r-md"
-                         @click="onDeleteInput(spider.extractors, extractorKey)">
-                  <i class="fa fa-remove"></i>
-                  {{ $lang[$store.state.lang].buttons.delete }}
-              </el-button>
-            </span>
-          </template>
-          <extractor :extractor="extractor" :items="items" :onAddInput="onAddInput"
-                     :onDeleteInput="onDeleteInput"></extractor>
-          <!-- 每条规则标题及操作配置 -->
-        </el-collapse-item>
-      </el-collapse>
+      <extractors :extractors="spider.extractors" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></extractors>
     </el-form-item>
     <!-- 提取规则结束 -->
 
@@ -230,19 +177,12 @@
 
 <script>
   import rules from 'pages/project/rules'
-  import extractor from 'pages/project/extractor'
+  import extractors from 'pages/project/extractors'
   import test from 'pages/project/test'
   export default {
     name: 'Spider',
     data() {
       return {
-
-
-        // 提取规则
-        addExtractorItem: false,
-        extractorItem: null,
-        activeExtractorItem: null,
-
         // 提取实体
         addItem: false,
         activeItem: null,
@@ -273,28 +213,8 @@
     },
     components: {
       rules,
-      extractor,
+      extractors,
       test
-    },
-    computed: {
-      extractorItemOptions() {
-        let array = []
-        this.configuration.items.forEach((item) => {
-          let attrs = []
-          for (let attr in item['attrs']) {
-            attrs.push({
-              value: attr,
-              label: attr
-            })
-          }
-          array.push({
-            value: item['name'],
-            label: item['name'],
-            children: attrs
-          })
-        })
-        return array
-      }
     },
 
   }

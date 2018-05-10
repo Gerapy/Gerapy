@@ -376,10 +376,7 @@
         this.$set(this.configuration.spiders[this.activeSpider].rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
         this.addRuleItem = false
       },
-      onAddExtractorItem() {
-        this.$set(this.configuration.spiders[this.activeSpider].extractors[this.activeExtractorItem]['attrs'], this.extractorItem.slice(-1), [])
-        this.addExtractorItem = false
-      },
+
       onGenerate() {
         if (this.projectBuiltAt) {
           this.$confirm(this.$lang[this.$store.state.lang].messages.reGenerate, this.$lang[this.$store.state.lang].buttons.confirm, {
