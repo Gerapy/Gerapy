@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^api/project/(\S+)/generate', views.project_generate, name='project_generate'),
     url(r'^api/project/(\S+)/tree', views.project_tree, name='project_tree'),
     url(r'^api/project/(\S+)/remove', views.project_remove, name='project_remove'),
+    url(r'^api/project/(\S+)/parse', views.project_parse, name='project_parse'),
     url(r'^api/project/file/rename', views.project_file_rename, name='project_file_rename'),
     url(r'^api/project/file/delete', views.project_file_delete, name='project_file_delete'),
     url(r'^api/project/file/create', views.project_file_create, name='project_file_create'),

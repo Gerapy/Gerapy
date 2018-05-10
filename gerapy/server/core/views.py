@@ -18,6 +18,7 @@ from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html
+from gerapy.server.core import parser
 
 
 def index(request):
@@ -453,6 +454,28 @@ def project_generate(request, project_name):
         model.save()
         # return model
         return JsonResponse(model_to_dict(model))
+
+
+def project_parse(request, project_name):
+    """
+    parse project
+    :param request: request object
+    :param project_name: project name
+    :return: requests, items, response
+    """
+    if request.method == 'POST':
+        print(project_name)
+        project_path = join(PROJECTS_FOLDER, project_name)
+        print('Project Path', project_path)
+        data = json.loads(request.body)
+        spider = data.get('spider')
+        url = data.get('url')
+        method = data.get('method', 'get')
+        headers = data.get('headers', {})
+        meta = data.get('meta', {})
+        callback = data.get('callback')
+        result = parser.run(url, project_path, spider, callback)
+        return JsonResponse({'status': '1', 'result': result}, )
 
 
 def project_file_read(request):

@@ -4,7 +4,7 @@ import os
 import sys
 import optparse
 from scrapy.commands import ScrapyCommand as BaseParser
-from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerProcess, CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from scrapy.settings.deprecated import check_deprecated_settings
 from w3lib.url import is_url
@@ -14,8 +14,12 @@ from scrapy.http import Request
 from scrapy.item import BaseItem
 from scrapy.utils import display
 from scrapy.utils.spider import iterate_spider_output, spidercls_for_request
+import multiprocessing
+from twisted.internet import reactor
 
 logger = logging.getLogger(__name__)
+
+dfs = set()
 
 
 class Parser(BaseParser):
@@ -106,12 +110,27 @@ class Parser(BaseParser):
             if not opts.nolinks:
                 self.print_requests(colour=colour)
     
+    def process_item(self, item):
+        return dict(item)
+    
     def get_items(self, lvl=None):
         if lvl is None:
             items = [item for lst in self.items.values() for item in lst]
         else:
             items = self.items.get(lvl, [])
-        return items
+        items_array = []
+        for item in items:
+            items_array.append(self.process_item(item))
+        return items_array
+    
+    def process_request(self, request):
+        return {
+            'url': request.url,
+            'method': request.method,
+            'meta': request.meta,
+            'headers': request.headers,
+            'callback': self.get_callback(request)
+        }
     
     def get_requests(self, lvl=None):
         if lvl is None:
@@ -123,9 +142,22 @@ class Parser(BaseParser):
         else:
             requests = self.requests.get(lvl, [])
         
+        requests_array = []
         for request in requests:
             print('Request', request, self.get_callback(request))
-        return requests
+            requests_array.append(self.process_request(request))
+        
+        return requests_array
+    
+    def process_response(self, response):
+        return {
+            'html': response.text,
+            'url': response.url,
+            'status': response.status
+        }
+    
+    def get_response(self):
+        return self.process_response(self.first_response)
     
     def get_results(self, opts):
         results = []
@@ -189,7 +221,12 @@ class Parser(BaseParser):
     def start_parsing(self, url, opts):
         self.crawler_process.crawl(self.spidercls, **opts.spargs)
         self.pcrawler = list(self.crawler_process.crawlers)[0]
-        self.crawler_process.start()
+        # self.crawler_process.start()
+        # self.crawler_process.start()
+        d = self.crawler_process.join()
+        d.addBoth(lambda _: reactor.stop())
+        
+        reactor.run()
         
         if not self.first_response:
             logger.error('No response downloaded for: %(url)s',
@@ -259,14 +296,12 @@ class Parser(BaseParser):
         self.process_request_meta(opts)
     
     def process_spider_arguments(self, opts):
-        
         try:
             opts.spargs = arglist_to_dict(opts.spargs)
         except ValueError:
             raise UsageError("Invalid -a value, use -a NAME=VALUE", print_help=False)
     
     def process_request_meta(self, opts):
-        
         if opts.meta:
             try:
                 opts.meta = json.loads(opts.meta)
@@ -292,11 +327,8 @@ class Parser(BaseParser):
             return results
 
 
-def execute(url, project, spider, callback, **kwargs):
+def execute(url, project, spider, callback, result):
     argv = sys.argv
-    
-    print(argv)
-    
     argv.append(url)
     if spider:
         argv.append('--spider')
@@ -305,31 +337,57 @@ def execute(url, project, spider, callback, **kwargs):
         argv.append('--callback')
         argv.append(callback)
     
-    print(argv)
-    
     work_cwd = os.getcwd()
-    print(work_cwd)
     try:
         os.chdir(project)
+        print('Move to ', project)
         settings = get_project_settings()
         check_deprecated_settings(settings)
-        cmd = Parser()
         parser = optparse.OptionParser(formatter=optparse.TitledHelpFormatter(), conflict_handler='resolve')
+        cmd = Parser()
         settings.setdict(cmd.default_settings, priority='command')
         cmd.settings = settings
         cmd.add_options(parser)
-        opts, args = parser.parse_args(args=argv[1:])
+        opts, _ = parser.parse_args(args=argv[1:])
+        args = [url]
         print('opt, args', opts, args)
         cmd.process_options(args, opts)
-        cmd.crawler_process = CrawlerProcess(settings)
+        cmd.crawler_process = CrawlerRunner(settings)
+        # cmd.crawler_process = CrawlerProcess(settings)
         cmd.run(args, opts)
+        requests, items, response = cmd.get_requests(), cmd.get_items(), cmd.get_response()
+        result['requests'] = requests
+        result['items'] = items
+        result['response'] = response
     finally:
         os.chdir(work_cwd)
+
+
+def run(url, project, spider, callback):
+    """
+    run parser
+    :param url:
+    :param project:
+    :param spider:
+    :param callback:
+    :return:
+    """
+    manager = multiprocessing.Manager()
+    result = manager.dict()
+    jobs = []
+    p = multiprocessing.Process(target=execute, args=(url, project, spider, callback, result))
+    jobs.append(p)
+    p.start()
+    
+    for proc in jobs:
+        proc.join()
+    return dict(result)
 
 
 if __name__ == '__main__':
     url = 'http://tech.china.com/internet/'
     spider = 'china'
     callback = None
-    project = '/Users/CQC/testcase/gerapy/projects/news'
-    execute(url, project, spider, callback)
+    project = '/Users/CQC/testcase/gerapy/projects/example'
+    result = run(url, project, spider, callback)
+    print('Result', result)
