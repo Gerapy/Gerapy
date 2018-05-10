@@ -53,7 +53,9 @@ export default {
     addUrl: '添加链接',
     addDomain: '添加域名',
     addAttr: '添加属性',
-    addExtractor: '添加解析器'
+    addExtractor: '添加解析器',
+    addTable: '添加表映射',
+    addCollection: '添加集合映射'
   },
   titles: {
     createClient: '创建主机',
@@ -163,6 +165,8 @@ export default {
     code: '代码',
     port: '端口',
     host: '地址',
+    table: '表名',
+    tables: '表名',
     database: '数据库',
     user: '用户名',
     username: '用户名',

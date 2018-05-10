@@ -122,55 +122,7 @@
 
     <!-- 存储开始 -->
     <el-form-item>
-      <h4 class="inline">{{ $lang[$store.state.lang].titles.storage }}</h4>
-      <div>
-        <h5 class="inline m-v-sm">MySQL</h5>
-        <el-switch
-          v-model="spider.storage.mysql.enable">
-        </el-switch>
-      </div>
-      <div v-if="spider.storage.mysql.enable">
-
-        <el-form-item>
-          <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.host }}</h4>
-          <el-input
-            v-model="spider.storage.mysql.host" class="inline"
-            :placeholder="$lang[$store.state.lang].columns.host"
-            size="small"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.port }}</h4>
-          <el-input
-            v-model="spider.storage.mysql.port" class="inline"
-            :placeholder="$lang[$store.state.lang].columns.port"
-            size="small"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.user }}</h4>
-          <el-input
-            v-model="spider.storage.mysql.user" class="inline"
-            :placeholder="$lang[$store.state.lang].columns.user"
-            size="small"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.password }}</h4>
-          <el-input
-            v-model="spider.storage.mysql.password" class="inline"
-            :placeholder="$lang[$store.state.lang].columns.password"
-            size="small"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.database }}</h4>
-          <el-input
-            v-model="spider.storage.mysql.database" class="inline"
-            :placeholder="$lang[$store.state.lang].columns.database"
-            size="small"></el-input>
-        </el-form-item>
-      </div>
+      <storage :storage="spider.storage" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></storage>
     </el-form-item>
     <!-- 存储结束 -->
   </div>
@@ -179,6 +131,7 @@
 <script>
   import rules from 'pages/project/rules'
   import extractors from 'pages/project/extractors'
+  import storage from 'pages/project/storage'
   export default {
     name: 'Spider',
     props: {
@@ -201,6 +154,7 @@
     components: {
       rules,
       extractors,
+      storage
     }
   }
 </script>

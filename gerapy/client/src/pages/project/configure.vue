@@ -366,6 +366,10 @@
         }
       },
       onAddInput(array, arg = '') {
+        if (!array) {
+          array = []
+        }
+        console.log(array)
         array.push(arg)
       },
       onAddItem() {

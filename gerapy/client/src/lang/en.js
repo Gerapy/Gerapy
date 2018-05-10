@@ -53,7 +53,9 @@ export default {
     addUrl: 'add url',
     addDomain: 'add domain',
     addAttr: 'add attr',
-    addExtractor: 'add extractor'
+    addExtractor: 'add extractor',
+    addTable: 'add table',
+    addCollection: 'add collection'
   },
   titles: {
     createClient: 'Create Client',
@@ -163,6 +165,8 @@ export default {
     code: 'Code',
     port: 'Port',
     host: 'Host',
+    table: 'Table',
+    tables: 'Tables',
     database: 'Database',
     user: 'User',
     password: 'Password',
