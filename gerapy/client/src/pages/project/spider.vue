@@ -24,7 +24,7 @@
                 :placeholder="$lang[$store.state.lang].columns.innerCode"></el-input>
     </el-form-item>
 
-    <!-- 起始链接开始 -->
+    <!-- 类属性开始 -->
     <el-form-item>
       <h4 class="inline">{{ $lang[$store.state.lang].columns.classAttrs }}</h4>
       <el-button type="primary" class="inline" size="mini"
@@ -47,7 +47,7 @@
         </el-button>
       </div>
     </el-form-item>
-    <!-- 起始链接结束 -->
+    <!-- 类属性结束 -->
 
     <!-- 起始链接开始 -->
     <el-form-item>
@@ -109,63 +109,7 @@
 
     <!-- 爬取规则开始 -->
     <el-form-item>
-      <h4 class="inline">{{ $lang[$store.state.lang].titles.rules }}</h4>
-      <!-- 添加规则配置浮窗 -->
-      <el-dialog :visible.sync="addRuleItem" size="tiny">
-        <el-form>
-          <el-form-item :label="$lang[$store.state.lang].titles.selectConfig">
-            <el-select v-model="ruleItem" :placeholder="$lang[$store.state.lang].titles.selectConfig"
-                       size="small">
-              <el-option
-                v-for="item in ruleItemOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer">
-          <el-button @click="addRuleItem=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
-          </el-button>
-          <el-button @click="onAddRuleItem()"
-                     type="primary" size="small">{{ $lang[$store.state.lang].buttons.add }}
-          </el-button>
-        </div>
-      </el-dialog>
-      <!-- 添加规则配置浮窗 -->
-      <el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.rules, {})">
-        <i class="fa fa-plus"></i>
-        {{ $lang[$store.state.lang].buttons.addRule }}
-      </el-button>
-      <el-collapse :accordion="accordion" :value="parseInt(spider.rules.length-1)"
-                   v-if="spider.rules.length">
-        <el-collapse-item v-for="(rule, ruleKey, ruleIndex) in spider.rules" :name="ruleKey"
-                          :key="ruleKey">
-          <!-- 每条规则标题及操作配置 -->
-          <template slot="title">
-            <span>
-              {{ $lang[$store.state.lang].titles.rule }} {{ ruleKey + 1 }}
-            </span>
-            <span class="pull-right">
-              <el-button type="primary" class="inline" size="mini"
-                         @click.stop="addRuleItem=true,activeRule=ruleKey">
-                <i class="fa fa-plus"></i>
-                {{ $lang[$store.state.lang].buttons.addColumn }}
-              </el-button>
-              <el-button type="danger" size="mini" class="m-r-md"
-                         @click="onDeleteInput(spider.rules, ruleKey)">
-                  <i class="fa fa-remove"></i>
-                  {{ $lang[$store.state.lang].buttons.delete }}
-              </el-button>
-            </span>
-          </template>
-          <!-- 每条规则标题及操作配置 -->
-          <!-- 每条规则配置选项 -->
-          <rule :rule="rule" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></rule>
-          <!-- 每条规则配置选项 -->
-        </el-collapse-item>
-      </el-collapse>
+      <rules :rules="spider.rules" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></rules>
     </el-form-item>
     <!-- 爬取规则结束 -->
 
@@ -198,7 +142,7 @@
         <i class="fa fa-plus"></i>
         {{ $lang[$store.state.lang].buttons.addExtractor }}
       </el-button>
-      <el-collapse :accordion="accordion" :value="parseInt(spider.extractors.length-1)"
+      <el-collapse :value="parseInt(spider.extractors.length-1)"
                    v-if="spider.extractors.length">
         <el-collapse-item v-for="(extractor, extractorKey, extractorIndex) in spider.extractors"
                           :name="extractorKey" :key="extractorKey">
@@ -223,7 +167,6 @@
           <extractor :extractor="extractor" :items="items" :onAddInput="onAddInput"
                      :onDeleteInput="onDeleteInput"></extractor>
           <!-- 每条规则标题及操作配置 -->
-
         </el-collapse-item>
       </el-collapse>
     </el-form-item>
@@ -286,91 +229,14 @@
 </template>
 
 <script>
-  import rule from 'pages/project/rule'
+  import rules from 'pages/project/rules'
   import extractor from 'pages/project/extractor'
-
+  import test from 'pages/project/test'
   export default {
     name: 'Spider',
     data() {
       return {
 
-        ruleItem: null,
-        ruleItemOptions: [
-          {
-            value: 'callback',
-            label: 'callback'
-          }, {
-            value: 'allow',
-            label: 'allow'
-          }, {
-            value: 'deny',
-            label: 'deny'
-          }, {
-            value: 'allow_domains',
-            label: 'allow_domains'
-          }, {
-            value: 'deny_domains',
-            label: 'deny_domains'
-          }, {
-            value: 'restrict_xpaths',
-            label: 'restrict_xpaths'
-          }, {
-            value: 'restrict_css',
-            label: 'restrict_css'
-          }, {
-            value: 'cb_kwargs',
-            label: 'cb_kwargs'
-          }, {
-            value: 'follow',
-            label: 'follow'
-          }, {
-            value: 'process_request',
-            label: 'process_request'
-          }, {
-            value: 'process_links',
-            label: 'process_links'
-          }, {
-            value: 'tags',
-            label: 'tags'
-          }, {
-            value: 'attrs',
-            label: 'attrs'
-          }, {
-            value: 'canonicalize',
-            label: 'canonicalize'
-          }, {
-            value: 'unique',
-            label: 'unique'
-          }, {
-            value: 'process_value',
-            label: 'process_value'
-          }, {
-            value: 'strip',
-            label: 'strip'
-          },
-        ],
-        ruleItemInit: {
-          callback: '',
-          allow: [],
-          deny: [],
-          allow_domains: [],
-          deny_domains: [],
-          deny_extensions: [],
-          restrict_xpaths: [],
-          restrict_css: [],
-          tags: [],
-          attrs: [],
-          canonicalize: false,
-          unique: false,
-          strip: false,
-          follow: false,
-          process_value: '',
-          process_links: '',
-          process_request: '',
-        },
-        addRuleItem: false,
-        activeRule: null,
-        accordion: false,
 
         // 提取规则
         addExtractorItem: false,
@@ -406,8 +272,9 @@
       }
     },
     components: {
-      rule,
-      extractor
+      rules,
+      extractor,
+      test
     },
     computed: {
       extractorItemOptions() {
@@ -429,11 +296,6 @@
         return array
       }
     },
-    methods: {
-      onAddRuleItem() {
-        this.$set(this.spider.rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
-        this.addRuleItem = false
-      },
-    }
+
   }
 </script>

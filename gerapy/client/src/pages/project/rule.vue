@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <div v-if="Object.keys(rule).length">
       <div v-for="(value, key, index) in rule" :key="key">
         <h5 class="inline m-v-sm">{{ key }}</h5>
