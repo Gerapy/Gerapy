@@ -35,17 +35,18 @@
           :placeholder="$lang[$store.state.lang].columns.database"
           size="small"></el-input>
       </el-form-item>
-      <el-form-item :label="$lang[$store.state.lang].columns.tables">
-        <el-button type="primary" class="inline" size="mini" @click="onAddTable">
+
+      <el-form-item :label="$lang[$store.state.lang].columns.collections">
+        <el-button type="primary" class="inline" size="mini" @click="onAddCollection">
           <i class="fa fa-plus"></i>
-          {{ $lang[$store.state.lang].buttons.addTable }}
+          {{ $lang[$store.state.lang].buttons.addCollection }}
         </el-button>
-        <div v-if="config.tables && config.tables.length">
-          <div v-for="(tableMap, tableMapKey, tableMapIndex) in config.tables">
+        <div v-if="config.collections && config.collections.length">
+          <div v-for="(collectionMap, collectionMapKey, collectionMapIndex) in config.collections">
             <el-row style="padding-left: 80px">
               <el-col :span="3">
-                <el-select :placeholder="$lang[$store.state.lang].titles.selectItem"
-                           size="small" v-model="tableMap.item">
+                <el-select :placeholder="$lang[$store.state.lang].titles.selectConfig"
+                           size="small" v-model="collectionMap.item">
                   <el-option
                     v-for="item in items"
                     :key="item.name"
@@ -56,12 +57,12 @@
               </el-col>
               <el-col :span="1" class="text-center">=></el-col>
               <el-col :span="3">
-                <el-input v-model="tableMap.table" size="small" :placeholder="$lang[$store.state.lang].columns.table">
+                <el-input v-model="collectionMap.collection" size="small" :placeholder="$lang[$store.state.lang].columns.collection">
                 </el-input>
               </el-col>
               <el-col :span="2">
                 <el-button type="danger" size="mini" class="m-l-sm"
-                           @click="onDeleteInput(config.tables, tableMapKey)">
+                           @click="onDeleteInput(config.collections, collectionMapKey)">
                   <i class="fa fa-remove"></i>
                   {{ $lang[$store.state.lang].buttons.delete }}
                 </el-button>
@@ -89,12 +90,12 @@
         type: Object,
         default: {
           enable: false,
-          tables: [],
+          collections: [],
           host: null,
           port: null,
           user: null,
           password: null,
-          database: null,
+          database: null
         }
       },
       items: {
@@ -108,10 +109,12 @@
       }
     },
     methods: {
-      onAddTable() {
-        console.log(this.config.tables)
-        this.config.tables.push({})
-        this.$set(this.config, 'tables', this.config.tables)
+      onAddCollection() {
+        if (!this.config.collections) {
+          this.config.collections = []
+        }
+        this.config.collections.push({})
+        this.$set(this.config, 'collections', this.config.collections)
       },
     }
   }

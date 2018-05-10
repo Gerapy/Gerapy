@@ -118,7 +118,7 @@
               <h4 class="inline m-b-sm">{{ $lang[$store.state.lang].titles.listSpider }}</h4>
 
               <el-button type="primary" class="inline" size="mini"
-                         @click="onAddInput(configuration.spiders, {name:null, custom_settings:null, code:{}, extractors: [], rules: [], storage: {mysql: {enable: false}}, start_urls: {mode: 'list', list:[], code: null, file: null}, attrs: [], allowed_domains: []})">
+                         @click="onAddSpider">
                 <i class="fa fa-plus"></i>
                 {{ $lang[$store.state.lang].buttons.addSpider }}
               </el-button>
@@ -173,105 +173,7 @@
         projectGeneratedAt: null,
         projectBuiltAt: null,
         activeSpider: 0,
-
         accordion: false,
-        // 规则配置
-        ruleItem: null,
-        ruleItemOptions: [
-          {
-            value: 'callback',
-            label: 'callback'
-          }, {
-            value: 'allow',
-            label: 'allow'
-          }, {
-            value: 'deny',
-            label: 'deny'
-          }, {
-            value: 'allow_domains',
-            label: 'allow_domains'
-          }, {
-            value: 'deny_domains',
-            label: 'deny_domains'
-          }, {
-            value: 'restrict_xpaths',
-            label: 'restrict_xpaths'
-          }, {
-            value: 'restrict_css',
-            label: 'restrict_css'
-          }, {
-            value: 'cb_kwargs',
-            label: 'cb_kwargs'
-          }, {
-            value: 'follow',
-            label: 'follow'
-          }, {
-            value: 'process_request',
-            label: 'process_request'
-          }, {
-            value: 'process_links',
-            label: 'process_links'
-          }, {
-            value: 'tags',
-            label: 'tags'
-          }, {
-            value: 'attrs',
-            label: 'attrs'
-          }, {
-            value: 'canonicalize',
-            label: 'canonicalize'
-          }, {
-            value: 'unique',
-            label: 'unique'
-          }, {
-            value: 'process_value',
-            label: 'process_value'
-          }, {
-            value: 'strip',
-            label: 'strip'
-          },
-        ],
-        ruleItemInit: {
-          callback: '',
-          allow: [],
-          deny: [],
-          allow_domains: [],
-          deny_domains: [],
-          deny_extensions: [],
-          restrict_xpaths: [],
-          restrict_css: [],
-          tags: [],
-          attrs: [],
-          canonicalize: false,
-          unique: false,
-          strip: false,
-          follow: false,
-          process_value: '',
-          process_links: '',
-          process_request: '',
-        },
-        addRuleItem: false,
-        activeRule: null,
-
-        // 提取规则
-        addExtractorItem: false,
-        extractorItem: null,
-        activeExtractorItem: null,
-        extractorMethods: [
-          {
-            value: 'xpath',
-            label: 'XPath'
-          }, {
-            value: 'css',
-            label: 'CSS'
-          }, {
-            value: 'attr',
-            label: 'Attr'
-          }, {
-            value: 'value',
-            label: 'Value'
-          }
-        ],
         // 提取实体
         addItem: false,
         activeItem: null,
@@ -369,18 +271,12 @@
         if (!array) {
           array = []
         }
-        console.log(array)
         array.push(arg)
       },
       onAddItem() {
         this.$set(this.configuration.items[this.activeItem]['attrs'], this.item, {})
         this.addItem = false
       },
-      onAddRuleItem() {
-        this.$set(this.configuration.spiders[this.activeSpider].rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
-        this.addRuleItem = false
-      },
-
       onGenerate() {
         if (this.projectBuiltAt) {
           this.$confirm(this.$lang[this.$store.state.lang].messages.reGenerate, this.$lang[this.$store.state.lang].buttons.confirm, {
@@ -395,6 +291,34 @@
         } else {
           this.generateProject()
         }
+      },
+      onAddSpider() {
+        this.onAddInput(this.configuration.spiders,
+          {
+            name: null,
+            custom_settings: null,
+            code: {},
+            extractors: [],
+            rules: [],
+            storage: {
+              mysql: {
+                enable: false,
+                tables: []
+              },
+              mongodb: {
+                enable: false,
+                collections: []
+              }
+            },
+            start_urls: {
+              mode: 'list',
+              list: [],
+              code: null,
+              file: null
+            },
+            attrs: [],
+            allowed_domains: []
+          })
       }
     },
     watch: {
