@@ -2,10 +2,11 @@ import sys
 import traceback
 from urllib.parse import unquote
 import base64
+from scrapy.utils.response import get_base_url
 import json, os, requests, time, pytz, pymongo, string
 from shutil import move, copy, rmtree
 from requests.exceptions import ConnectionError
-from os.path import join, exists
+from os.path import join, exists, dirname
 from django.shortcuts import render
 from django.core.serializers import serialize
 from django.http import HttpResponse
@@ -475,7 +476,8 @@ def project_parse(request, project_name):
         meta = data.get('meta', {})
         callback = data.get('callback')
         result = parser.run(url, project_path, spider, callback)
-        return JsonResponse({'status': '1', 'result': result}, )
+        result['response']['html'] = process_html(result['response']['html'], dirname(url))
+        return JsonResponse({'status': '1', 'result': result})
 
 
 def project_file_read(request):

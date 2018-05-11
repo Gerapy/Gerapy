@@ -46,16 +46,26 @@
             </div>
           </el-col>
         </el-tab-pane>
-        <el-tab-pane label="Web" name="web">web</el-tab-pane>
-        <el-tab-pane label="HTML" name="html">html</el-tab-pane>
+        <el-tab-pane label="Web" name="web">
+          <div id="parser-web">
+            <web :html="activeResponseHtml"></web>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="HTML" name="html">
+          <div id="parser-html">
+            <pre>{{ activeResponseHtml }}</pre>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </el-row>
   </div>
 </template>
 <script>
-  import ElCol from "element-ui/packages/col/src/col";
+
+  import web from 'pages/project/web.vue'
+
   export default {
-    components: {ElCol},
+    components: {web},
     props: {
       projectName: {
         type: String
@@ -66,6 +76,7 @@
     },
     data() {
       return {
+        activeResponseHtml: null,
         activeTab: 'follows',
         start: true,
         activeRequest: {
@@ -112,9 +123,6 @@
         this.activeRequest = request
         this.onFetch()
       },
-      onParse() {
-
-      },
       addActiveRequest() {
         this.activeRequests.push(this.activeRequest)
         this.activeRequestIndex = this.activeRequests.length - 1
@@ -146,6 +154,10 @@
             items.forEach((item) => {
               this.followItems.push(item)
             })
+          }
+          let response = result.response
+          if (response) {
+            this.activeResponseHtml = response.html
           }
         }).catch((error) => {
           this.$message.error(this.$lang[this.$store.state.lang].messages.errorParse + error)
@@ -202,5 +214,18 @@
 
   .el-tabs__active-bar {
     background-color: #28ccaa !important;
+  }
+
+  #parser-web {
+    iframe {
+      border: 1px solid #dfe6ec;
+    }
+  }
+
+  #parser-html {
+    max-height: 500px;
+    overflow: scroll;
+    border: 1px solid #dfe6ec;
+    padding: 15px;
   }
 </style>
