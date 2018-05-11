@@ -1,39 +1,154 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="24" id="console">
-        <p>{{ project }}</p>
-        <el-button class="pull-right">
-          <i class="fa fa-magic"></i>
+    <el-row class="m-b-md">
+      <el-col :span="24" id="console" class="p-md">
+        <p>project name:{{ projectName }}</p>
+        <p>url: {{ activeRequest.url }} </p>
+        <p>method: {{ activeRequest.method }}</p>
+        <p>callback: {{ activeRequest.callback }}</p>
+        <el-button class="pull-right btn-run" @click="onRun" size="mini" type="primary">
+          <i class="fa fa-play"></i>
         </el-button>
+        <span class="pull-right m-r-md">
+          <el-button-group class="btn-group-bf">
+            <el-button @click="onBackward" size="mini" type="primary" :disabled="!canBackward">
+              <i class="fa fa-step-backward"></i>
+            </el-button>
+            <el-button @click="onForward" size="mini" type="primary" :disabled="!canForward">
+              <i class="fa fa-step-forward"></i>
+            </el-button>
+          </el-button-group>
+        </span>
       </el-col>
+      <el-tabs v-model="activeTab">
+        <el-tab-pane label="Follows" name="follows">
+          <el-col :span="24" id="follow-requests" class="p-md">
+            <h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
+            <div v-for="followRequest in followRequests">
+              <div class="follow-request-item">
+            <span :span="24">
+              {{ followRequest.url }}
+            </span>
+                <el-button class="pull-right btn-follow" @click="onFollow(followRequest)" size="mini" type="primary">
+                  <i class="fa fa-play"></i>
+                </el-button>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="24" id="follow-items" class="m-t p-md">
+            <h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
+            <div v-for="followItem in followItems">
+              <div class="follow-request-item">
+            <span :span="24">
+              {{ followItem }}
+            </span>
+              </div>
+            </div>
+          </el-col>
+        </el-tab-pane>
+        <el-tab-pane label="Web" name="web">web</el-tab-pane>
+        <el-tab-pane label="HTML" name="html">html</el-tab-pane>
+      </el-tabs>
     </el-row>
   </div>
 </template>
 <script>
+  import ElCol from "element-ui/packages/col/src/col";
   export default {
+    components: {ElCol},
     props: {
-      project: {
+      projectName: {
         type: String
+      },
+      spider: {
+        type: Object
       }
     },
     data() {
       return {
-        request: {
+        activeTab: 'follows',
+        start: true,
+        activeRequest: {
           url: null,
-          html: null,
-        }
+        },
+        followRequests: [],
+        followItems: [],
+        activeRequests: [],
+        activeRequestIndex: null,
+      }
+    },
+    computed: {
+      canBackward() {
+        return this.activeRequestIndex >= 1 && this.activeRequests.length >= 2
+      },
+      canForward() {
+        return this.activeRequestIndex >= 0 && this.activeRequestIndex < this.activeRequests.length - 1
       }
     },
     methods: {
+      onRun() {
+        if (this.start) {
+          this.followRequests = []
+          this.spider.start_urls.list.forEach((url) => {
+            this.followRequests.push({
+              url: url,
+              method: 'GET',
+            })
+          })
+          this.start = false
+        } else {
+          this.onFetch()
+        }
+      },
+      onBackward() {
+        this.activeRequestIndex -= 1
+        this.activeRequest = this.activeRequests[this.activeRequestIndex]
+      },
+      onForward() {
+        this.activeRequestIndex += 1
+        this.activeRequest = this.activeRequests[this.activeRequestIndex]
+      },
+      onFollow(request) {
+        this.activeRequest = request
+        this.onFetch()
+      },
       onParse() {
-        this.$fetch.apiProject.projectGenerate({
+
+      },
+      addActiveRequest() {
+        this.activeRequests.push(this.activeRequest)
+        this.activeRequestIndex = this.activeRequests.length - 1
+      },
+      onFetch() {
+        this.addActiveRequest()
+        this.$fetch.apiProject.projectParse({
           name: this.projectName
-        }).then(({data: data}) => {
-          this.$message.success(this.$lang[this.$store.state.lang].messages.successGenerate)
-          this.getProject()
-        }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorGenerate)
+        }, {
+          url: this.activeRequest.url,
+          callback: this.activeRequest.callback,
+          spider: this.spider.name
+        }).then(({data: {result: result}}) => {
+          console.log(result)
+          this.followRequests = []
+          let requests = result.requests
+          if (requests) {
+            requests.forEach((request) => {
+              this.followRequests.push({
+                url: request.url,
+                method: request.method,
+                callback: request.callback,
+              })
+            })
+          }
+          let items = result.items
+          if (items) {
+            this.followItems = []
+            items.forEach((item) => {
+              this.followItems.push(item)
+            })
+          }
+        }).catch((error) => {
+          this.$message.error(this.$lang[this.$store.state.lang].messages.errorParse + error)
         })
       }
     }
@@ -43,6 +158,49 @@
 <style lang="scss" type="text/scss" rel="stylesheet/scss">
   #console {
     height: auto;
-    background: #c7e6c7;
+    border: 1px solid rgb(223, 230, 236);
+  }
+
+  .follow-request-item {
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    border-bottom: 1px solid rgb(223, 230, 236);
+  }
+
+  .btn-group-bf {
+    button {
+      min-width: 30px;
+    }
+  }
+
+  .btn-run {
+    margin-top: 2px;
+    min-width: 30px;
+  }
+
+  .btn-follow {
+    width: 30px;
+    height: 20px;
+    margin-top: 10px;
+  }
+
+  #follow-requests, #follow-items {
+    border: 1px solid rgb(223, 230, 236);
+    overflow-y: scroll;
+    max-height: 200px;
+  }
+
+  .el-tabs__item.is-active {
+    color: #28ccaa !important;
+  }
+
+  .el-tabs__active-bar {
+    background-color: #28ccaa !important;
   }
 </style>

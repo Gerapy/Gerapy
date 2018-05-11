@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 dfs = set()
 
 
-class Parser(BaseParser):
+class SingleParser(BaseParser):
     requires_project = True
     spider = None
     items = {}
@@ -344,7 +344,7 @@ def execute(url, project, spider, callback, result):
         settings = get_project_settings()
         check_deprecated_settings(settings)
         parser = optparse.OptionParser(formatter=optparse.TitledHelpFormatter(), conflict_handler='resolve')
-        cmd = Parser()
+        cmd = SingleParser()
         settings.setdict(cmd.default_settings, priority='command')
         cmd.settings = settings
         cmd.add_options(parser)

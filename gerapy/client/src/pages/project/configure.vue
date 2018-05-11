@@ -128,7 +128,7 @@
 
                 <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey"
                                   :key="spiderKey">
-                  <spider :spider="spider" :spiderKey="spiderKey" :items="configuration.items" :onAddInput="onAddInput"
+                  <spider :projectName="projectName" :spider="spider" :spiderKey="spiderKey" :items="configuration.items" :onAddInput="onAddInput"
                           :onDeleteInput="onDeleteInput"></spider>
                   <template slot="title">
                     <span>

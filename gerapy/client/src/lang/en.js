@@ -118,7 +118,8 @@ export default {
     canceling: 'Canceling... Please Wait',
     buildFirst: 'Please Build Project',
     loadError: 'Load Error',
-    select: 'Please Select'
+    select: 'Please Select',
+    errorParse: 'Parse Error Occurred'
   },
   descriptions: {
     normalClients: 'Normal Clients',

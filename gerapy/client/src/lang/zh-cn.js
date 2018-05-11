@@ -118,7 +118,8 @@ export default {
     canceling: '正在取消，请稍后',
     buildFirst: '请先打包项目',
     loadError: '加载失败',
-    select: '请选择'
+    select: '请选择',
+    errorParse: '解析失败'
   },
   descriptions: {
     normalClients: '主机正常运行',

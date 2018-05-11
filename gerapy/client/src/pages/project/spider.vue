@@ -1,6 +1,6 @@
 <template>
   <div>
-    <parser :project="spider.name"></parser>
+    <parser :projectName="projectName" :spider="spider"></parser>
 
     <!-- 名称开始 -->
     <el-form-item>
@@ -142,6 +142,9 @@
   export default {
     name: 'Spider',
     props: {
+      projectName: {
+        type: String
+      },
       spider: {
         type: Object,
       },
