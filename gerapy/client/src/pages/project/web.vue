@@ -134,14 +134,29 @@
     },
     mounted() {
       let that = this
-      $("#iframe-box").on("load", function () {
-        document.getElementById("iframe-box").contentWindow.document.body.onclick =
+      let iframe_id = 'iframe-box'
+      $('#' + iframe_id).on("load", function () {
+        document.getElementById(iframe_id).contentWindow.document.body.onclick =
           function (event) {
             event.preventDefault()
             event.stopPropagation()
             let target = $(event.target)
+            console.log(getCSSSelector(target))
             that.cssSelector = getCSSSelector(target)
             that.xpathSelector = getXPathSelector(target)
+
+            $(document.getElementById(iframe_id).contentWindow.document.body).find('.gerapy-selected').remove()
+            $(document.getElementById(iframe_id).contentWindow.document.body).find(getCSSSelector(target)).each(function () {
+              $('<div></div>').css($(this).offset()).css({
+                'width': target.width(),
+                'height': target.height(),
+                'position': 'absolute',
+                'border': '2px solid red',
+                'pointer-events': 'none',
+                'z-index': 10000
+              }).addClass('gerapy-selected').appendTo($(document.getElementById(iframe_id).contentWindow.document.body))
+            })
+
           }
       });
     }
