@@ -200,7 +200,7 @@ def process_response(response):
     }
 
 
-def process_item(self, item):
+def process_item(item):
     return dict(item)
 
 

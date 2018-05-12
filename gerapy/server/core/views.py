@@ -478,11 +478,14 @@ def project_parse(request, project_name):
         meta = data.get('meta', {})
         if start:
             requests = get_start_requests(project_path, spider_name)
+            print(requests)
             return JsonResponse({'status': '1', 'result': requests})
         else:
             url = data.get('url')
             callback = data.get('callback')
+            print(url, project_path, spider_name, callback)
             result = parser.get_follow_results(url, project_path, spider_name, callback)
+            print(result)
             result['response']['html'] = process_html(result['response']['html'], dirname(url))
             return JsonResponse({'status': '1', 'result': result})
 
