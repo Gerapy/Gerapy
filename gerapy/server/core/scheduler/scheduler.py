@@ -34,12 +34,12 @@ scheduler.add_jobstore(DjangoJobStore(), "default")
 def work_func(client, project, spider):
     ip_port = Client.objects.get(id=client)
     scrapyd = get_scrapyd(ip_port)
-    logger.warning(f"Run {project}: {spider} on server{ip_port.ip}")
+    logger.warning("Run {}: {} on server{}".format(project, spider, ip_port.ip))
     try:
         jobs = scrapyd.schedule(project, spider)
-        logger.warning(f"运行{project}  {spider}成功；作业ID为：{jobs}")
+        logger.warning("{}:  {}；Jobs：{}".format(project, spider, jobs))
     except Exception as err:
-        logger.error(f"Please deploy the project to：{ip_port.ip}")
+        logger.error("Please deploy the project to：{}".format(ip_port.ip))
 
 
 class CreateSchedulerWork(threading.Thread):
@@ -60,12 +60,13 @@ class CreateSchedulerWork(threading.Thread):
                         configuration = json.loads(task.configuration)
                         configuration = {key: value for key, value in configuration.items() if value}
                         for client in json.loads(task.clients):
-                            job_id = f"{task.id}-{client}"
+                            job_id = "%s-%s" % (task.id, client)
                             configuration.update({'id': job_id})
                             tmp.append(job_id)
                             if job_id not in scheduler_jobs_ids:
                                 if Client.objects.filter(pk=client):
-                                    logger.warning(f"Create a scheduled task：{task.project}: {task.spider}")
+                                    logger.warning("Create a scheduled task：{}: {}".format(task.project,
+                                                                                           task.spider))
                                     self.scheduler.add_job(work_func,
                                                            task.trigger,
                                                            **configuration,
@@ -86,7 +87,7 @@ class CreateSchedulerWork(threading.Thread):
                         for jobs in remove_jobs:
                             if jobs in scheduler_jobs_ids:
                                 self.scheduler.remove_job(jobs)
-                                logger.warning(f"Delete job ID：{jobs}")
+                                logger.warning("Delete job ID：{}".format(jobs))
                 tmp.clear()
                 time.sleep(5)
             except Exception as ex:
