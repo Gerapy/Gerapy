@@ -25,6 +25,7 @@ TEMPLATES_TO_RENDER = (
 NO_REFERRER = '<meta name="referrer" content="never">'
 BASE = '<base href="{href}">'
 
+
 def get_scrapyd(client):
     if not client.auth:
         return ScrapydAPI(scrapyd_url(client.ip, client.port))
@@ -169,6 +170,38 @@ def get_traceback():
             return info[-1]
         return None
     return info
+
+
+def process_request(request):
+    """
+    process request
+    :param request:
+    :return:
+    """
+    return {
+        'url': request.url,
+        'method': request.method,
+        'meta': request.meta,
+        'headers': request.headers,
+        'callback': request.callback
+    }
+
+
+def process_response(response):
+    """
+    process response to dict
+    :param response:
+    :return:
+    """
+    return {
+        'html': response.text,
+        'url': response.url,
+        'status': response.status
+    }
+
+
+def process_item(self, item):
+    return dict(item)
 
 
 def process_html(html, base_url):

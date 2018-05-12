@@ -12,6 +12,8 @@ from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
+
+from gerapy.server.core.parser import get_start_requests
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
@@ -469,15 +471,20 @@ def project_parse(request, project_name):
         project_path = join(PROJECTS_FOLDER, project_name)
         print('Project Path', project_path)
         data = json.loads(request.body)
-        spider = data.get('spider')
-        url = data.get('url')
+        spider_name = data.get('spider')
+        start = data.get('start')
         method = data.get('method', 'get')
         headers = data.get('headers', {})
         meta = data.get('meta', {})
-        callback = data.get('callback')
-        result = parser.run(url, project_path, spider, callback)
-        result['response']['html'] = process_html(result['response']['html'], dirname(url))
-        return JsonResponse({'status': '1', 'result': result})
+        if start:
+            requests = get_start_requests(project_path, spider_name)
+            return JsonResponse({'status': '1', 'result': requests})
+        else:
+            url = data.get('url')
+            callback = data.get('callback')
+            result = parser.get_follow_results(url, project_path, spider_name, callback)
+            result['response']['html'] = process_html(result['response']['html'], dirname(url))
+            return JsonResponse({'status': '1', 'result': result})
 
 
 def project_file_read(request):
