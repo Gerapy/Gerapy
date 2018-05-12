@@ -113,6 +113,7 @@ export default {
     errorLoad: 'Failed to Load',
     errorFormat: 'Error Format',
     errorCopy:'Failed to Copy',
+    processGenerate: 'Generating Project',
     confirm: 'Are You Sure?',
     reGenerate: 'ReGenerate Will Remove All Built Packages, Are You Sure to ReGenerate?',
     canceling: 'Canceling... Please Wait',

@@ -479,7 +479,7 @@ def project_parse(request, project_name):
         if start:
             requests = get_start_requests(project_path, spider_name)
             print(requests)
-            return JsonResponse({'status': '1', 'result': requests})
+            return JsonResponse({'status': '1', 'result': {'requests': requests}})
         else:
             url = data.get('url')
             callback = data.get('callback')

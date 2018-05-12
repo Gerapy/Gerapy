@@ -113,6 +113,7 @@ export default {
     errorLoad: '加载失败',
     errorFormat: '格式有误',
     errorCopy: '复制失败',
+    processGenerate: '正在生成代码',
     confirm: '确定要执行此操作?',
     reGenerate: '重新生成代码会清除之前的打包，确定要重新生成吗？',
     canceling: '正在取消，请稍后',

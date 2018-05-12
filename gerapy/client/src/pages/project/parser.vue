@@ -22,20 +22,20 @@
       </el-col>
       <el-tabs v-model="activeTab">
         <el-tab-pane label="Follows" name="follows">
-          <el-col :span="24" id="follow-requests" class="p-md">
+          <el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
             <h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
             <div v-for="followRequest in followRequests">
               <div class="follow-request-item">
-            <span :span="24">
-              {{ followRequest.url }}
-            </span>
+              <span :span="24">
+                {{ followRequest.url }}
+              </span>
                 <el-button class="pull-right btn-follow" @click="onFollow(followRequest)" size="mini" type="primary">
                   <i class="fa fa-play"></i>
                 </el-button>
               </div>
             </div>
           </el-col>
-          <el-col :span="24" id="follow-items" class="m-t p-md">
+          <el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
             <h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
             <div v-for="followItem in followItems">
               <div class="follow-request-item">
@@ -76,11 +76,13 @@
     },
     data() {
       return {
+        fetching: false,
         activeResponseHtml: null,
         activeTab: 'follows',
         start: true,
         activeRequest: {
           url: null,
+          start: 1
         },
         followRequests: [],
         followItems: [],
@@ -98,18 +100,7 @@
     },
     methods: {
       onRun() {
-        if (this.start) {
-          this.followRequests = []
-          this.spider.start_urls.list.forEach((url) => {
-            this.followRequests.push({
-              url: url,
-              method: 'GET',
-            })
-          })
-          this.start = false
-        } else {
-          this.onFetch()
-        }
+        this.onFetch()
       },
       onBackward() {
         this.activeRequestIndex -= 1
@@ -129,13 +120,16 @@
       },
       onFetch() {
         this.addActiveRequest()
+        this.fetching = true
         this.$fetch.apiProject.projectParse({
-          name: this.projectName
+          name: this.projectName,
         }, {
           url: this.activeRequest.url,
+          start: this.activeRequest.start,
           callback: this.activeRequest.callback,
           spider: this.spider.name
         }).then(({data: {result: result}}) => {
+          this.fetching = false
           console.log(result)
           this.followRequests = []
           let requests = result.requests
@@ -160,6 +154,7 @@
             this.activeResponseHtml = response.html
           }
         }).catch((error) => {
+          this.fetching = false
           this.$message.error(this.$lang[this.$store.state.lang].messages.errorParse + error)
         })
       }

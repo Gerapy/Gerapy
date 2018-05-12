@@ -1,14 +1,13 @@
 <template>
   <div>
     <div class="panel">
-      <el-button @click="showBrowser=true" type="primary" class="show-browser">
-        <i class="fa fa-edge"></i>
+      <el-button @click="saveProject" type="primary" class="save-project">
+        <i class="fa fa-save"></i>
+      </el-button>
+      <el-button @click="onGenerate" type="primary" class="generate-project">
+        <i class="fa fa-magic"></i>
       </el-button>
       <panel-title :title="$lang[$store.state.lang].titles.configureProject">
-        <el-button type="primary" size="mini" @click="saveProject()">
-          <i class="fa fa-check"></i>
-          {{ $lang[$store.state.lang].buttons.save }}
-        </el-button>
       </panel-title>
       <div class="panel-body" id="project-create">
         <el-row>
@@ -21,11 +20,11 @@
               <el-form-item>
                 <h4 class="inline m-r-sm">{{ $lang[$store.state.lang].columns.generateCode }}</h4>
                 {{ projectGeneratedAt ? projectGeneratedAt : $lang[$store.state.lang].descriptions.notGenerated }}
-                <el-button type="primary" class="inline" size="mini"
-                           @click="onGenerate(projectName)">
-                  <i class="fa fa-magic"></i>
-                  {{ $lang[$store.state.lang].buttons.generate }}
-                </el-button>
+                <!--<el-button type="primary" class="inline" size="mini"-->
+                <!--@click="onGenerate(projectName)">-->
+                <!--<i class="fa fa-magic"></i>-->
+                <!--{{ $lang[$store.state.lang].buttons.generate }}-->
+                <!--</el-button>-->
               </el-form-item>
 
 
@@ -128,7 +127,8 @@
 
                 <el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey"
                                   :key="spiderKey">
-                  <spider :projectName="projectName" :spider="spider" :spiderKey="spiderKey" :items="configuration.items" :onAddInput="onAddInput"
+                  <spider :projectName="projectName" :spider="spider" :spiderKey="spiderKey"
+                          :items="configuration.items" :onAddInput="onAddInput"
                           :onDeleteInput="onDeleteInput"></spider>
                   <template slot="title">
                     <span>
@@ -248,6 +248,7 @@
         })
       },
       generateProject() {
+        this.$message.info(this.$lang[this.$store.state.lang].messages.processGenerate)
         this.$fetch.apiProject.projectGenerate({
           name: this.projectName
         }).then(({data: data}) => {
@@ -403,13 +404,25 @@
     width: 80%;
   }
 
-  .show-browser {
+  .save-project {
     position: fixed;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     right: 20px;
     bottom: 20px;
     z-index: 1000;
+    font-size: 12px;
+  }
+
+  .generate-project {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    right: 20px;
+    bottom: 70px;
+    z-index: 1000;
+    font-size: 12px;
   }
 </style>

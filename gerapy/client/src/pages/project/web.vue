@@ -162,3 +162,8 @@
     }
   }
 </script>
+<style scoped>
+  iframe html {
+    cursor: pointer;
+  }
+</style>
