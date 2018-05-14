@@ -23,11 +23,7 @@ TEMPLATES_TO_RENDER = (
 )
 
 NO_REFERRER = '<meta name="referrer" content="never">'
-NO_POINTER_EVENTS = '<style>a{pointer-events:none!important}</style>'
-GENERATOR = '<script src="/static/dist/selector.js"></script>'
-JQUERY = '<script src="/static/dist/jquery.min.js"></script>'
-MAIN = '<script src="/static/dist/main.js"></script>'
-STYLE = '<link href="/static/dist/style.css" rel="stylesheet"><link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">'
+BASE = '<base href="{href}">'
 
 
 def get_scrapyd(client):
@@ -176,7 +172,39 @@ def get_traceback():
     return info
 
 
-def process_html(html):
+def process_request(request):
+    """
+    process request
+    :param request:
+    :return:
+    """
+    return {
+        'url': request.url,
+        'method': request.method,
+        'meta': request.meta,
+        'headers': request.headers,
+        'callback': request.callback
+    }
+
+
+def process_response(response):
+    """
+    process response to dict
+    :param response:
+    :return:
+    """
+    return {
+        'html': response.text,
+        'url': response.url,
+        'status': response.status
+    }
+
+
+def process_item(item):
+    return dict(item)
+
+
+def process_html(html, base_url):
     """
     process html, add some tricks such as no referrer
     :param html: source html
@@ -184,11 +212,7 @@ def process_html(html):
     """
     dom = BeautifulSoup(html, 'lxml')
     dom.find('head').insert(0, BeautifulSoup(NO_REFERRER, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(NO_POINTER_EVENTS, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(MAIN, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(GENERATOR, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(JQUERY, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(STYLE, 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(BASE.format(href=base_url), 'lxml'))
     html = str(dom)
     # html = unescape(html)
     return html

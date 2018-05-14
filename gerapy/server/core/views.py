@@ -2,15 +2,18 @@ import sys
 import traceback
 from urllib.parse import unquote
 import base64
+from scrapy.utils.response import get_base_url
 import json, os, requests, time, pytz, pymongo, string
 from shutil import move, copy, rmtree
 from requests.exceptions import ConnectionError
-from os.path import join, exists
+from os.path import join, exists, dirname
 from django.shortcuts import render
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
+
+from gerapy.server.core.parser import get_start_requests
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
@@ -18,6 +21,7 @@ from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html
+from gerapy.server.core import parser
 
 
 def index(request):
@@ -453,6 +457,37 @@ def project_generate(request, project_name):
         model.save()
         # return model
         return JsonResponse(model_to_dict(model))
+
+
+def project_parse(request, project_name):
+    """
+    parse project
+    :param request: request object
+    :param project_name: project name
+    :return: requests, items, response
+    """
+    if request.method == 'POST':
+        print(project_name)
+        project_path = join(PROJECTS_FOLDER, project_name)
+        print('Project Path', project_path)
+        data = json.loads(request.body)
+        spider_name = data.get('spider')
+        start = data.get('start')
+        method = data.get('method', 'get')
+        headers = data.get('headers', {})
+        meta = data.get('meta', {})
+        if start:
+            requests = get_start_requests(project_path, spider_name)
+            print(requests)
+            return JsonResponse({'status': '1', 'result': {'requests': requests}})
+        else:
+            url = data.get('url')
+            callback = data.get('callback')
+            print(url, project_path, spider_name, callback)
+            result = parser.get_follow_results(url, project_path, spider_name, callback)
+            print(result)
+            result['response']['html'] = process_html(result['response']['html'], dirname(url))
+            return JsonResponse({'status': '1', 'result': result})
 
 
 def project_file_read(request):

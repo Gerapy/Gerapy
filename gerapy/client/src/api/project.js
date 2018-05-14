@@ -121,3 +121,12 @@ export function projectGenerate(params) {
     params,
   })
 }
+
+export function projectParse(params, data) {
+  return fetch({
+    url: project.projectParse,
+    method: 'post',
+    params,
+    data
+  })
+}

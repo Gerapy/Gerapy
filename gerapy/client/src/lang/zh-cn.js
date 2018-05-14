@@ -53,7 +53,9 @@ export default {
     addUrl: '添加链接',
     addDomain: '添加域名',
     addAttr: '添加属性',
-    addExtractor: '添加解析器'
+    addExtractor: '添加解析器',
+    addTable: '添加表映射',
+    addCollection: '添加集合映射'
   },
   titles: {
     createClient: '创建主机',
@@ -69,6 +71,7 @@ export default {
     extractor: '解析器',
     extractors: '解析器',
     selectConfig: '选择配置',
+    selectItem: '选择实体',
     callback: '回调',
     storage: '存储',
     newFile: '新建',
@@ -110,12 +113,14 @@ export default {
     errorLoad: '加载失败',
     errorFormat: '格式有误',
     errorCopy: '复制失败',
+    processGenerate: '正在生成代码',
     confirm: '确定要执行此操作?',
     reGenerate: '重新生成代码会清除之前的打包，确定要重新生成吗？',
     canceling: '正在取消，请稍后',
     buildFirst: '请先打包项目',
     loadError: '加载失败',
-    select: '请选择'
+    select: '请选择',
+    errorParse: '解析失败'
   },
   descriptions: {
     normalClients: '主机正常运行',
@@ -163,6 +168,10 @@ export default {
     code: '代码',
     port: '端口',
     host: '地址',
+    table: '表名',
+    tables: '表名',
+    collection: '集合名',
+    collections: '集合名',
     database: '数据库',
     user: '用户名',
     username: '用户名',

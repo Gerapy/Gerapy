@@ -53,7 +53,9 @@ export default {
     addUrl: 'add url',
     addDomain: 'add domain',
     addAttr: 'add attr',
-    addExtractor: 'add extractor'
+    addExtractor: 'add extractor',
+    addTable: 'add table',
+    addCollection: 'add collection'
   },
   titles: {
     createClient: 'Create Client',
@@ -69,6 +71,7 @@ export default {
     extractor: 'Extractor',
     extractors: 'Extractors',
     selectConfig: 'Select Config Item',
+    selectItem: 'Select Item',
     callback: 'Callback',
     storage: 'Storage',
     newFile: 'New File',
@@ -110,12 +113,14 @@ export default {
     errorLoad: 'Failed to Load',
     errorFormat: 'Error Format',
     errorCopy:'Failed to Copy',
+    processGenerate: 'Generating Project',
     confirm: 'Are You Sure?',
     reGenerate: 'ReGenerate Will Remove All Built Packages, Are You Sure to ReGenerate?',
     canceling: 'Canceling... Please Wait',
     buildFirst: 'Please Build Project',
     loadError: 'Load Error',
-    select: 'Please Select'
+    select: 'Please Select',
+    errorParse: 'Parse Error Occurred'
   },
   descriptions: {
     normalClients: 'Normal Clients',
@@ -163,6 +168,10 @@ export default {
     code: 'Code',
     port: 'Port',
     host: 'Host',
+    table: 'Table',
+    tables: 'Tables',
+    collection: 'Collection',
+    collections: 'Collections',
     database: 'Database',
     user: 'User',
     password: 'Password',

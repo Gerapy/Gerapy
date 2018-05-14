@@ -4,7 +4,7 @@ import os
 import sys
 import optparse
 from scrapy.commands import ScrapyCommand as BaseParser
-from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerProcess, CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from scrapy.settings.deprecated import check_deprecated_settings
 from w3lib.url import is_url
@@ -14,11 +14,17 @@ from scrapy.http import Request
 from scrapy.item import BaseItem
 from scrapy.utils import display
 from scrapy.utils.spider import iterate_spider_output, spidercls_for_request
+import multiprocessing
+from twisted.internet import reactor
+
+from gerapy.server.core.utils import process_request, process_response, process_item
 
 logger = logging.getLogger(__name__)
 
+dfs = set()
 
-class Parser(BaseParser):
+
+class SpiderParser(BaseParser):
     requires_project = True
     spider = None
     items = {}
@@ -26,9 +32,18 @@ class Parser(BaseParser):
     first_response = None
     
     def short_desc(self):
+        """
+        short description
+        :return: string
+        """
         return "Parse URL (using its spider) and print the results"
     
     def add_options(self, parser):
+        """
+        option parser
+        :param parser: 
+        :return: 
+        """
         BaseParser.add_options(self, parser)
         parser.add_option("--spider", dest="spider", default=None,
                           help="use this spider without looking for one")
@@ -55,20 +70,42 @@ class Parser(BaseParser):
     
     @property
     def max_level(self):
+        """
+        get max level
+        :return: max level
+        """
         levels = list(self.items.keys()) + list(self.requests.keys())
         if not levels:
             return 0
         return max(levels)
     
     def add_items(self, lvl, new_items):
+        """
+        add items to self.items
+        :param lvl: levels
+        :param new_items: new items
+        :return: None
+        """
         old_items = self.items.get(lvl, [])
         self.items[lvl] = old_items + new_items
     
     def add_requests(self, lvl, new_reqs):
+        """
+        add requests
+        :param lvl: level
+        :param new_reqs: new requests
+        :return: 
+        """
         old_reqs = self.requests.get(lvl, [])
         self.requests[lvl] = old_reqs + new_reqs
     
     def print_items(self, lvl=None, colour=True):
+        """
+        print items by pprint
+        :param lvl: level
+        :param colour: color
+        :return: None
+        """
         if lvl is None:
             items = [item for lst in self.items.values() for item in lst]
         else:
@@ -78,6 +115,12 @@ class Parser(BaseParser):
         display.pprint([dict(x) for x in items], colorize=colour)
     
     def print_requests(self, lvl=None, colour=True):
+        """
+        print requests by pprint
+        :param lvl: level
+        :param colour: color
+        :return: None
+        """
         if lvl is None:
             levels = list(self.requests.keys())
             if levels:
@@ -91,6 +134,11 @@ class Parser(BaseParser):
         display.pprint(requests, colorize=colour)
     
     def print_results(self, opts):
+        """
+        print results including items and requests
+        :param opts: options
+        :return: None
+        """
         colour = not opts.nocolour
         if opts.verbose:
             for level in range(1, self.max_level + 1):
@@ -107,13 +155,26 @@ class Parser(BaseParser):
                 self.print_requests(colour=colour)
     
     def get_items(self, lvl=None):
+        """
+        return items
+        :param lvl: level
+        :return: items
+        """
         if lvl is None:
             items = [item for lst in self.items.values() for item in lst]
         else:
             items = self.items.get(lvl, [])
-        return items
+        items_array = []
+        for item in items:
+            items_array.append(process_item(item))
+        return items_array
     
     def get_requests(self, lvl=None):
+        """
+        get requests
+        :param lvl: level
+        :return: requests
+        """
         if lvl is None:
             levels = list(self.requests.keys())
             if levels:
@@ -123,9 +184,15 @@ class Parser(BaseParser):
         else:
             requests = self.requests.get(lvl, [])
         
+        requests_array = []
         for request in requests:
             print('Request', request, self.get_callback(request))
-        return requests
+            requests_array.append(process_request(request))
+        
+        return requests_array
+    
+    def get_response(self):
+        return process_response(self.first_response)
     
     def get_results(self, opts):
         results = []
@@ -189,7 +256,12 @@ class Parser(BaseParser):
     def start_parsing(self, url, opts):
         self.crawler_process.crawl(self.spidercls, **opts.spargs)
         self.pcrawler = list(self.crawler_process.crawlers)[0]
-        self.crawler_process.start()
+        # self.crawler_process.start()
+        # self.crawler_process.start()
+        d = self.crawler_process.join()
+        d.addBoth(lambda _: reactor.stop())
+        
+        reactor.run()
         
         if not self.first_response:
             logger.error('No response downloaded for: %(url)s',
@@ -233,6 +305,11 @@ class Parser(BaseParser):
                 itemproc = self.pcrawler.engine.scraper.itemproc
                 for item in items:
                     itemproc.process_item(item, spider)
+            
+            # process request callback
+            for request in requests:
+                request.callback = self.get_callback(request)
+            
             self.add_items(depth, items)
             self.add_requests(depth, requests)
             
@@ -259,14 +336,12 @@ class Parser(BaseParser):
         self.process_request_meta(opts)
     
     def process_spider_arguments(self, opts):
-        
         try:
             opts.spargs = arglist_to_dict(opts.spargs)
         except ValueError:
             raise UsageError("Invalid -a value, use -a NAME=VALUE", print_help=False)
     
     def process_request_meta(self, opts):
-        
         if opts.meta:
             try:
                 opts.meta = json.loads(opts.meta)
@@ -292,44 +367,116 @@ class Parser(BaseParser):
             return results
 
 
-def execute(url, project, spider, callback, **kwargs):
+def execute(url, project_path, spider_name, callback, result, *arg, **kwargs):
+    """
+    execute parsing
+    :param url: url
+    :param project_path: project path
+    :param spider_name: spider name
+    :param callback: callback
+    :param result: results generated by multiprocessing
+    :return: 
+    """
     argv = sys.argv
-    
-    print(argv)
-    
     argv.append(url)
-    if spider:
+    if spider_name:
         argv.append('--spider')
-        argv.append(spider)
+        argv.append(spider_name)
     if callback:
         argv.append('--callback')
         argv.append(callback)
     
-    print(argv)
-    
     work_cwd = os.getcwd()
-    print(work_cwd)
     try:
-        os.chdir(project)
+        # change work dir
+        os.chdir(project_path)
+        print('Move to ', project_path)
+        # get settings of project
         settings = get_project_settings()
         check_deprecated_settings(settings)
-        cmd = Parser()
+        # get args by optparse
         parser = optparse.OptionParser(formatter=optparse.TitledHelpFormatter(), conflict_handler='resolve')
-        settings.setdict(cmd.default_settings, priority='command')
-        cmd.settings = settings
-        cmd.add_options(parser)
-        opts, args = parser.parse_args(args=argv[1:])
-        print('opt, args', opts, args)
-        cmd.process_options(args, opts)
-        cmd.crawler_process = CrawlerProcess(settings)
-        cmd.run(args, opts)
+        # init SpiderParser
+        spider_parser = SpiderParser()
+        settings.setdict(spider_parser.default_settings, priority='command')
+        spider_parser.settings = settings
+        spider_parser.add_options(parser)
+        opts, _ = parser.parse_args(args=argv[1:])
+        args = [url]
+        spider_parser.process_options(args, opts)
+        # use CrawlerRunner instead of CrawlerProcess
+        spider_parser.crawler_process = CrawlerRunner(settings)
+        # spider_parser.crawler_process = CrawlerProcess(settings)
+        spider_parser.run(args, opts)
+        # get follow requests, items, response
+        requests, items, response = spider_parser.get_requests(), spider_parser.get_items(), spider_parser.get_response()
+        result['requests'] = requests
+        result['items'] = items
+        result['response'] = response
+    finally:
+        os.chdir(work_cwd)
+
+
+def get_follow_results(url, project_path, spider_name, callback):
+    """
+    run parser, get follow results by multiprocessing.Process
+    :param url: url
+    :param project: project
+    :param spider: spider
+    :param callback: callback
+    :return: dict results
+    """
+    manager = multiprocessing.Manager()
+    result = manager.dict()
+    jobs = []
+    # use Process in case of reactor stop exception
+    p = multiprocessing.Process(target=execute, args=(url, project_path, spider_name, callback, result))
+    jobs.append(p)
+    p.start()
+    # processes
+    for proc in jobs:
+        proc.join()
+    return dict(result)
+
+
+def get_start_requests(project_path, spider_name):
+    """
+    get start requests
+    :param project_path: project path
+    :param spider_name: spider name
+    :return:
+    """
+    work_cwd = os.getcwd()
+    try:
+        # change work dir
+        os.chdir(project_path)
+        # load settings
+        settings = get_project_settings()
+        check_deprecated_settings(settings)
+        runner = CrawlerRunner(settings=settings)
+        # add crawler
+        spider_cls = runner.spider_loader.load(spider_name)
+        runner.crawl(spider_cls)
+        # get crawler
+        crawler = list(runner.crawlers)[0]
+        # get spider by crawler
+        spider = crawler.spider
+        # get start requests
+        requests = list(spider.start_requests())
+        if not requests and hasattr(spider, 'start'):
+            requests = list(spider.start())
+        requests = list(map(lambda r: process_request(r), requests))
+        return requests
     finally:
         os.chdir(work_cwd)
 
 
 if __name__ == '__main__':
-    url = 'http://tech.china.com/internet/'
-    spider = 'china'
+    url = 'http://tech.china.com/article/20180511/20180511136031.html'
+    spider_name = 'china'
     callback = None
-    project = '/Users/CQC/testcase/gerapy/projects/news'
-    execute(url, project, spider, callback)
+    project_path = '/Users/CQC/testcase/gerapy/projects/example'
+    result = get_follow_results(url, project_path, spider_name, callback)
+    print('Result', result)
+    requests = get_start_requests(project_path, spider_name)
+    print(requests)
