@@ -77,7 +77,8 @@ export default {
     newFile: 'New File',
     renameFile: 'Rename File',
     createFile: 'Create File',
-    browser: 'Browser'
+    browser: 'Browser',
+    error: 'Error'
   },
   menus: {
     clients: 'Clients',

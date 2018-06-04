@@ -77,7 +77,8 @@ export default {
     newFile: '新建',
     renameFile: '重命名',
     createFile: '新建',
-    browser: '浏览器'
+    browser: '浏览器',
+    error: '错误'
   },
   menus: {
     clients: '主机管理',

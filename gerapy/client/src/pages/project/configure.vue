@@ -4,9 +4,9 @@
       <el-button @click="saveProject" type="primary" class="save-project">
         <i class="fa fa-save"></i>
       </el-button>
-      <el-button @click="onGenerate" type="primary" class="generate-project">
-        <i class="fa fa-magic"></i>
-      </el-button>
+      <!--<el-button @click="onGenerate" type="primary" class="generate-project">-->
+      <!--<i class="fa fa-magic"></i>-->
+      <!--</el-button>-->
       <panel-title :title="$lang[$store.state.lang].titles.configureProject">
       </panel-title>
       <div class="panel-body" id="project-create">
@@ -247,17 +247,6 @@
           this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
         })
       },
-      generateProject() {
-        this.$message.info(this.$lang[this.$store.state.lang].messages.processGenerate)
-        this.$fetch.apiProject.projectGenerate({
-          name: this.projectName
-        }).then(({data: data}) => {
-          this.$message.success(this.$lang[this.$store.state.lang].messages.successGenerate)
-          this.getProject()
-        }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorGenerate)
-        })
-      },
       onDeleteInput(array, ...keys) {
         if (keys.length == 2) {
           // 二维字典
@@ -324,14 +313,14 @@
           })
       }
     },
-    watch: {
-      configuration: {
-        handler() {
-          this.saveProject()
-        },
-        deep: true
-      }
-    }
+//    watch: {
+//      configuration: {
+//        handler() {
+//          this.saveProject()
+//        },
+//        deep: true
+//      }
+//    }
   }
 </script>
 

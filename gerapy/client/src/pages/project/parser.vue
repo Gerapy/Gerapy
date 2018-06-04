@@ -20,6 +20,18 @@
           </el-button-group>
         </span>
       </el-col>
+      <el-col :span="24" v-if="error" class="m-t-md">
+        <el-alert
+          :title="$lang[$store.state.lang].titles.error"
+          type="error"
+          :closable="false">
+          <template scope="description">
+            <pre>
+              {{ error }}
+            </pre>
+          </template>
+        </el-alert>
+      </el-col>
       <el-tabs v-model="activeTab">
         <el-tab-pane label="Follows" name="follows">
           <el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
@@ -84,6 +96,7 @@
           url: null,
           start: 1
         },
+        error: null,
         followRequests: [],
         followItems: [],
         activeRequests: [],
@@ -121,6 +134,7 @@
       onFetch() {
         this.addActiveRequest()
         this.fetching = true
+        this.error = null
         this.$fetch.apiProject.projectParse({
           name: this.projectName,
         }, {
@@ -128,31 +142,38 @@
           start: this.activeRequest.start,
           callback: this.activeRequest.callback,
           spider: this.spider.name
-        }).then(({data: {result: result}}) => {
-          this.fetching = false
-          console.log(result)
-          this.followRequests = []
-          let requests = result.requests
-          if (requests) {
-            requests.forEach((request) => {
-              this.followRequests.push({
-                url: request.url,
-                method: request.method,
-                callback: request.callback,
+        }).then(({data: data}) => {
+          if (data.status === '1') {
+            let result = data.result
+            this.fetching = false
+            this.followRequests = []
+            let requests = result.requests
+            if (requests) {
+              requests.forEach((request) => {
+                this.followRequests.push({
+                  url: request.url,
+                  method: request.method,
+                  callback: request.callback,
+                })
               })
-            })
+            }
+            let items = result.items
+            if (items) {
+              this.followItems = []
+              items.forEach((item) => {
+                this.followItems.push(item)
+              })
+            }
+            let response = result.response
+            if (response) {
+              this.activeResponseHtml = response.html
+            }
           }
-          let items = result.items
-          if (items) {
-            this.followItems = []
-            items.forEach((item) => {
-              this.followItems.push(item)
-            })
+          if (data.status === '2') {
+            this.fetching = false
+            this.error = data.message
           }
-          let response = result.response
-          if (response) {
-            this.activeResponseHtml = response.html
-          }
+
         }).catch((error) => {
           this.fetching = false
           this.$message.error(this.$lang[this.$store.state.lang].messages.errorParse + error)

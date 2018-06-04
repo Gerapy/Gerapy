@@ -21,7 +21,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif -%}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
-            'gerapy.pipelines.MySQLPipeline': 300,
+
             {%- endif %}
         }
     }

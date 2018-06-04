@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 dfs = set()
 
+FATAL_ERROR = -100
+
 
 class SpiderParser(BaseParser):
     requires_project = True
@@ -254,7 +256,13 @@ class SpiderParser(BaseParser):
         self.spidercls.start_requests = _start_requests
     
     def start_parsing(self, url, opts):
+        print('Spidercls', self.spidercls)
+        print('Opt', opts.spargs)
+        
         self.crawler_process.crawl(self.spidercls, **opts.spargs)
+        print('Crawwwwwlers', self.crawler_process, self.crawler_process.crawlers)
+        if not len(self.crawler_process.crawlers) > 0:
+            return FATAL_ERROR
         self.pcrawler = list(self.crawler_process.crawlers)[0]
         # self.crawler_process.start()
         # self.crawler_process.start()
@@ -360,7 +368,9 @@ class SpiderParser(BaseParser):
         self.set_spidercls(url, opts)
         
         if self.spidercls and opts.depth > 0:
-            self.start_parsing(url, opts)
+            start_status = self.start_parsing(url, opts)
+            if start_status == FATAL_ERROR:
+                return start_status
             self.print_results(opts)
             results = self.get_results(opts)
             print(len(results))
@@ -387,12 +397,14 @@ def execute(url, project_path, spider_name, callback, result, *arg, **kwargs):
         argv.append(callback)
     
     work_cwd = os.getcwd()
+    print('Word cwd', work_cwd)
     try:
         # change work dir
         os.chdir(project_path)
         print('Move to ', project_path)
         # get settings of project
         settings = get_project_settings()
+        print('Settings', settings)
         check_deprecated_settings(settings)
         # get args by optparse
         parser = optparse.OptionParser(formatter=optparse.TitledHelpFormatter(), conflict_handler='resolve')
@@ -406,14 +418,21 @@ def execute(url, project_path, spider_name, callback, result, *arg, **kwargs):
         spider_parser.process_options(args, opts)
         # use CrawlerRunner instead of CrawlerProcess
         spider_parser.crawler_process = CrawlerRunner(settings)
+        print(spider_parser.crawler_process)
         # spider_parser.crawler_process = CrawlerProcess(settings)
-        spider_parser.run(args, opts)
-        # get follow requests, items, response
-        requests, items, response = spider_parser.get_requests(), spider_parser.get_items(), spider_parser.get_response()
-        result['requests'] = requests
-        result['items'] = items
-        result['response'] = response
+        status = spider_parser.run(args, opts)
+        if status == FATAL_ERROR:
+            result['requests'], result['items'], result['response'] = (None, None, None)
+            result['finished'] = False
+        else:
+            # get follow requests, items, response
+            requests, items, response = spider_parser.get_requests(), spider_parser.get_items(), spider_parser.get_response()
+            result['requests'] = requests
+            result['items'] = items
+            result['response'] = response
+            result['finished'] = True
     finally:
+        print('Move out', work_cwd)
         os.chdir(work_cwd)
 
 
@@ -426,6 +445,8 @@ def get_follow_results(url, project_path, spider_name, callback):
     :param callback: callback
     :return: dict results
     """
+    print('URL', url, 'pj', project_path)
+    print('CWD', os.getcwd())
     manager = multiprocessing.Manager()
     result = manager.dict()
     jobs = []
@@ -436,6 +457,7 @@ def get_follow_results(url, project_path, spider_name, callback):
     # processes
     for proc in jobs:
         proc.join()
+    print('Result', result)
     return dict(result)
 
 
@@ -447,17 +469,23 @@ def get_start_requests(project_path, spider_name):
     :return:
     """
     work_cwd = os.getcwd()
+    print('Word cwd', work_cwd)
+    print('Project path', project_path)
     try:
         # change work dir
         os.chdir(project_path)
         # load settings
         settings = get_project_settings()
         check_deprecated_settings(settings)
+        print(settings)
         runner = CrawlerRunner(settings=settings)
         # add crawler
         spider_cls = runner.spider_loader.load(spider_name)
         runner.crawl(spider_cls)
+        print('Runner crawlers', runner.crawlers)
         # get crawler
+        if not len(runner.crawlers) > 0:
+            return {'finished': False, 'requests': None}
         crawler = list(runner.crawlers)[0]
         # get spider by crawler
         spider = crawler.spider
@@ -466,7 +494,9 @@ def get_start_requests(project_path, spider_name):
         if not requests and hasattr(spider, 'start'):
             requests = list(spider.start())
         requests = list(map(lambda r: process_request(r), requests))
-        return requests
+        return {'finished': True, 'requests': requests}
+    except:
+        return {'finished': False, 'requests': None}
     finally:
         os.chdir(work_cwd)
 
