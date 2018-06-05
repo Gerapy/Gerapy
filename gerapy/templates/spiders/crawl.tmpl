@@ -19,9 +19,14 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif -%}
         {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif -%}
         {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif -%}
+        {% if spider.storage.mongodb.uri -%}"MONGODB_URI": "{{ spider.storage.mongodb.uri }}",{%- endif -%}
+        {% if spider.storage.mongodb.database -%}"MONGODB_DATABASE": "{{ spider.storage.mongodb.database }}",{%- endif %}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
-
+                'gerapy.pipelines.MySQLPipeline': 300,
+            {%- endif %}
+            {% if spider.storage.mysql.enable -%}
+                'gerapy.pipelines.MongoDBPipeline': 301,
             {%- endif %}
         }
     }
@@ -56,11 +61,11 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
                 {%- if rule.process_value -%}process_value={{rule.process_value}}, {% endif -%}
                 {%- if rule.strip -%}strip={{rule.strip}}, {% endif -%}
             ),
-            {%- if rule.callback -%}callback='{{rule.callback}}'{% endif -%}
-            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}'{% endif -%}
-            {%- if rule.follow -%}follow='{{rule.follow}}'{% endif -%}
-            {%- if rule.process_links -%}process_links='{{rule.process_links}}'{% endif -%}
-            {%- if rule.process_request -%}process_request='{{rule.process_request}}'{% endif -%}
+            {%- if rule.callback -%}callback='{{rule.callback}}',{% endif -%}
+            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}',{% endif -%}
+            {%- if rule.follow -%}follow='{{rule.follow}}',{% endif -%}
+            {%- if rule.process_links -%}process_links='{{rule.process_links}}',{% endif -%}
+            {%- if rule.process_request -%}process_request='{{rule.process_request}}',{% endif -%}
         ),
         {% endfor -%}
     )

@@ -1,6 +1,7 @@
 import fnmatch
 import multiprocessing
 import re
+from copy import deepcopy
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 from os.path import abspath
@@ -246,6 +247,49 @@ def get_output_error(project_name, spider_name):
         os.chdir(work_cwd)
 
 
+def get_items_configuration(configuration):
+    """
+    get items configuration including allowed_spiders and tables or collections
+    :param configuration: configuration data
+    :return: items
+    """
+    configuration = deepcopy(configuration)
+    items = configuration.get('items')
+    spiders = configuration.get('spiders')
+    for spider in spiders:
+        # MongoDB
+        mongodb_collection_map = spider.get('storage').get('mongodb').get('collections')
+        for mongodb_collection_map_item in mongodb_collection_map:
+            collection = mongodb_collection_map_item.get('collection')
+            item_name = mongodb_collection_map_item.get('item')
+            for item in items:
+                if item.get('name') == item_name:
+                    allowed_spiders = item.get('mongodb_spiders', set())
+                    allowed_spiders.add(spider.get('name'))
+                    mongodb_collections = item.get('mongodb_collections', set())
+                    mongodb_collections.add(collection)
+                    item['mongodb_spiders'], item['mongodb_collections'] = allowed_spiders, mongodb_collections
+        
+        # MySQL
+        mysql_table_map = spider.get('storage').get('mysql').get('tables')
+        for mysql_table_map_item in mysql_table_map:
+            collection = mysql_table_map_item.get('table')
+            item_name = mysql_table_map_item.get('item')
+            for item in items:
+                if item.get('name') == item_name:
+                    allowed_spiders = item.get('mysql_spiders', set())
+                    allowed_spiders.add(spider.get('name'))
+                    mysql_tables = item.get('mysql_tables', set())
+                    mysql_tables.add(collection)
+                    item['mysql_spiders'], item['mysql_tables'] = allowed_spiders, mysql_tables
+    # transfer attr
+    attrs = ['mongodb_spiders', 'mongodb_collections', 'mysql_spiders', 'mysql_tables']
+    for item in items:
+        for attr in attrs:
+            item[attr] = list(item[attr])
+    return items
+
+
 def generate_project(project_name):
     """
     generate project code
@@ -268,9 +312,11 @@ def generate_project(project_name):
             path = join(*paths)
             tplfile = join(project_dir,
                            string.Template(path).substitute(project_name=project_name))
+            items = get_items_configuration(configuration)
+            print('Items', items)
             vars = {
                 'project_name': project_name,
-                'items': configuration.get('items'),
+                'items': items,
             }
             render_template(tplfile, tplfile.rstrip('.tmpl'), **vars)
         # generate spider
@@ -290,16 +336,20 @@ def generate_project(project_name):
         # return model
         result['data'] = model_to_dict(model)
     
-    # new manager
-    manager = multiprocessing.Manager()
-    result = manager.dict()
-    jobs = []
-    # use Process in case of reactor stop exception
-    p = multiprocessing.Process(target=generate, args=(project_name, result))
-    jobs.append(p)
-    p.start()
-    # processes
-    for proc in jobs:
-        proc.join()
-    print('Data', result['data'])
-    return result['data']
+    try:
+        # new manager
+        manager = multiprocessing.Manager()
+        result = manager.dict()
+        jobs = []
+        # use Process in case of reactor stop exception
+        p = multiprocessing.Process(target=generate, args=(project_name, result))
+        jobs.append(p)
+        p.start()
+        # processes
+        for proc in jobs:
+            proc.join()
+        print('Data', result['data'])
+        return result['data']
+    except FileNotFoundError as e:
+        print('Processing', e.args)
+        return None

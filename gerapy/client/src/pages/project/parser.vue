@@ -37,7 +37,7 @@
           <el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
             <h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
             <div v-for="followRequest in followRequests">
-              <div class="follow-request-item">
+              <div class="follow-request">
               <span :span="24">
                 {{ followRequest.url }}
               </span>
@@ -49,11 +49,16 @@
           </el-col>
           <el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
             <h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
-            <div v-for="followItem in followItems">
-              <div class="follow-request-item">
-            <span :span="24">
-              {{ followItem }}
-            </span>
+            <div>
+              <div class="follow-item" v-for="followItem in followItems">
+                <p :span="24" v-for="(value, key) in followItem" :key="key" class="m-v-sm">
+                  <span class="key m-r-sm">
+                    <el-button type="primary" size="mini">{{ key }}</el-button>
+                  </span>
+                  <span class="value">
+                    {{ value }}
+                  </span>
+                </p>
               </div>
             </div>
           </el-col>
@@ -189,7 +194,7 @@
     border: 1px solid rgb(223, 230, 236);
   }
 
-  .follow-request-item {
+  .follow-request {
     position: relative;
     height: 40px;
     line-height: 40px;
@@ -198,6 +203,10 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     cursor: pointer;
+    border-bottom: 1px solid rgb(223, 230, 236);
+  }
+
+  .follow-item {
     border-bottom: 1px solid rgb(223, 230, 236);
   }
 
@@ -222,6 +231,17 @@
     border: 1px solid rgb(223, 230, 236);
     overflow-y: scroll;
     max-height: 200px;
+  }
+
+  #follow-items {
+    .follow-item {
+      .key {
+        width: 10%;
+      }
+      .value {
+        width: 90%;
+      }
+    }
   }
 
   .el-tabs__item.is-active {

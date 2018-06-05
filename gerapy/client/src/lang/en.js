@@ -199,6 +199,7 @@ export default {
     startDate: 'Start Date',
     endDate: 'End Date',
     runDate: 'Run Date',
-    dayOfWeek: 'Day Of Week'
+    dayOfWeek: 'Day Of Week',
+    uri: 'Uri'
   },
 }

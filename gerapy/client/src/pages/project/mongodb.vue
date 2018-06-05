@@ -1,31 +1,10 @@
 <template>
   <div>
     <el-form ref="form" label-width="90px">
-      <el-form-item :label="$lang[$store.state.lang].columns.host">
+      <el-form-item :label="$lang[$store.state.lang].columns.uri">
         <el-input
-          v-model="config.host" class="inline"
-          :placeholder="$lang[$store.state.lang].columns.host"
-          size="small"></el-input>
-      </el-form-item>
-
-      <el-form-item :label="$lang[$store.state.lang].columns.port">
-        <el-input
-          v-model="config.port" class="inline"
-          :placeholder="$lang[$store.state.lang].columns.port"
-          size="small"></el-input>
-      </el-form-item>
-
-      <el-form-item :label="$lang[$store.state.lang].columns.user">
-        <el-input
-          v-model="config.user" class="inline"
-          :placeholder="$lang[$store.state.lang].columns.user"
-          size="small"></el-input>
-      </el-form-item>
-
-      <el-form-item :label="$lang[$store.state.lang].columns.password">
-        <el-input
-          v-model="config.password" class="inline"
-          :placeholder="$lang[$store.state.lang].columns.password"
+          v-model="config.uri" class="inline"
+          :placeholder="$lang[$store.state.lang].columns.uri"
           size="small"></el-input>
       </el-form-item>
 
@@ -57,7 +36,8 @@
               </el-col>
               <el-col :span="1" class="text-center">=></el-col>
               <el-col :span="3">
-                <el-input v-model="collectionMap.collection" size="small" :placeholder="$lang[$store.state.lang].columns.collection">
+                <el-input v-model="collectionMap.collection" size="small"
+                          :placeholder="$lang[$store.state.lang].columns.collection">
                 </el-input>
               </el-col>
               <el-col :span="2">
@@ -91,10 +71,7 @@
         default: {
           enable: false,
           collections: [],
-          host: null,
-          port: null,
-          user: null,
-          password: null,
+          uri: null,
           database: null
         }
       },

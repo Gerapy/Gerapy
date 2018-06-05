@@ -447,18 +447,22 @@ def get_follow_results(url, project_path, spider_name, callback):
     """
     print('URL', url, 'pj', project_path)
     print('CWD', os.getcwd())
-    manager = multiprocessing.Manager()
-    result = manager.dict()
-    jobs = []
-    # use Process in case of reactor stop exception
-    p = multiprocessing.Process(target=execute, args=(url, project_path, spider_name, callback, result))
-    jobs.append(p)
-    p.start()
-    # processes
-    for proc in jobs:
-        proc.join()
-    print('Result', result)
-    return dict(result)
+    try:
+        manager = multiprocessing.Manager()
+        result = manager.dict()
+        jobs = []
+        # use Process in case of reactor stop exception
+        p = multiprocessing.Process(target=execute, args=(url, project_path, spider_name, callback, result))
+        jobs.append(p)
+        p.start()
+        # processes
+        for proc in jobs:
+            proc.join()
+        print('Result', result)
+        return dict(result)
+    except Exception as e:
+        print(e.args)
+        return {'finished': False}
 
 
 def get_start_requests(project_path, spider_name):
