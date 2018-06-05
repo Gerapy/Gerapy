@@ -292,6 +292,8 @@
             code: {},
             extractors: [],
             rules: [],
+            proxy: {},
+            cookies: {},
             storage: {
               mysql: {
                 enable: false,

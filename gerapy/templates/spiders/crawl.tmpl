@@ -49,11 +49,25 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {% endif %}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
-                'gerapy.pipelines.MySQLPipeline': 300,
+                "gerapy.pipelines.MySQLPipeline": 300,
             {%- endif %}
             {% if spider.storage.mongodb.enable -%}
-                'gerapy.pipelines.MongoDBPipeline': 301,
+                "gerapy.pipelines.MongoDBPipeline": 301,
             {%- endif %}
+        },
+        "SPIDER_MIDDLEWARES": {
+            "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+        },
+        "DOWNLOADER_MIDDLEWARES": {
+            {% if spider.cookies.enable -%}
+            "gerapy.downloadermiddlewares.cookies.CookiesMiddleware": 554,
+            {%- endif %}
+            {% if spider.proxy.enable -%}
+            "gerapy.downloadermiddlewares.proxy.ProxyMiddleware": 555,
+            {%- endif %}
+            "scrapy_splash.SplashCookiesMiddleware": 723,
+            "scrapy_splash.SplashMiddleware": 725,
+            "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810
         },
         {% if spider.custom_settings -%}
         {% for setting in spider.custom_settings -%}

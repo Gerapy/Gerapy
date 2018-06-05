@@ -112,6 +112,18 @@
     </el-form-item>
     <!-- 存储结束 -->
 
+    <!-- 代理开始 -->
+    <el-form-item>
+      <proxy :proxy="spider.proxy" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></proxy>
+    </el-form-item>
+    <!-- 代理结束 -->
+
+    <!-- Cookies开始 -->
+    <el-form-item>
+      <cookies :cookies="spider.cookies" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></cookies>
+    </el-form-item>
+    <!-- Cookies结束 -->
+
     <!-- 配置项开始 -->
     <el-form-item>
       <h4 class="inline">{{ $lang[$store.state.lang].columns.customSettings }}</h4>
@@ -157,6 +169,9 @@
   import extractors from 'pages/project/extractors'
   import storage from 'pages/project/storage'
   import parser from 'pages/project/parser'
+  import proxy from 'pages/project/proxy'
+  import cookies from 'pages/project/cookies'
+  import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item";
 
   export default {
     name: 'Spider',
@@ -181,10 +196,13 @@
       }
     },
     components: {
+      ElFormItem,
       rules,
       extractors,
       storage,
-      parser
+      parser,
+      proxy,
+      cookies
     }
   }
 </script>

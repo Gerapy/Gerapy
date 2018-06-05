@@ -78,7 +78,9 @@ export default {
     renameFile: '重命名',
     createFile: '新建',
     browser: '浏览器',
-    error: '错误'
+    error: '错误',
+    proxy: '代理',
+    cookies: 'Cookies'
   },
   menus: {
     clients: '主机管理',
@@ -200,7 +202,10 @@ export default {
     endDate: '结束日期',
     runDate: '运行时间',
     dayOfWeek: '每周几',
-    uri: '连接串'
+    uri: '连接串',
+    proxyPool: '代理池',
+    cookiesPool: 'Cookies池',
+    failTimes: '失败次数'
   },
 
 }
