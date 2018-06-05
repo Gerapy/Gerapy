@@ -288,7 +288,7 @@
         this.onAddInput(this.configuration.spiders,
           {
             name: null,
-            custom_settings: null,
+            custom_settings: [],
             code: {},
             extractors: [],
             rules: [],

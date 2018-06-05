@@ -112,11 +112,30 @@
     </el-form-item>
     <!-- 存储结束 -->
 
+    <!-- 配置项开始 -->
     <el-form-item>
-      <h4 class="inline m-r-sm m-b-md">{{ $lang[$store.state.lang].columns.customSettings }}</h4>
-      <el-input type="textarea" v-model="spider.custom_settings" class="inline" size="small"
-                :placeholder="$lang[$store.state.lang].columns.customSettings"></el-input>
+      <h4 class="inline">{{ $lang[$store.state.lang].columns.customSettings }}</h4>
+      <el-button type="primary" class="inline" size="mini"
+                 @click="onAddInput(spider.custom_settings, {'key': null, 'value': null})">
+        <i class="fa fa-plus"></i>
+        {{ $lang[$store.state.lang].buttons.addAttr }}
+      </el-button>
+      <div v-for="(value, key, index) in spider.custom_settings" :key="key">
+        <el-input
+          v-model="value['key']" class="inline inline-medium"
+          :placeholder="$lang[$store.state.lang].columns.attrName"
+          size="small"></el-input>
+        <el-input
+          v-model="value['value']" class="inline inline-long"
+          :placeholder="$lang[$store.state.lang].columns.attrValue"
+          size="small"></el-input>
+        <el-button type="danger" size="mini" @click="onDeleteInput(spider.custom_settings, key)">
+          <i class="fa fa-remove"></i>
+          {{ $lang[$store.state.lang].buttons.delete }}
+        </el-button>
+      </div>
     </el-form-item>
+    <!-- 配置项结束 -->
 
     <el-form-item>
       <h4 class="inline m-r-sm m-b-md">{{ $lang[$store.state.lang].columns.innerCode }}</h4>
@@ -169,3 +188,11 @@
     }
   }
 </script>
+<style scoped>
+  .inline-short {
+    max-width: 100px !important;
+  }
+  .inline-medium {
+    max-width: 150px !important;
+  }
+</style>

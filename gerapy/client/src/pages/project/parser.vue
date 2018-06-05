@@ -2,10 +2,22 @@
   <div>
     <el-row class="m-b-md">
       <el-col :span="24" id="console" class="p-md">
-        <p>project name:{{ projectName }}</p>
-        <p>url: {{ activeRequest.url }} </p>
-        <p>method: {{ activeRequest.method }}</p>
-        <p>callback: {{ activeRequest.callback }}</p>
+        <p>
+          <el-button type="primary" size="mini">project</el-button>
+          {{ projectName }}
+        </p>
+        <p>
+          <el-button type="primary" size="mini">url</el-button>
+          <a :href="activeRequest.url">{{ activeRequest.url }}</a>
+        </p>
+        <p>
+          <el-button type="primary" size="mini">method</el-button>
+          {{ activeRequest.method }}
+        </p>
+        <p>
+          <el-button type="primary" size="mini">callback</el-button>
+          {{ activeRequest.callback }}
+        </p>
         <el-button class="pull-right btn-run" @click="onRun" size="mini" type="primary">
           <i class="fa fa-play"></i>
         </el-button>
@@ -192,6 +204,17 @@
   #console {
     height: auto;
     border: 1px solid rgb(223, 230, 236);
+    p {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      button {
+        margin-right: 5px;
+      }
+      a {
+        color: rgb(72, 87, 106);
+        font-weight: 400;
+      }
+    }
   }
 
   .follow-request {

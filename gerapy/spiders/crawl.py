@@ -22,7 +22,8 @@ class CrawlSpider(BaseSpider):
     def make_start_urls(self):
         return self.start_urls
     
-    def splash_request(self, request, args={'wait': 1}):
+    def splash_request(self, request, args=None):
+        args = args if args else {'wait': 1, 'timeout': 30}
         meta = request.meta
         meta.update({'url': request.url})
         return SplashRequest(url=request.url, dont_process_response=True, args=args, callback=request.callback,
