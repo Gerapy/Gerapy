@@ -14,18 +14,18 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
     ]
     {% endif -%}
     custom_settings = {
-        {% if spider.storage.mysql.host -%}"MYSQL_HOST": "{{ spider.storage.mysql.host }}",{%- endif -%}
-        {% if spider.storage.mysql.port -%}"MYSQL_PORT": {{ spider.storage.mysql.port }},{%- endif -%}
-        {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif -%}
-        {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif -%}
-        {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif -%}
-        {% if spider.storage.mongodb.uri -%}"MONGODB_URI": "{{ spider.storage.mongodb.uri }}",{%- endif -%}
+        {% if spider.storage.mysql.host -%}"MYSQL_HOST": "{{ spider.storage.mysql.host }}",{%- endif %}
+        {% if spider.storage.mysql.port -%}"MYSQL_PORT": {{ spider.storage.mysql.port }},{%- endif %}
+        {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif %}
+        {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif %}
+        {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif %}
+        {% if spider.storage.mongodb.uri -%}"MONGODB_URI": "{{ spider.storage.mongodb.uri }}",{%- endif %}
         {% if spider.storage.mongodb.database -%}"MONGODB_DATABASE": "{{ spider.storage.mongodb.database }}",{%- endif %}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
                 'gerapy.pipelines.MySQLPipeline': 300,
             {%- endif %}
-            {% if spider.storage.mysql.enable -%}
+            {% if spider.storage.mongodb.enable -%}
                 'gerapy.pipelines.MongoDBPipeline': 301,
             {%- endif %}
         }

@@ -29,9 +29,9 @@ class MySQLPipeline():
         self.db.close()
     
     def _process_item(self, item, spider):
-        allowed_spiders = item.get('mongodb_spiders')
-        allowed_tables = item.get('mongodb_tables')
-        if allowed_spiders and spider in allowed_spiders:
+        allowed_spiders = item.mongodb_spiders
+        allowed_tables = item.mongodb_tables
+        if allowed_spiders and spider.name in allowed_spiders:
             for allowed_table in allowed_tables:
                 data = dict(item)
                 keys = ', '.join(data.keys())
