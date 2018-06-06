@@ -1,4 +1,5 @@
 import pymysql
+from twisted.internet.threads import deferToThread
 
 
 class MySQLPipeline():
@@ -27,11 +28,18 @@ class MySQLPipeline():
     def close_spider(self, spider):
         self.db.close()
     
-    def process_item(self, item, spider):
-        data = dict(item)
-        keys = ', '.join(data.keys())
-        values = ', '.join(['%s'] * len(data))
-        sql = 'insert into %s (%s) values (%s)' % (item.table, keys, values)
-        self.cursor.execute(sql, tuple(data.values()))
-        self.db.commit()
+    def _process_item(self, item, spider):
+        allowed_spiders = item.mongodb_spiders
+        allowed_tables = item.mongodb_tables
+        if allowed_spiders and spider.name in allowed_spiders:
+            for allowed_table in allowed_tables:
+                data = dict(item)
+                keys = ', '.join(data.keys())
+                values = ', '.join(['%s'] * len(data))
+                sql = 'insert into %s (%s) values (%s)' % (allowed_table, keys, values)
+                self.cursor.execute(sql, tuple(data.values()))
+                self.db.commit()
         return item
+    
+    def process_item(self, item, spider):
+        return deferToThread(self._process_item, item, spider)

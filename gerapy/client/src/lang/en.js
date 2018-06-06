@@ -77,7 +77,10 @@ export default {
     newFile: 'New File',
     renameFile: 'Rename File',
     createFile: 'Create File',
-    browser: 'Browser'
+    browser: 'Browser',
+    error: 'Error',
+    proxy: 'Proxy',
+    cookies: 'Cookies',
   },
   menus: {
     clients: 'Clients',
@@ -198,6 +201,10 @@ export default {
     startDate: 'Start Date',
     endDate: 'End Date',
     runDate: 'Run Date',
-    dayOfWeek: 'Day Of Week'
+    dayOfWeek: 'Day Of Week',
+    uri: 'Uri',
+    proxyPool: 'Proxy Pool',
+    cookiesPool: 'Cookies Pool',
+    failTimes: 'Fail Times'
   },
 }

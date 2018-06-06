@@ -5,6 +5,10 @@ from scrapy.loader.processors import *
 
 {% for item in items %}
 class {{ item.name }}(Item):
+    {% if item.mongodb_spiders -%}mongodb_spiders = {{ item.mongodb_spiders }}{%- endif %}
+    {% if item.mongodb_collections -%}mongodb_collections = {{ item.mongodb_collections }}{%- endif %}
+    {% if item.mysql_spiders -%}mysql_spiders = {{ item.mysql_spiders }}{%- endif %}
+    {% if item.mysql_tables -%}mysql_tables = {{ item.mysql_tables }}{%- endif %}
     {% for attr, definition in item.attrs.items() -%}
     {% if definition.value -%}
     {{ attr }} = '{{ definition.value }}'

@@ -6,7 +6,19 @@ from scrapy.loader import ItemLoader
 from ..items import *
 from scrapy.loader.processors import *
 
+{% if spider.code.out_class %}
+{{ spider.code.out_class }}
+{% endif %}
+
 class {{ spider.name|capitalize }}Spider(CrawlSpider):
+
+    {%- if spider.code.in_class -%}
+    {%- set codes = spider.code.in_class.split('\n') -%}
+    {%- for code in codes %}
+    {{ code }}
+    {%- endfor -%}
+    {%- endif -%}
+
     name = '{{ spider.name }}'
     {% if spider.allowed_domains -%}
     allowed_domains = [
@@ -14,16 +26,58 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
     ]
     {% endif -%}
     custom_settings = {
-        {% if spider.storage.mysql.host -%}"MYSQL_HOST": "{{ spider.storage.mysql.host }}",{%- endif -%}
-        {% if spider.storage.mysql.port -%}"MYSQL_PORT": {{ spider.storage.mysql.port }},{%- endif -%}
-        {% if spider.storage.mysql.user -%}"MYSQL_USER": "{{ spider.storage.mysql.user }}",{%- endif -%}
-        {% if spider.storage.mysql.password -%}"MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",{%- endif -%}
-        {% if spider.storage.mysql.database -%}"MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",{%- endif -%}
+        {% if spider.storage.mysql.host -%}
+        "MYSQL_HOST": "{{ spider.storage.mysql.host }}",
+        {% endif -%}
+        {%- if spider.storage.mysql.port -%}
+        "MYSQL_PORT": {{ spider.storage.mysql.port }},
+        {% endif -%}
+        {%- if spider.storage.mysql.user -%}
+        "MYSQL_USER": "{{ spider.storage.mysql.user }}",
+        {% endif -%}
+        {%- if spider.storage.mysql.password -%}
+        "MYSQL_PASSWORD": "{{ spider.storage.mysql.password }}",
+        {% endif -%}
+        {%- if spider.storage.mysql.database -%}
+        "MYSQL_DATABASE": "{{ spider.storage.mysql.database }}",
+        {% endif -%}
+        {%- if spider.storage.mongodb.uri -%}
+        "MONGODB_URI": "{{ spider.storage.mongodb.uri }}",
+        {% endif -%}
+        {%- if spider.storage.mongodb.database -%}
+        "MONGODB_DATABASE": "{{ spider.storage.mongodb.database }}",
+        {% endif %}
         "ITEM_PIPELINES": {
             {% if spider.storage.mysql.enable -%}
-            'gerapy.pipelines.MySQLPipeline': 300,
+                "gerapy.pipelines.MySQLPipeline": 300,
             {%- endif %}
-        }
+            {% if spider.storage.mongodb.enable -%}
+                "gerapy.pipelines.MongoDBPipeline": 301,
+            {%- endif %}
+        },
+        "SPIDER_MIDDLEWARES": {
+            "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
+        },
+        "DOWNLOADER_MIDDLEWARES": {
+            {% if spider.cookies.enable -%}
+            "gerapy.downloadermiddlewares.cookies.CookiesMiddleware": 554,
+            {%- endif %}
+            {% if spider.proxy.enable -%}
+            "gerapy.downloadermiddlewares.proxy.ProxyMiddleware": 555,
+            {%- endif %}
+            "scrapy_splash.SplashCookiesMiddleware": 723,
+            "scrapy_splash.SplashMiddleware": 725,
+            "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810
+        },
+        {% if spider.custom_settings -%}
+        {% for setting in spider.custom_settings -%}
+        {% if setting.value.strip().startswith('{') or setting.value.strip().startswith('[') or setting.value|int != 0 -%}
+        "{{ setting.key }}": {{ setting.value.strip() }},
+        {% else -%}
+        "{{ setting.key }}": "{{ setting.value.strip() }}",
+        {% endif -%}
+        {% endfor -%}
+        {% endif -%}
     }
     {% if spider.start_urls -%}
     {%- if spider.start_urls.mode == "list" -%}
@@ -33,7 +87,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
     {%- endif -%}
     {% endif -%}
     {%- if spider.attrs %}
-    {%- for attr in spider.attrs -%}
+    {% for attr in spider.attrs -%}
     {{ attr.key }} = '{{ attr.value }}'
     {% endfor -%}
     {% endif -%}
@@ -56,11 +110,11 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
                 {%- if rule.process_value -%}process_value={{rule.process_value}}, {% endif -%}
                 {%- if rule.strip -%}strip={{rule.strip}}, {% endif -%}
             ),
-            {%- if rule.callback -%}callback='{{rule.callback}}'{% endif -%}
-            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}'{% endif -%}
-            {%- if rule.follow -%}follow='{{rule.follow}}'{% endif -%}
-            {%- if rule.process_links -%}process_links='{{rule.process_links}}'{% endif -%}
-            {%- if rule.process_request -%}process_request='{{rule.process_request}}'{% endif -%}
+            {%- if rule.callback -%}callback='{{rule.callback}}',{% endif -%}
+            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}',{% endif -%}
+            {%- if rule.follow -%}follow='{{rule.follow}}',{% endif -%}
+            {%- if rule.process_links -%}process_links='{{rule.process_links}}',{% endif -%}
+            {%- if rule.process_request -%}process_request='{{rule.process_request}}',{% endif -%}
         ),
         {% endfor -%}
     )

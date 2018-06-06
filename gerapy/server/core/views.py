@@ -20,7 +20,8 @@ from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html
+    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
+    get_output_error
 from gerapy.server.core import parser
 
 
@@ -214,7 +215,7 @@ def project_index(request):
 
 def project_configure(request, project_name):
     """
-    get or update configuration
+    get configuration
     :param request: request object
     :param project_name: project name
     :return: json
@@ -231,8 +232,7 @@ def project_configure(request, project_name):
         data = json.loads(request.body)
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
-        project = Project.objects.get(name=project_name)
-        project = model_to_dict(project)
+        project = generate_project(project_name)
         return JsonResponse(project)
 
 
@@ -410,55 +410,6 @@ def project_build(request, project_name):
         return JsonResponse(data)
 
 
-def project_generate(request, project_name):
-    """
-    generate code of project
-    :param request: request object
-    :param project_name: project name
-    :return: json of generated project
-    """
-    if request.method == 'POST':
-        # get configuration
-        configuration = Project.objects.get(name=project_name).configuration
-        if not configuration:
-            return JsonResponse({'message': 'Invalid configuration'}, status=500)
-        configuration = json.loads(configuration)
-        if not is_valid_name(project_name):
-            return JsonResponse({'message': 'Invalid project name'}, status=500)
-        # remove original project dir
-        project_dir = join(PROJECTS_FOLDER, project_name)
-        if exists(project_dir):
-            rmtree(project_dir)
-        # generate project
-        copy_tree(join(TEMPLATES_DIR, 'project'), project_dir)
-        move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
-        for paths in TEMPLATES_TO_RENDER:
-            path = join(*paths)
-            tplfile = join(project_dir,
-                           string.Template(path).substitute(project_name=project_name))
-            vars = {
-                'project_name': project_name,
-                'items': configuration.get('items'),
-            }
-            render_template(tplfile, tplfile.rstrip('.tmpl'), **vars)
-        # generate spider
-        spiders = configuration.get('spiders')
-        for spider in spiders:
-            source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-            new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
-            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
-            copy(source_tpl_file, new_tpl_file)
-            render_template(new_tpl_file, spider_file, spider=spider, project_name=project_name)
-        # save generated_at attr
-        model = Project.objects.get(name=project_name)
-        model.generated_at = timezone.now()
-        # clear built_at attr
-        model.built_at = None
-        model.save()
-        # return model
-        return JsonResponse(model_to_dict(model))
-
-
 def project_parse(request, project_name):
     """
     parse project
@@ -476,16 +427,20 @@ def project_parse(request, project_name):
         method = data.get('method', 'get')
         headers = data.get('headers', {})
         meta = data.get('meta', {})
+        url = data.get('url')
+        callback = data.get('callback')
         if start:
-            requests = get_start_requests(project_path, spider_name)
-            print(requests)
+            result = get_start_requests(project_path, spider_name)
+        else:
+            result = parser.get_follow_results(url, project_path, spider_name, callback)
+        if not result.get('finished'):
+            print('FATAL!!!!!')
+            output = get_output_error(project_name, spider_name)
+            return JsonResponse({'status': '2', 'message': output})
+        if start:
+            requests = result['requests']
             return JsonResponse({'status': '1', 'result': {'requests': requests}})
         else:
-            url = data.get('url')
-            callback = data.get('callback')
-            print(url, project_path, spider_name, callback)
-            result = parser.get_follow_results(url, project_path, spider_name, callback)
-            print(result)
             result['response']['html'] = process_html(result['response']['html'], dirname(url))
             return JsonResponse({'status': '1', 'result': result})
 

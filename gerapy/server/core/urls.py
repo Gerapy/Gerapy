@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^api/project/create', views.project_create, name='project_create'),
     url(r'^api/project/(\S+)/configure', views.project_configure, name='project_configure'),
     url(r'^api/project/(\S+)/build', views.project_build, name='project_build'),
-    url(r'^api/project/(\S+)/generate', views.project_generate, name='project_generate'),
     url(r'^api/project/(\S+)/tree', views.project_tree, name='project_tree'),
     url(r'^api/project/(\S+)/remove', views.project_remove, name='project_remove'),
     url(r'^api/project/(\S+)/parse', views.project_parse, name='project_parse'),

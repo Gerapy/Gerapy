@@ -1,2 +1,2 @@
-from .mongo import MongoPipeline
+from .mongodb import MongoDBPipeline
 from .mysql import MySQLPipeline
