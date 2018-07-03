@@ -286,7 +286,8 @@ def get_items_configuration(configuration):
     attrs = ['mongodb_spiders', 'mongodb_collections', 'mysql_spiders', 'mysql_tables']
     for item in items:
         for attr in attrs:
-            item[attr] = list(item[attr])
+            if item.get(attr):
+                item[attr] = list(item[attr])
     return items
 
 
