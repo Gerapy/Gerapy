@@ -296,60 +296,41 @@ def generate_project(project_name):
     :param project_name: project name
     :return: project data
     """
-    
-    def generate(project_name, result):
-        # get configuration
-        configuration = Project.objects.get(name=project_name).configuration
-        configuration = json.loads(configuration)
-        # remove original project dir
-        project_dir = join(PROJECTS_FOLDER, project_name)
-        if exists(project_dir):
-            rmtree(project_dir)
-        # generate project
-        copy_tree(join(TEMPLATES_DIR, 'project'), project_dir)
-        move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
-        for paths in TEMPLATES_TO_RENDER:
-            path = join(*paths)
-            tplfile = join(project_dir,
-                           string.Template(path).substitute(project_name=project_name))
-            items = get_items_configuration(configuration)
-            print('Items', items)
-            vars = {
-                'project_name': project_name,
-                'items': items,
-            }
-            render_template(tplfile, tplfile.rstrip('.tmpl'), **vars)
-        # generate spider
-        spiders = configuration.get('spiders')
-        for spider in spiders:
-            source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-            new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
-            spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
-            copy(source_tpl_file, new_tpl_file)
-            render_template(new_tpl_file, spider_file, spider=spider, project_name=project_name)
-        # save generated_at attr
-        model = Project.objects.get(name=project_name)
-        model.generated_at = timezone.now()
-        # clear built_at attr
-        model.built_at = None
-        model.save()
-        # return model
-        result['data'] = model_to_dict(model)
-    
-    try:
-        # new manager
-        manager = multiprocessing.Manager()
-        result = manager.dict()
-        jobs = []
-        # use Process in case of reactor stop exception
-        p = multiprocessing.Process(target=generate, args=(project_name, result))
-        jobs.append(p)
-        p.start()
-        # processes
-        for proc in jobs:
-            proc.join()
-        print('Data', result['data'])
-        return result['data']
-    except FileNotFoundError as e:
-        print('Processing', e.args)
-        return None
+    # get configuration
+    configuration = Project.objects.get(name=project_name).configuration
+    configuration = json.loads(configuration)
+    # remove original project dir
+    project_dir = join(PROJECTS_FOLDER, project_name)
+    if exists(project_dir):
+        rmtree(project_dir)
+    # generate project
+    copy_tree(join(TEMPLATES_DIR, 'project'), project_dir)
+    move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
+    for paths in TEMPLATES_TO_RENDER:
+        path = join(*paths)
+        tplfile = join(project_dir,
+                       string.Template(path).substitute(project_name=project_name))
+        items = get_items_configuration(configuration)
+        print('Items', items)
+        vars = {
+            'project_name': project_name,
+            'items': items,
+        }
+        render_template(tplfile, tplfile.rstrip('.tmpl'), **vars)
+    # generate spider
+    spiders = configuration.get('spiders')
+    for spider in spiders:
+        source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
+        new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
+        spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
+        copy(source_tpl_file, new_tpl_file)
+        render_template(new_tpl_file, spider_file, spider=spider, project_name=project_name)
+    # save generated_at attr
+    model = Project.objects.get(name=project_name)
+    model.generated_at = timezone.now()
+    # clear built_at attr
+    model.built_at = None
+    model.save()
+
+
+

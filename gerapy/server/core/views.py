@@ -12,7 +12,7 @@ from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
-
+from subprocess import Popen, PIPE, STDOUT
 from gerapy.server.core.parser import get_start_requests
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
@@ -232,8 +232,16 @@ def project_configure(request, project_name):
         data = json.loads(request.body)
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
-        project = generate_project(project_name)
-        return JsonResponse(project)
+        # project = generate_project(project_name)
+        # return JsonResponse(project)
+        cmd = ' '.join(['gerapy', 'generate', project_name])
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+        output = p.stdout.read()
+        if isinstance(output, bytes):
+            output = output.decode('utf-8')
+        print(output)
+        return JsonResponse({'status': '1', 'result': output})
+        # return output
 
 
 def project_tree(request, project_name):
@@ -454,7 +462,7 @@ def project_file_read(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
-        # 二进制打开文件
+        # binary file
         with open(path, 'rb') as f:
             return HttpResponse(f.read().decode('utf-8'))
 
