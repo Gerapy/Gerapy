@@ -16,7 +16,6 @@ from os.path import join, exists, dirname
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from gerapy.cmd.init import PROJECTS_FOLDER
-from gerapy.server.core.models import Project
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -298,6 +297,7 @@ def generate_project(project_name):
     :return: project data
     """
     # get configuration
+    from gerapy.server.core.models import Project
     configuration = Project.objects.get(name=project_name).configuration
     configuration = json.loads(configuration)
     # remove original project dir

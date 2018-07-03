@@ -506,11 +506,11 @@ def get_start_requests(project_path, spider_name):
 
 
 if __name__ == '__main__':
-    url = 'http://tech.china.com/article/20180511/20180511136031.html'
-    spider_name = 'china'
-    callback = None
-    project_path = '/Users/CQC/testcase/gerapy/projects/example'
-    result = get_follow_results(url, project_path, spider_name, callback)
-    print('Result', result)
+    # url = 'http://tech.china.com/article/20180511/20180511136031.html'
+    spider_name = 'quotes'
+    # callback = None
+    project_path = '/Users/CQC/Gerapy/projects/ssss'
+    # result = get_follow_results(url, project_path, spider_name, callback)
+    # print('Result', result)
     requests = get_start_requests(project_path, spider_name)
     print(requests)
