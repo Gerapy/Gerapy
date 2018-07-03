@@ -21,7 +21,7 @@ from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
-    get_output_error
+    get_output_error, bytes2str
 from gerapy.server.core import parser
 
 
@@ -232,17 +232,18 @@ def project_configure(request, project_name):
         data = json.loads(request.body)
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
-        # project = generate_project(project_name)
-        # return JsonResponse(project)
+        # execute generate cmd
         cmd = ' '.join(['gerapy', 'generate', project_name])
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-        output = p.stdout.read()
-        if isinstance(output, bytes):
-            output = output.decode('utf-8')
-        print(output)
-        return JsonResponse({'status': '1', 'result': output})
-        # return output
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+        stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        print('RETURN CODE', p.returncode)
 
+        print('stdout', stdout)
+        print('stderr', stderr)
+        if not stderr:
+            return JsonResponse({'status': '1'})
+        else:
+            return JsonResponse({'status': '0', 'message': stderr})
 
 def project_tree(request, project_name):
     """

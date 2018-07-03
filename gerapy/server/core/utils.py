@@ -333,4 +333,12 @@ def generate_project(project_name):
     model.save()
 
 
-
+def bytes2str(data):
+    """
+    bytes2str
+    :param data: origin data
+    :return: str
+    """
+    if isinstance(data, bytes):
+        data = data.decode('utf-8')
+    return data

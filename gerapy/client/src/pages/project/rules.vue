@@ -63,6 +63,7 @@
 <script>
   import {ruleItemOptions, ruleItemInit} from 'common/project/rule'
   import rule from 'pages/project/rule'
+  var clone = require('clone')
 
   export default {
     name: 'Rules',
@@ -92,7 +93,7 @@
     },
     methods: {
       onAddRuleItem() {
-        this.$set(this.rules[this.activeRule], this.ruleItem, this.ruleItemInit[this.ruleItem])
+        this.$set(this.rules[this.activeRule], this.ruleItem, clone(this.ruleItemInit[this.ruleItem]))
         this.addRuleItem = false
       },
     }
