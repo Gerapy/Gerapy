@@ -63,7 +63,7 @@
 <script>
   import {ruleItemOptions, ruleItemInit} from 'common/project/rule'
   import rule from 'pages/project/rule'
-  var clone = require('clone')
+  import clone from 'clone'
 
   export default {
     name: 'Rules',
