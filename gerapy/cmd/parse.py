@@ -6,9 +6,7 @@ def parse(args):
     project_path = join(args.dir, args.project)
     if args.start:
         results = get_start_requests(project_path, args.spider)
-        print('results', results)
-        return results
+        print(results)
     else:
         results = get_follow_requests_and_items(project_path, 'quotes', args)
-        print('results', results)
-        return results
+        print(results)

@@ -6,8 +6,5 @@ def generate(project):
     # os.environ.setdefault('RUN_MAIN', 'true')
     import django
     django.setup()
-    
     from gerapy.server.core.utils import generate_project
-    
-    print('OK')
     generate_project(project)

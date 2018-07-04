@@ -1,32 +1,13 @@
-"""
-Usage:
-  gerapy init [<folder>]
-  gerapy migrate
-  gerapy makemigrations
-  gerapy createsuperuser
-  gerapy runserver [<host:port>]
-  gerapy generate [<project>]
-  gerapy parse <project> <spider> [--start=<start>] [--url=<url>] [--callback=<callback>] [--method=<method>] [--dir=<dir>]
-  gerapy loaddata <source>
-  gerapy dumpdata [<appname>]
-Options:
-  -h --help
-  -v --version
-"""
-from os.path import join
-# from docopt import docopt
 from gerapy import version
 from gerapy.cmd.init import init
 from gerapy.cmd.parse import parse
-# from gerapy.cmd.server import server
 from gerapy.cmd.generate import generate
 from gerapy.server.manage import manage
-
 import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-v', '--version', action='version', version=version(), help='host and port to bind')
+parser.add_argument('-v', '--version', action='version', version=version(), help='get version')
 
 subparsers = parser.add_subparsers(dest='command', title='available commands', metavar='')
 
@@ -74,7 +55,6 @@ parser_dumpdata.add_argument('appname', default='core', nargs='?', type=str, hel
 
 def cmd():
     args = parser.parse_args()
-    print(args)
     command = args.command
     if command == 'init':
         init(args.folder)

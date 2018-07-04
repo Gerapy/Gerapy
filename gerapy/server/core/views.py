@@ -234,16 +234,17 @@ def project_configure(request, project_name):
         project.update(**{'configuration': configuration})
         # execute generate cmd
         cmd = ' '.join(['gerapy', 'generate', project_name])
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
         print('RETURN CODE', p.returncode)
-
+        
         print('stdout', stdout)
         print('stderr', stderr)
         if not stderr:
             return JsonResponse({'status': '1'})
         else:
             return JsonResponse({'status': '0', 'message': stderr})
+
 
 def project_tree(request, project_name):
     """
@@ -433,25 +434,26 @@ def project_parse(request, project_name):
         data = json.loads(request.body)
         spider_name = data.get('spider')
         start = data.get('start')
-        method = data.get('method', 'get')
+        method = data.get('method', 'GET')
         headers = data.get('headers', {})
         meta = data.get('meta', {})
         url = data.get('url')
         callback = data.get('callback')
-        if start:
-            result = get_start_requests(project_path, spider_name)
+        cmd = 'gerapy parse --start {start} --url {url} --method {method} --callback {callback} {project_path} {spider_name}'.format(
+            start=start,
+            url=url,
+            method=method,
+            callback=callback,
+            project_path=project_path,
+            spider_name=spider_name
+        )
+        print(cmd)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+        stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        if not stderr:
+            return JsonResponse({'status': '1', 'result': json.loads(stdout)})
         else:
-            result = parser.get_follow_results(url, project_path, spider_name, callback)
-        if not result.get('finished'):
-            print('FATAL!!!!!')
-            output = get_output_error(project_name, spider_name)
-            return JsonResponse({'status': '2', 'message': output})
-        if start:
-            requests = result['requests']
-            return JsonResponse({'status': '1', 'result': {'requests': requests}})
-        else:
-            result['response']['html'] = process_html(result['response']['html'], dirname(url))
-            return JsonResponse({'status': '1', 'result': result})
+            return JsonResponse({'status': '0', 'message': stderr})
 
 
 def project_file_read(request):
