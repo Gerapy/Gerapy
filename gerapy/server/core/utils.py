@@ -1,5 +1,4 @@
 import fnmatch
-import multiprocessing
 import re
 from copy import deepcopy
 import subprocess
@@ -15,7 +14,7 @@ from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.forms.models import model_to_dict
 from django.utils import timezone
-from gerapy.cmd.init import PROJECTS_FOLDER
+from gerapy.server.server.settings import PROJECTS_FOLDER
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
