@@ -175,16 +175,27 @@ def get_start_requests(project_path, spider_name):
         os.chdir(work_cwd)
 
 
-if __name__ == '__main__':
-    from munch import munchify
-    
-    project_path = '~/Gerapy/projects/news'
-    spider_name = 'news'
-    args = {
-        'callback': 'parse_item',
-        'start': 0,
-        'meta': None,
-        'url': 'https://tech.china.com/article/20180524/20180524141900.html'
-    }
-    result = get_follow_requests_and_items(project_path, spider_name, munchify(args))
-    print(result)
+# if __name__ == '__main__':
+# from munch import munchify
+#
+# project_path = '/Users/CQC/Gerapy/projects/news'
+# spider_name = 'news'
+# args = {
+#     'callback': 'parse_item2',
+#     'start': 0,
+#     'meta': None,
+#     'url': 'https://tech.china.com/article/20180524/20180524141900.html'
+# }
+# result = get_follow_requests_and_items(project_path, spider_name, munchify(args))
+# print(result)
+
+# project_path = '/Users/CQC/Gerapy/projects/news'
+# spider_name = 'news'
+# args = {
+#     'callback': None,
+#     'start': 0,
+#     'meta': None,
+#     'url': 'http://tech.china.com/internet/'
+# }
+# result = get_follow_requests_and_items(project_path, spider_name, munchify(args))
+# print(result)

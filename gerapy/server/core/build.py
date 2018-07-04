@@ -64,7 +64,7 @@ def find_egg(path):
 
 
 def create_default_setup_py(path, **kwargs):
-    with open(join(path, 'setup.py'), 'w') as f:
+    with open(join(path, 'setup.py'), 'w', encoding='utf-8') as f:
         print(kwargs)
         file = _SETUP_PY_TEMPLATE % kwargs
         f.write(file)

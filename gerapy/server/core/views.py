@@ -433,17 +433,25 @@ def project_parse(request, project_name):
         print('Project Path', project_path)
         data = json.loads(request.body)
         spider_name = data.get('spider')
-        start = data.get('start', 0)
-        method = data.get('method', 'GET')
-        headers = data.get('headers', {})
-        meta = data.get('meta', {})
-        url = data.get('url')
-        callback = data.get('callback')
-        cmd = 'gerapy parse --start {start} --url {url} --method {method} --callback {callback} {project_path} {spider_name}'.format(
-            start=start,
-            url=url,
-            method=method,
-            callback=callback,
+        # start = data.get('start', 0)
+        # method = data.get('method', 'GET')
+        # headers = data.get('headers', {})
+        # meta = data.get('meta', {})
+        # url = data.get('url')
+        # callback = data.get('callback')
+        # construct args cmd
+        args = {
+            'start': data.get('start', 0),
+            'method': data.get('method', 'GET'),
+            'url': data.get('url'),
+            'callback': data.get('callback')
+        }
+        # args = ['start', 'method', 'url', 'callback']
+        args_cmd = ' '.join(
+            ['--{arg} {value}'.format(arg=arg, value=value) if value else '' for arg, value in args.items()])
+        print(args_cmd)
+        cmd = 'gerapy parse {args_cmd} {project_path} {spider_name}'.format(
+            args_cmd=args_cmd,
             project_path=project_path,
             spider_name=spider_name
         )
@@ -482,7 +490,7 @@ def project_file_update(request):
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
         code = data['code']
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             f.write(code)
             return JsonResponse({'result': '1'})
 
@@ -496,7 +504,7 @@ def project_file_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['name'])
-        open(path, 'w').close()
+        open(path, 'w', encoding='utf-8').close()
         return JsonResponse({'result': '1'})
 
 

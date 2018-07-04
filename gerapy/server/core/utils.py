@@ -155,12 +155,12 @@ def render_template(tpl_file, dst_file, *args, **kwargs):
     :return: None
     """
     vars = dict(*args, **kwargs)
-    template = Template(open(tpl_file).read())
+    template = Template(open(tpl_file, encoding='utf-8').read())
     os.remove(tpl_file)
     result = template.render(vars)
     print(result)
     
-    open(dst_file, 'w').write(result)
+    open(dst_file, 'w', encoding='utf-8').write(result)
 
 
 def get_traceback():
