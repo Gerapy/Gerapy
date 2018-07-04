@@ -341,4 +341,5 @@ def bytes2str(data):
     """
     if isinstance(data, bytes):
         data = data.decode('utf-8')
+    data = data.strip()
     return data

@@ -433,7 +433,7 @@ def project_parse(request, project_name):
         print('Project Path', project_path)
         data = json.loads(request.body)
         spider_name = data.get('spider')
-        start = data.get('start')
+        start = data.get('start', 0)
         method = data.get('method', 'GET')
         headers = data.get('headers', {})
         meta = data.get('meta', {})
@@ -450,6 +450,8 @@ def project_parse(request, project_name):
         print(cmd)
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        print('stdout', stdout)
+        print('stderr', stderr)
         if not stderr:
             return JsonResponse({'status': '1', 'result': json.loads(stdout)})
         else:

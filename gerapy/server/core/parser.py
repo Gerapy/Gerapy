@@ -33,12 +33,6 @@ class SpiderParser():
         :param request:
         :return:
         """
-        if self.args.callback:
-            return self.args.callback
-        if request.callback:
-            return request.callback.__name__
-        if request.meta['callback']:
-            return request.meta['callback']
         if getattr(self.spidercls, 'rules', None):
             rules = self.spidercls.rules
             rule_index = request.meta.get('rule', -1)
@@ -81,23 +75,20 @@ class SpiderParser():
             :return:
             """
             request = response.request
-            cb = self.get_callback(request)
-            
+            cb = self.args.callback or 'parse'
             if not callable(cb):
                 cb_method = getattr(spider, cb, None)
                 if callable(cb_method):
                     cb = cb_method
-            
             items, requests = self.run_callback(response, cb)
             
             # process request callback
             for request in requests:
                 request.callback = self.get_callback(request)
                 request.meta['callback'] = request.callback
-            
             # process items and requests and response
             self.items += list(map(lambda item: process_item(item), items))
-            self.requests += list(map(lambda item: process_request(item), items))
+            self.requests += list(map(lambda request: process_request(request), requests))
             self.response = process_response(response)
         
         if args.meta:
@@ -127,7 +118,7 @@ class SpiderParser():
         return {
             'items': self.items,
             'requests': self.requests,
-            'response': self.response,
+            # 'response': self.response,
             'ok': True
         }
 
@@ -182,3 +173,18 @@ def get_start_requests(project_path, spider_name):
         return {'finished': True, 'requests': requests}
     finally:
         os.chdir(work_cwd)
+
+
+if __name__ == '__main__':
+    from munch import munchify
+    
+    project_path = '~/Gerapy/projects/news'
+    spider_name = 'news'
+    args = {
+        'callback': 'parse_item',
+        'start': 0,
+        'meta': None,
+        'url': 'https://tech.china.com/article/20180524/20180524141900.html'
+    }
+    result = get_follow_requests_and_items(project_path, spider_name, munchify(args))
+    print(result)

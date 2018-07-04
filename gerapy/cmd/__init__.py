@@ -37,7 +37,7 @@ parser_parse = subparsers.add_parser('parse', help='parse project for debugging'
 parser_parse.add_argument('project', type=str, help='target project')
 parser_parse.add_argument('spider', type=str, help='target spider')
 parser_parse.add_argument('-d', '--dir', default='.', type=str, help='default workspace')
-parser_parse.add_argument('-s', '--start', default=False, type=bool, help='parse start requests or not')
+parser_parse.add_argument('-s', '--start', default=0, type=int, help='parse start requests or not')
 parser_parse.add_argument('-u', '--url', default='', type=str, help='url to parse')
 parser_parse.add_argument('-c', '--callback', default='parse', type=str, help='callback')
 parser_parse.add_argument('-m', '--method', default='GET', type=str, help='method')
