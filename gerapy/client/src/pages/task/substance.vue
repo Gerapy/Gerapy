@@ -66,7 +66,7 @@
                   class="inline width-100" type="number"
                   :placeholder="$lang[$store.state.lang].columns.minutes"
                   size="small"></el-input>
-        <el-input v-model="formData.configuration.seconds"
+        <el-input v-model.number="formData.configuration.seconds"
                   class="inline width-100" type="number"
                   :placeholder="$lang[$store.state.lang].columns.seconds"
                   size="small"></el-input>
