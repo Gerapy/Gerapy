@@ -21,7 +21,7 @@
                 align="center"
                 :label="$lang[$store.state.lang].columns.status"
                 width="100">
-                <template scope="props">
+                <template slot-scope="props">
                   <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
                     {{ statusText[clientsStatus[props.row.pk]] }}
                   </el-button>
@@ -54,21 +54,21 @@
               <el-table-column
                 align="center"
                 :label="$lang[$store.state.lang].columns.description">
-                <template scope="props">
+                <template slot-scope="props">
                   <span>{{ projectDescriptions[props.row.pk]}}</span>
                 </template>
               </el-table-column>
               <el-table-column
                 align="center"
                 :label="$lang[$store.state.lang].columns.deployedAt">
-                <template scope="props">
+                <template slot-scope="props">
                   <span>{{ projectDateTimes[props.row.pk]}}</span>
                 </template>
               </el-table-column>
               <el-table-column
                 align="center"
                 :label="$lang[$store.state.lang].columns.operations">
-                <template scope="props">
+                <template slot-scope="props">
                   <el-button type="success" size="mini" @click="onDeploy(props.row.pk)"
                              v-if="clientsStatus[props.row.pk]">
                     <i class="fa fa-cloud-upload"></i>
@@ -83,7 +83,7 @@
                 size="mini"
                 :disabled="batchSelect.length === 0"
                 @click="onBatchDeploy"
-                slot="handler">
+                slot-scope="handler">
               <span>
                 <i class="fa fa-cloud-upload"></i>
                 {{ $lang[$store.state.lang].buttons.batchDeploy }}

@@ -449,17 +449,13 @@ def project_parse(request, project_name):
         # args = ['start', 'method', 'url', 'callback']
         args_cmd = ' '.join(
             ['--{arg} {value}'.format(arg=arg, value=value) if value else '' for arg, value in args.items()])
-        print(args_cmd)
         cmd = 'gerapy parse {args_cmd} {project_path} {spider_name}'.format(
             args_cmd=args_cmd,
             project_path=project_path,
             spider_name=spider_name
         )
-        print(cmd)
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
-        print('stdout', stdout)
-        print('stderr', stderr)
         if not stderr:
             return JsonResponse({'status': '1', 'result': json.loads(stdout)})
         else:

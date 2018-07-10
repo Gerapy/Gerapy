@@ -80,7 +80,10 @@ export default {
     browser: '浏览器',
     error: '错误',
     proxy: '代理',
-    cookies: 'Cookies'
+    cookies: 'Cookies',
+    createTask: '创建任务',
+    editTask: '编辑任务',
+
   },
   menus: {
     clients: '主机管理',
@@ -205,7 +208,8 @@ export default {
     uri: '连接串',
     proxyPool: '代理池',
     cookiesPool: 'Cookies池',
-    failTimes: '失败次数'
+    failTimes: '失败次数',
+    timezone: '时区'
   },
 
 }

@@ -24,7 +24,7 @@
           </el-table-column>
           <el-table-column
             :label="$lang[$store.state.lang].columns.operations">
-            <template scope="props">
+            <template slot-scope="props">
               <el-button type="success" size="mini" @click="startSpider(project, props.row.name)">
                 <i class="fa fa-caret-right"></i>
                 {{ $lang[$store.state.lang].buttons.run }}
@@ -34,7 +34,7 @@
         </el-table>
         <el-collapse accordion @change="getLog">
           <el-collapse-item v-for="job in jobs[project]" :name="job.id" :key="job.id">
-            <template slot="title">
+            <template slot-scope="title">
               <span v-if="job.spider">
                 <i class="fa fa-bug"></i>
                 {{ $lang[$store.state.lang].columns.spiderName }}:

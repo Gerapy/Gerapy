@@ -28,7 +28,7 @@
           align="center"
           :label="$lang[$store.state.lang].columns.status"
           width="100">
-          <template scope="props">
+          <template slot-scope="props">
             <el-button :type="statusClass[clientsStatus[props.row.pk]]" size="mini">
               {{ statusText[clientsStatus[props.row.pk]] }}
             </el-button>
@@ -62,7 +62,7 @@
           prop="fields.auth"
           width="80"
           :label="$lang[$store.state.lang].columns.auth">
-          <template scope="props">
+          <template slot-scope="props">
             <span>
               {{ props.row.fields.auth ? '✓' : '✗'  }}
             </span>
@@ -71,7 +71,7 @@
         <el-table-column
           align="center"
           :label="$lang[$store.state.lang].columns.operations">
-          <template scope="props">
+          <template slot-scope="props">
             <router-link :to="{name: 'clientEdit', params: {id: props.row.pk }}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
@@ -98,7 +98,7 @@
           size="mini"
           :disabled="batchSelect.length === 0"
           @click="onBatchDelete"
-          slot="handler">
+          slot-scope="handler">
           <span>{{ $lang[$store.state.lang].buttons.batchDelete }}</span>
         </el-button>
       </bottom-tool-bar>

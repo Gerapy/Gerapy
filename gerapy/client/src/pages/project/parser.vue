@@ -37,7 +37,7 @@
           :title="$lang[$store.state.lang].titles.error"
           type="error"
           :closable="false">
-          <template scope="description">
+          <template slot-scope="description">
             <pre>
               {{ error }}
             </pre>

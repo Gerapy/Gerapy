@@ -27,7 +27,7 @@ setup(
 )"""
 
 
-# 构建Egg
+# build Egg
 def build_egg(project):
     work_path = os.getcwd()
     try:

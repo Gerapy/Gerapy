@@ -9,7 +9,7 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <div slot="footer">
+      <div slot-scope="footer">
         <el-button @click="createProjectDialog=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
         </el-button>
         <el-button @click="onCreateProject()"
@@ -50,7 +50,7 @@
           align="center"
           :label="$lang[$store.state.lang].columns.description"
           width="120">
-          <template scope="props">
+          <template slot-scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['description'] }}
             </span>
@@ -60,7 +60,7 @@
           align="center"
           :label="$lang[$store.state.lang].columns.built"
           width="80">
-          <template scope="props">
+          <template slot-scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['egg'] ? '✓' : '✗' }}
             </span>
@@ -70,7 +70,7 @@
           align="center"
           :label="$lang[$store.state.lang].columns.configurable"
           width="150">
-          <template scope="props">
+          <template slot-scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['configurable'] ? '✓' : '✗' }}
             </span>
@@ -80,7 +80,7 @@
           align="center"
           :label="$lang[$store.state.lang].columns.builtAt"
           width="200">
-          <template scope="props">
+          <template slot-scope="props">
             <span v-if="buildInfos[props.row.name]">
               {{ buildInfos[props.row.name]['built_at'] }}
             </span>
@@ -89,7 +89,7 @@
         <el-table-column
           align="center"
           :label="$lang[$store.state.lang].columns.operations">
-          <template scope="props">
+          <template slot-scope="props">
             <router-link :to="{name: 'projectConfigure', params: {name: props.row.name}}" tag="span"
                          v-if="buildInfos[props.row.name] && buildInfos[props.row.name]['configurable']">
               <el-button type="warning" size="mini">
@@ -129,7 +129,7 @@
           size="mini"
           :disabled="batchSelect.length === 0"
           @click="onBatchDelete"
-          slot="handler">
+          slot-scope="handler">
           <span>{{ $lang[$store.state.lang].buttons.batchDelete }}</span>
         </el-button>
       </bottom-tool-bar>

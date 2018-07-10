@@ -46,7 +46,7 @@
         <el-table-column
           align="center"
           :label="$lang[$store.state.lang].columns.operations">
-          <template scope="props">
+          <template slot-scope="props">
             <router-link :to="{name: 'taskEdit', params: {id: props.row.id }}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>
@@ -67,7 +67,7 @@
           size="mini"
           :disabled="batchSelect.length === 0"
           @click="onBatchDelete"
-          slot="handler">
+          slot-scope="handler">
           <span>{{ $lang[$store.state.lang].buttons.batchDelete }}</span>
         </el-button>
       </bottom-tool-bar>
@@ -76,8 +76,9 @@
 </template>
 <script type="text/javascript">
   import {panelTitle, bottomToolBar} from 'components'
-  export default{
-    data(){
+
+  export default {
+    data() {
       return {
         tasks: null,
         //请求时的loading效果
@@ -95,22 +96,22 @@
       panelTitle,
       bottomToolBar
     },
-    created(){
+    created() {
       this.getTaskData()
     },
     methods: {
-      onBatchSelect(val){
+      onBatchSelect(val) {
         this.batchSelect = val
       },
-      onRefresh(){
+      onRefresh() {
         this.getTaskData()
       },
-      changeFilter () {
+      changeFilter() {
         this.lastIds = {}
         this.getTaskData()
       },
       //获取数据
-      getTaskData(){
+      getTaskData() {
         this.loadData = true
         this.$fetch.apiTask.index(
         ).then(({data: {data: tasks}}) => {
@@ -142,7 +143,7 @@
         })
       },
       //批量删除
-      onBatchDelete(){
+      onBatchDelete() {
         this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
           confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
           cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,

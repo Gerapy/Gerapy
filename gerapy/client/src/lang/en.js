@@ -81,6 +81,8 @@ export default {
     error: 'Error',
     proxy: 'Proxy',
     cookies: 'Cookies',
+    createTask: 'Create Task',
+    editTask: 'Edit Task'
   },
   menus: {
     clients: 'Clients',
@@ -104,7 +106,7 @@ export default {
     successGenerate: 'Generate Successfully',
     successBuild: 'Build Successfully',
     successDeploy: 'Deploy Successfully',
-    successCopy:'Copy Successfully',
+    successCopy: 'Copy Successfully',
     errorAdd: 'Failed to Add',
     errorSave: 'Failed to Save',
     errorDelete: 'Failed to Delete',
@@ -115,7 +117,7 @@ export default {
     errorDeploy: 'Failed to Deploy',
     errorLoad: 'Failed to Load',
     errorFormat: 'Error Format',
-    errorCopy:'Failed to Copy',
+    errorCopy: 'Failed to Copy',
     processGenerate: 'Generating Project',
     confirm: 'Are You Sure?',
     reGenerate: 'ReGenerate Will Remove All Built Packages, Are You Sure to ReGenerate?',
@@ -205,6 +207,7 @@ export default {
     uri: 'Uri',
     proxyPool: 'Proxy Pool',
     cookiesPool: 'Cookies Pool',
-    failTimes: 'Fail Times'
+    failTimes: 'Fail Times',
+    timezone: 'Timezone'
   },
 }

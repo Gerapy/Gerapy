@@ -7,7 +7,7 @@
         :closable="false"
         id="error-message"
         :show-icon="false">
-        <template scope="description">
+        <template slot-scope="description">
           <pre>
             {{ error }}
           </pre>
