@@ -1,12 +1,22 @@
 <template>
   <div>
     <div class="panel">
-      <el-button @click="saveProject" type="primary" class="save-project">
-        <i class="fa fa-save"></i>
+      <el-alert v-if="error"
+        title="Error"
+        type="error"
+        :closable="false"
+        id="error-message"
+        :show-icon="false">
+        <template scope="description">
+          <pre>
+            {{ error }}
+          </pre>
+        </template>
+      </el-alert>
+      <el-button @click="saveProject" type="primary" id="save-project">
+        <i class="fa fa-spin fa-circle-o-notch" v-if="savingProject"></i>
+        <i class="fa fa-save" v-else></i>
       </el-button>
-      <!--<el-button @click="onGenerate" type="primary" class="generate-project">-->
-      <!--<i class="fa fa-magic"></i>-->
-      <!--</el-button>-->
       <panel-title :title="$lang[$store.state.lang].titles.configureProject">
       </panel-title>
       <div class="panel-body" id="project-create">
@@ -26,10 +36,7 @@
                 <!--{{ $lang[$store.state.lang].buttons.generate }}-->
                 <!--</el-button>-->
               </el-form-item>
-
-
               <div class="hr-line-dashed"></div>
-
               <!-- 提取实体 -->
               <h4 class="inline m-v-md">{{ $lang[$store.state.lang].titles.items }}</h4>
               <!-- 添加规则配置浮窗 -->
@@ -155,7 +162,6 @@
         </el-row>
       </div>
     </div>
-    <browser @hide="hideBrowser" :show="showBrowser"></browser>
   </div>
 </template>
 <script type="text/javascript">
@@ -169,7 +175,9 @@
   export default{
     data(){
       return {
+        error: null,
         showBrowser: false,
+        savingProject: false,
         projectName: this.$route.params.name,
         projectDescription: null,
         projectGeneratedAt: null,
@@ -237,14 +245,21 @@
         })
       },
       saveProject() {
+        this.savingProject = true
         this.$fetch.apiProject.projectSaveConfiguration({
           name: this.projectName
         }, {
           configuration: this.configuration
-        }).then(({data: data}) => {
-          this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
-        }).catch(() => {
+        }).then(({data: {status: status, message: message}}) => {
+          if (status == '1') {
+            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
+          } else {
+            this.error = message
+          }
+          this.savingProject = false
+        }).catch(({data: {message: message}}) => {
           this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
+          this.savingProject = false
         })
       },
       onDeleteInput(array, ...keys) {
@@ -327,6 +342,15 @@
 </script>
 
 <style lang="scss" type="text/scss" rel="stylesheet/scss">
+  #error-message {
+    position: fixed;
+    bottom: 40px;
+    z-index: 100;
+    width: 500px;
+    right: 80px;
+    font-size: 13px;
+  }
+
   .inline {
     display: inline-block;
     max-width: calc(100% - 80px);
@@ -389,30 +413,13 @@
     }
   }
 
-  #project-browser {
-    position: fixed;
-    top: 100px;
-    width: 80%;
-  }
-
-  .save-project {
+  #save-project {
     position: fixed;
     width: 40px;
     height: 40px;
     border-radius: 50%;
     right: 20px;
     bottom: 20px;
-    z-index: 1000;
-    font-size: 12px;
-  }
-
-  .generate-project {
-    position: fixed;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    right: 20px;
-    bottom: 70px;
     z-index: 1000;
     font-size: 12px;
   }

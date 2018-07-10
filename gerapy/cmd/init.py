@@ -1,11 +1,9 @@
 import os
 from os.path import join
+from gerapy.server.server.settings import PROJECTS_FOLDER
 
-PROJECTS_FOLDER = 'projects'
 
 def init(folder):
-    if not folder:
-        folder = 'gerapy'
     # execute path
     execute_path = os.getcwd()
     folder_path = join(execute_path, folder)

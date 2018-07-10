@@ -17,7 +17,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
     {%- for code in codes %}
     {{ code }}
     {%- endfor -%}
-    {%- endif -%}
+    {%- endif %}
 
     name = '{{ spider.name }}'
     {% if spider.allowed_domains -%}

@@ -186,7 +186,7 @@
               this.activeResponseHtml = response.html
             }
           }
-          if (data.status === '2') {
+          if (data.status === '0') {
             this.fetching = false
             this.error = data.message
           }

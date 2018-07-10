@@ -12,7 +12,7 @@ from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
-
+from subprocess import Popen, PIPE, STDOUT
 from gerapy.server.core.parser import get_start_requests
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
@@ -21,7 +21,7 @@ from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
-    get_output_error
+    get_output_error, bytes2str
 from gerapy.server.core import parser
 
 
@@ -232,8 +232,18 @@ def project_configure(request, project_name):
         data = json.loads(request.body)
         configuration = json.dumps(data.get('configuration'))
         project.update(**{'configuration': configuration})
-        project = generate_project(project_name)
-        return JsonResponse(project)
+        # execute generate cmd
+        cmd = ' '.join(['gerapy', 'generate', project_name])
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        print('RETURN CODE', p.returncode)
+        
+        print('stdout', stdout)
+        print('stderr', stderr)
+        if not stderr:
+            return JsonResponse({'status': '1'})
+        else:
+            return JsonResponse({'status': '0', 'message': stderr})
 
 
 def project_tree(request, project_name):
@@ -423,26 +433,37 @@ def project_parse(request, project_name):
         print('Project Path', project_path)
         data = json.loads(request.body)
         spider_name = data.get('spider')
-        start = data.get('start')
-        method = data.get('method', 'get')
-        headers = data.get('headers', {})
-        meta = data.get('meta', {})
-        url = data.get('url')
-        callback = data.get('callback')
-        if start:
-            result = get_start_requests(project_path, spider_name)
+        # start = data.get('start', 0)
+        # method = data.get('method', 'GET')
+        # headers = data.get('headers', {})
+        # meta = data.get('meta', {})
+        # url = data.get('url')
+        # callback = data.get('callback')
+        # construct args cmd
+        args = {
+            'start': data.get('start', 0),
+            'method': data.get('method', 'GET'),
+            'url': data.get('url'),
+            'callback': data.get('callback')
+        }
+        # args = ['start', 'method', 'url', 'callback']
+        args_cmd = ' '.join(
+            ['--{arg} {value}'.format(arg=arg, value=value) if value else '' for arg, value in args.items()])
+        print(args_cmd)
+        cmd = 'gerapy parse {args_cmd} {project_path} {spider_name}'.format(
+            args_cmd=args_cmd,
+            project_path=project_path,
+            spider_name=spider_name
+        )
+        print(cmd)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+        stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        print('stdout', stdout)
+        print('stderr', stderr)
+        if not stderr:
+            return JsonResponse({'status': '1', 'result': json.loads(stdout)})
         else:
-            result = parser.get_follow_results(url, project_path, spider_name, callback)
-        if not result.get('finished'):
-            print('FATAL!!!!!')
-            output = get_output_error(project_name, spider_name)
-            return JsonResponse({'status': '2', 'message': output})
-        if start:
-            requests = result['requests']
-            return JsonResponse({'status': '1', 'result': {'requests': requests}})
-        else:
-            result['response']['html'] = process_html(result['response']['html'], dirname(url))
-            return JsonResponse({'status': '1', 'result': result})
+            return JsonResponse({'status': '0', 'message': stderr})
 
 
 def project_file_read(request):
@@ -454,7 +475,7 @@ def project_file_read(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
-        # 二进制打开文件
+        # binary file
         with open(path, 'rb') as f:
             return HttpResponse(f.read().decode('utf-8'))
 
@@ -469,7 +490,7 @@ def project_file_update(request):
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
         code = data['code']
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             f.write(code)
             return JsonResponse({'result': '1'})
 
@@ -483,7 +504,7 @@ def project_file_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['name'])
-        open(path, 'w').close()
+        open(path, 'w', encoding='utf-8').close()
         return JsonResponse({'result': '1'})
 
 
