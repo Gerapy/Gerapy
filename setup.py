@@ -8,7 +8,6 @@ def read_file(filename):
     with open(filename) as fp:
         return fp.read().strip()
 
-
 def read_requirements(filename):
     return [line.strip() for line in read_file(filename).splitlines()
             if not line.startswith('#')]

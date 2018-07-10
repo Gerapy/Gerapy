@@ -7,18 +7,18 @@
   </div>
 </template>
 <script type="text/javascript">
-  import {mainContent, leftSlide} from 'components'
+import { mainContent, leftSlide } from "components";
 
-  export default{
-    name: 'page',
-    components: {
-      mainContent,
-      leftSlide
-    }
+export default {
+  name: "page",
+  components: {
+    mainContent,
+    leftSlide
   }
+};
 </script>
 <style>
-  .view-page {
-    height: 100%;
-  }
+.view-page {
+  height: 100%;
+}
 </style>
