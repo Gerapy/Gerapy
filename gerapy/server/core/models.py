@@ -59,6 +59,7 @@ class Task(Model):
     description = TextField(null=True, blank=True)
     trigger = CharField(max_length=255, null=True, blank=True)
     success = IntegerField(default=0, blank=True)
+    updated = IntegerField(default=1, blank=True)
     error = IntegerField(default=0, blank=True)
     last = DateTimeField(null=True, blank=True)
     configuration = TextField(null=True, blank=True)
