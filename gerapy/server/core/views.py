@@ -685,10 +685,9 @@ def task_update(request, task_id):
     if request.method == 'POST':
         task = Task.objects.filter(id=task_id)
         data = json.loads(request.body)
-        print(data)
         data['clients'] = json.dumps(data.get('clients'))
         data['configuration'] = json.dumps(data.get('configuration'))
-        data['success'] = 0
+        data['update'] = 0
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
 

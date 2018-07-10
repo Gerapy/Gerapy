@@ -30,6 +30,7 @@ executors = {
 scheduler = BackgroundScheduler(executors=executors)
 scheduler.add_jobstore(DjangoJobStore(), "default")
 
+register_events(scheduler)
 
 def work_func(client, project, spider):
     ip_port = Client.objects.get(id=client)
@@ -56,9 +57,10 @@ class CreateSchedulerWork(threading.Thread):
                 scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
                 task_model = Task.objects.all()
                 for task in task_model:
+                    configuration = json.loads(task.configuration)
+                    configuration = {key: value for key, value in configuration.items() if value}
                     if task.success == 0:
-                        configuration = json.loads(task.configuration)
-                        configuration = {key: value for key, value in configuration.items() if value}
+                        #  创建新的定时任务
                         for client in json.loads(task.clients):
                             job_id = "%s-%s" % (task.id, client)
                             configuration.update({'id': job_id})
@@ -72,7 +74,18 @@ class CreateSchedulerWork(threading.Thread):
                                                            **configuration,
                                                            args=[client, task.project, task.spider])
                         Task.objects.filter(id=task.id).update(success=1)
-                    
+
+                    if task.update == 0:
+                        #  更新改变了参数的定时任务
+                        for client in json.loads(task.clients):
+                            job_id = "%s-%s" % (task.id, client)
+                            configuration.update({'id': job_id})
+                            if Client.objects.filter(pk=client):
+                                self.scheduler.reschedule_job(**configuration)
+                                Task.objects.filter(id=task.id).update(update=1)
+                                logger.warning("{} Update success".format(task.project))
+
+                    #  找出客户端被删除的任务, 并从定时队列中清理掉
                     scheduler_jobs_ids = [_id.id for _id in self.scheduler.get_jobs()]
                     client_ids = Client.objects.values_list("id", flat=True)
                     client_difference = [i.split('-')[1] for i in scheduler_jobs_ids]
@@ -82,7 +95,7 @@ class CreateSchedulerWork(threading.Thread):
                         for i in tmp:
                             if i not in scheduler_jobs_ids:
                                 remove_jobs.append(i)
-                    # 更新已创建的定时任务
+                    # 删除已创建的定时任务
                     if remove_jobs:
                         for jobs in remove_jobs:
                             if jobs in scheduler_jobs_ids:
