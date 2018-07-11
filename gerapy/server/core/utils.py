@@ -14,8 +14,6 @@ from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.forms.models import model_to_dict
 from django.utils import timezone
-
-from gerapy.server.core.models import Client
 from gerapy.server.server.settings import PROJECTS_FOLDER
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
@@ -353,6 +351,7 @@ def clients_of_task(task):
     :param task: task object
     :return:
     """
+    from gerapy.server.core.models import Client
     client_ids = json.loads(task.clients)
     for client_id in client_ids:
         client = Client.objects.get(id=client_id)
