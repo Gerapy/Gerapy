@@ -18,6 +18,7 @@ from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
     get_output_error, bytes2str, clients_of_task, get_job_id
+from django_apscheduler.models import DjangoJob, DjangoJobExecution
 
 
 def index(request):
@@ -753,12 +754,19 @@ def task_status(request, task_id):
     :return:
     """
     if request.method == 'GET':
-        task = model_to_dict(Task.objects.get(id=task_id))
+        result = []
+        task = Task.objects.get(id=task_id)
         print('Task', task)
         clients = clients_of_task(task)
         for client in clients:
             job_id = get_job_id(client, task)
-            yield job_id
+            job = DjangoJob.objects.get(name=job_id)
+            executions = serialize('json', DjangoJobExecution.objects.filter(job=job))
+            result.append({
+                'job': job.next_run_time,
+                'executions': executions
+            })
+        return JsonResponse({'data': result, 'status': '1'})
 
 
 def render_html(request):
