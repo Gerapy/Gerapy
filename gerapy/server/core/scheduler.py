@@ -111,7 +111,6 @@ class SchedulerManager(threading.Thread):
     def _remove_jobs(self):
         """
         remove jobs
-        :param realtime_jobs:
         :return:
         """
         # get existed ids
@@ -127,8 +126,6 @@ class SchedulerManager(threading.Thread):
     def _add_or_modify_jobs(self):
         """
         add new jobs or modify existed jobs
-        :param task: task object
-        :param clients: clients
         :return:
         """
         tasks = self.realtime_tasks()
