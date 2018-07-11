@@ -688,7 +688,8 @@ def task_create(request):
                                    name=data.get('name'),
                                    spider=data.get('spider'),
                                    trigger=data.get('trigger'),
-                                   configuration=json.dumps(data.get('configuration')))
+                                   configuration=json.dumps(data.get('configuration')),
+                                   modified=1)
         return JsonResponse({'result': '1', 'data': model_to_dict(task)})
 
 
@@ -705,7 +706,7 @@ def task_update(request, task_id):
         print(data)
         data['clients'] = json.dumps(data.get('clients'))
         data['configuration'] = json.dumps(data.get('configuration'))
-        data['success'] = 0
+        data['modified'] = 1
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
 

@@ -13,6 +13,9 @@ class Client(Model):
     password = CharField(max_length=255, blank=True, null=True)
     created_at = DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
 
 
 class Project(Model):
@@ -26,6 +29,9 @@ class Project(Model):
     created_at = DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = DateTimeField(auto_now=True, blank=True, null=True)
     clients = ManyToManyField(Client, through='Deploy', unique=False)
+    
+    def __str__(self):
+        return self.name
 
 
 class Deploy(Model):
@@ -58,9 +64,10 @@ class Task(Model):
     args = TextField(null=True, blank=True)
     description = TextField(null=True, blank=True)
     trigger = CharField(max_length=255, null=True, blank=True)
-    success = IntegerField(default=0, blank=True)
-    error = IntegerField(default=0, blank=True)
-    last = DateTimeField(null=True, blank=True)
     configuration = TextField(null=True, blank=True)
+    modified = BooleanField(blank=True, default=False)
     created_at = DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
