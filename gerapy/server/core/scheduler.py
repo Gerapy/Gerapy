@@ -1,12 +1,12 @@
 import time
-import threading
+from threading import Thread
 import json
 from django_apscheduler.models import DjangoJob
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
 from gerapy.server.core.models import Client, Task
 from gerapy.server.server.settings import SCHEDULER_HEARTBEAT
-from gerapy.server.core.utils import get_scrapyd
+from gerapy.server.core.utils import get_scrapyd, clients_of_task, get_job_id
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
@@ -36,7 +36,7 @@ def execute(client, project_name, spider_name):
     scrapyd.schedule(project_name, spider_name)
 
 
-class SchedulerManager(threading.Thread):
+class SchedulerManager(Thread):
     def __init__(self, scheduler):
         """
         init manager
@@ -71,32 +71,10 @@ class SchedulerManager(threading.Thread):
         """
         tasks = self.realtime_tasks()
         for task in tasks:
-            clients = list(self.clients_of_task(task))
+            clients = list(clients_of_task(task))
             for client in clients:
-                job_id = self.job_id(client.id, task.project, task.spider)
+                job_id = get_job_id(client, task)
                 yield job_id
-    
-    def clients_of_task(self, task):
-        """
-        get valid clients of task
-        :param task: task object
-        :return:
-        """
-        client_ids = json.loads(task.clients)
-        for client_id in client_ids:
-            client = Client.objects.get(id=client_id)
-            if client:
-                yield client
-    
-    def job_id(self, client_id, project_name, spider_name):
-        """
-        construct job id
-        :param client_id: id of client
-        :param project_name: project name
-        :param spider_name: spider name
-        :return: job id
-        """
-        return '%s-%s-%s' % (client_id, project_name, spider_name)
     
     def sync_jobs(self):
         """
@@ -132,11 +110,11 @@ class SchedulerManager(threading.Thread):
         for task in tasks:
             # if modified
             if task.modified:
-                clients = list(self.clients_of_task(task))
+                clients = list(clients_of_task(task))
                 # update for every client
                 for client in clients:
                     # get job id
-                    job_id = self.job_id(client.id, task.project, task.spider)
+                    job_id = get_job_id(client, task)
                     configuration = json.loads(task.configuration)
                     trigger = task.trigger
                     configuration = {arg: configuration.get(arg) for arg in args_map.get(trigger) if

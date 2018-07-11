@@ -38,5 +38,6 @@ urlpatterns = [
     url(r'^api/task/(\d+)/update', views.task_update, name='task_update'),
     url(r'^api/task/(\d+)/info', views.task_info, name='task_info'),
     url(r'^api/task/(\d+)/remove', views.task_remove, name='task_remove'),
+    url(r'^api/task/(\d+)/status', views.task_status, name='task_status'),
     url(r'^api/render', views.render_html, name='render_html'),
 ]

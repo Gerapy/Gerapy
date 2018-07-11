@@ -14,6 +14,8 @@ from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.forms.models import model_to_dict
 from django.utils import timezone
+
+from gerapy.server.core.models import Client
 from gerapy.server.server.settings import PROJECTS_FOLDER
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
@@ -343,3 +345,26 @@ def bytes2str(data):
         data = data.decode('utf-8')
     data = data.strip()
     return data
+
+
+def clients_of_task(task):
+    """
+    get valid clients of task
+    :param task: task object
+    :return:
+    """
+    client_ids = json.loads(task.clients)
+    for client_id in client_ids:
+        client = Client.objects.get(id=client_id)
+        if client:
+            yield client
+
+
+def get_job_id(client, task):
+    """
+    construct job id
+    :param client: client object
+    :param task: task object
+    :return: job id
+    """
+    return '%s-%s-%s' % (client.id, task.project, task.spider)

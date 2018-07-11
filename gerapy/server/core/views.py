@@ -1,10 +1,7 @@
-import sys
-import traceback
 from urllib.parse import unquote
 import base64
-from scrapy.utils.response import get_base_url
-import json, os, requests, time, pytz, pymongo, string
-from shutil import move, copy, rmtree
+import json, os, requests, time, pytz, pymongo
+from shutil import rmtree
 from requests.exceptions import ConnectionError
 from os.path import join, exists, dirname
 from django.shortcuts import render
@@ -12,8 +9,7 @@ from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
-from subprocess import Popen, PIPE, STDOUT
-from gerapy.server.core.parser import get_start_requests
+from subprocess import Popen, PIPE
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
@@ -21,8 +17,7 @@ from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
-    get_output_error, bytes2str
-from gerapy.server.core import parser
+    get_output_error, bytes2str, clients_of_task, get_job_id
 
 
 def index(request):
@@ -703,7 +698,6 @@ def task_update(request, task_id):
     if request.method == 'POST':
         task = Task.objects.filter(id=task_id)
         data = json.loads(request.body)
-        print(data)
         data['clients'] = json.dumps(data.get('clients'))
         data['configuration'] = json.dumps(data.get('configuration'))
         data['modified'] = 1
@@ -735,7 +729,6 @@ def task_info(request, task_id):
     if request.method == 'GET':
         task = Task.objects.get(id=task_id)
         data = model_to_dict(task)
-        print(data)
         data['clients'] = json.loads(data.get('clients'))
         data['configuration'] = json.loads(data.get('configuration'))
         return JsonResponse({'data': data})
@@ -750,6 +743,22 @@ def task_index(request):
     if request.method == 'GET':
         tasks = Task.objects.values()
         return JsonResponse({'result': '1', 'data': tasks})
+
+
+def task_status(request, task_id):
+    """
+    get task status info
+    :param request: request object
+    :param task_id: task id
+    :return:
+    """
+    if request.method == 'GET':
+        task = model_to_dict(Task.objects.get(id=task_id))
+        print('Task', task)
+        clients = clients_of_task(task)
+        for client in clients:
+            job_id = get_job_id(client, task)
+            yield job_id
 
 
 def render_html(request):
