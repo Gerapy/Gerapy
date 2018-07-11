@@ -47,6 +47,12 @@
           align="center"
           :label="$lang[$store.state.lang].columns.operations">
           <template slot-scope="props">
+            <router-link :to="{name: 'taskStatus', params: {id: props.row.id }}" tag="span">
+              <el-button type="success" size="mini">
+                <i class="fa fa-sitemap"></i>
+                {{ $lang[$store.state.lang].buttons.status }}
+              </el-button>
+            </router-link>
             <router-link :to="{name: 'taskEdit', params: {id: props.row.id }}" tag="span">
               <el-button type="info" size="mini">
                 <i class="fa fa-edit"></i>

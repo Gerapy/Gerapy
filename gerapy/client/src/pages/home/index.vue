@@ -191,7 +191,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   h1.number {
     font-weight: 100;
     margin: 10px 0;

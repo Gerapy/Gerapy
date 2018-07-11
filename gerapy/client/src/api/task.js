@@ -25,6 +25,15 @@ export function info(params) {
   })
 }
 
+
+export function status(params) {
+  return fetch({
+    url: task.status,
+    method: 'get',
+    params
+  })
+}
+
 export function update(params, data) {
   return fetch({
     url: task.update,

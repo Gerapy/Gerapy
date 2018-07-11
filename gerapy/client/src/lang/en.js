@@ -55,7 +55,9 @@ export default {
     addAttr: 'add attr',
     addExtractor: 'add extractor',
     addTable: 'add table',
-    addCollection: 'add collection'
+    addCollection: 'add collection',
+    status: 'status',
+    nextTime: 'next time'
   },
   titles: {
     createClient: 'Create Client',
@@ -132,7 +134,9 @@ export default {
     errorClients: 'Error Clients',
     countProjects: 'Projects',
     notGenerated: 'Not Generated',
-    chooseDateTime: 'Choose Date Time'
+    chooseDateTime: 'Choose Date Time',
+    executedJobs: 'Executed Jobs',
+    errorJobs: 'Error Jobs',
   },
   columns: {
     id: 'ID',

@@ -763,8 +763,9 @@ def task_status(request, task_id):
             job = DjangoJob.objects.get(name=job_id)
             executions = serialize('json', DjangoJobExecution.objects.filter(job=job))
             result.append({
-                'job': job.next_run_time,
-                'executions': executions
+                'client': model_to_dict(client),
+                'next': job.next_run_time,
+                'executions': json.loads(executions)
             })
         return JsonResponse({'data': result, 'status': '1'})
 
