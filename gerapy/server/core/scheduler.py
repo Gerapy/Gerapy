@@ -142,10 +142,15 @@ class SchedulerManager(threading.Thread):
                 task.save()
     
     def run(self):
+        """
+        heart beat detect
+        :return:
+        """
         while True:
             self.sync_jobs()
             time.sleep(SCHEDULER_HEARTBEAT)
 
-
+# init scheduler manager
 sm = SchedulerManager(scheduler)
+# new thread
 sm.start()
