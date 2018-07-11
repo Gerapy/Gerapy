@@ -16,7 +16,6 @@ import threading
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
 from apscheduler.executors.pool import ThreadPoolExecutor
-
 from gerapy.server.core.utils import get_scrapyd
 from gerapy.server.core.models import Task, Client
 
