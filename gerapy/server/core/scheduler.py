@@ -1,16 +1,17 @@
 import time
 import threading
-from gerapy.server.core.utils import get_scrapyd
 import json
 from django_apscheduler.models import DjangoJob
 from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
-from gerapy.server.core.models import Client, Project, Task
+from django_apscheduler.jobstores import DjangoJobStore, register_events
+from gerapy.server.core.models import Client, Task
 from gerapy.server.server.settings import SCHEDULER_HEARTBEAT
+from gerapy.server.core.utils import get_scrapyd
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
+# map the args
 args_map = {
     'cron': ['year', 'month', 'day', 'week', 'day_of_week', 'hour', 'minute', 'second', 'start_date', 'end_date',
              'timezone'],
@@ -20,8 +21,16 @@ args_map = {
 
 
 def execute(client, project_name, spider_name):
+    """
+    schedule deployed task
+    :param client: client object
+    :param project_name: project name
+    :param spider_name: spider name
+    :return: None
+    """
     print('Execute', 'Client', client.name, 'Project Name',
           project_name, 'Spider Name', spider_name)
+    # don not add any try except, apscheduler can catch traceback to database
     ip_port = Client.objects.get(id=client.id)
     scrapyd = get_scrapyd(ip_port)
     scrapyd.schedule(project_name, spider_name)
@@ -149,6 +158,7 @@ class SchedulerManager(threading.Thread):
         while True:
             self.sync_jobs()
             time.sleep(SCHEDULER_HEARTBEAT)
+
 
 # init scheduler manager
 sm = SchedulerManager(scheduler)
