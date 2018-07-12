@@ -367,3 +367,31 @@ def get_job_id(client, task):
     :return: job id
     """
     return '%s-%s-%s' % (client.id, task.project, task.spider)
+
+
+def load_dict(x):
+    """
+    convert to  dict
+    :param x:
+    :return:
+    """
+    if x is None or isinstance(x, dict):
+        return x
+    try:
+        return json.loads(x)
+    except:
+        return {}
+
+
+def load_list(x):
+    """
+    convert to list
+    :param x:
+    :return:
+    """
+    if x is None or isinstance(x, list):
+        return x
+    try:
+        return json.loads(str)
+    except:
+        return []
