@@ -9,7 +9,7 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <div slot-scope="footer">
+      <div slot="footer">
         <el-button @click="createProjectDialog=false" size="small">{{ $lang[$store.state.lang].buttons.cancel }}
         </el-button>
         <el-button @click="onCreateProject()"
