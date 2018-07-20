@@ -1,6 +1,7 @@
 import fnmatch
 import re
 from copy import deepcopy
+from furl import furl
 from subprocess import Popen, PIPE, STDOUT
 from os.path import abspath
 from shutil import ignore_patterns, copy2, copystat
@@ -198,7 +199,7 @@ def process_response(response):
     :return:
     """
     return {
-        'html': response.text,
+        'html': process_html(response.text, furl(response.url).origin),
         'url': response.url,
         'status': response.status
     }
