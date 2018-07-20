@@ -173,4 +173,3 @@ def get_start_requests(project_path, spider_name):
         return {'finished': True, 'requests': requests}
     finally:
         os.chdir(work_cwd)
-
