@@ -126,7 +126,7 @@ export const ruleItemInit = {
   dont_redirect: false,
   dont_retry: false,
   handle_httpstatus_list: [],
-  handle_httpstatus_all: [],
+  handle_httpstatus_all: false,
   dont_cache: false,
   dont_obey_robotstxt: false,
   download_timeout: '',

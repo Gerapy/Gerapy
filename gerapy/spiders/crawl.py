@@ -29,7 +29,7 @@ class Rule(object):
         self.render = render
         self.dont_redirect = dont_redirect
         self.dont_retry = dont_retry
-        self.handle_httpstatus_list = load_list(handle_httpstatus_list)
+        self.handle_httpstatus_list = load_list(handle_httpstatus_list, lambda x: int(x))
         self.handle_httpstatus_all = handle_httpstatus_all
         self.dont_cache = dont_cache
         self.dont_obey_robotstxt = dont_obey_robotstxt

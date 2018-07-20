@@ -369,7 +369,7 @@ def get_job_id(client, task):
     return '%s-%s-%s' % (client.id, task.project, task.spider)
 
 
-def load_dict(x):
+def load_dict(x, transformer=None):
     """
     convert to  dict
     :param x:
@@ -378,12 +378,16 @@ def load_dict(x):
     if x is None or isinstance(x, dict):
         return x
     try:
-        return json.loads(x)
+        data = json.loads(x)
+        if not transformer:
+            transformer = lambda x: x
+        data = {k: transformer(v) for k, v in data.items()}
+        return data
     except:
         return {}
 
 
-def load_list(x):
+def load_list(x, transformer=None):
     """
     convert to list
     :param x:
@@ -392,6 +396,10 @@ def load_list(x):
     if x is None or isinstance(x, list):
         return x
     try:
-        return json.loads(str)
+        data = json.loads(x)
+        if not transformer:
+            transformer = lambda x: x
+        data = list(map(lambda x: transformer(x), data))
+        return data
     except:
         return []
