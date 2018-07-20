@@ -24,7 +24,7 @@
           </div>
           <!-- 列表类型 -->
           <!-- 字符串类型，如 callback, process_request -->
-          <div v-if="typeof value == 'string'">
+          <div v-if="typeof value === 'string'">
             <el-input
               v-model="rule[key]" class="inline"
               size="small"></el-input>
@@ -36,7 +36,7 @@
           </div>
           <!-- 字符串类型 -->
           <!-- 布尔类型，如 follow -->
-          <div v-if="typeof value == 'boolean'">
+          <div v-if="typeof value === 'boolean'">
             <span class="inline">
               <el-radio class="radio" v-model="rule[key]" :label="true">True
               </el-radio>
