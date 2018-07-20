@@ -1,19 +1,35 @@
+import websockets
 from scrapy.http import HtmlResponse
 from logging import getLogger
 import asyncio
 import pyppeteer
+import logging
+from concurrent.futures._base import TimeoutError
+
+pyppeteer_level = logging.WARNING
+logging.getLogger('websockets.protocol').setLevel(pyppeteer_level)
+logging.getLogger('pyppeteer').setLevel(pyppeteer_level)
 
 
 class PyppeteerMiddleware():
     def __init__(self, **args):
+        """
+        init logger, loop, browser
+        :param args:
+        """
         self.logger = getLogger(__name__)
-        self.loop = asyncio.get_event_loop()
-        self.browser = self.loop.run_until_complete(
-            pyppeteer.launch(headless=True, args=['--no-sandbox']))
         self.args = args
+        self.loop = asyncio.get_event_loop()
     
-    def render(self, url, retries=8, script=None, wait=0.2, scrolldown=False, sleep=0,
-               timeout=8.0, keep_page=True, with_result=False):
+    def __del__(self):
+        """
+        close loop
+        :return:
+        """
+        self.loop.close()
+    
+    def render(self, url, retries=1, script=None, wait=0.3, scrolldown=False, sleep=0,
+               timeout=8.0, keep_page=False):
         """
         render page with pyppeteer
         :param url: page url
@@ -28,14 +44,19 @@ class PyppeteerMiddleware():
         :param with_result: return with js evaluation result
         :return: content, [result]
         """
+        browser = self.loop.run_until_complete(pyppeteer.launch(headless=True,
+                                                                handleSIGTERM=False,
+                                                                handleSIGINT=False))
+        
         # define async render
         async def async_render(url, script, scrolldown, sleep, wait, timeout, keep_page):
             try:
                 # basic render
-                page = await self.browser.newPage()
+                page = await browser.newPage()
                 await asyncio.sleep(wait)
-                await page.goto(url, options={'timeout': int(timeout * 1000)})
-                
+                response = await page.goto(url, options={'timeout': int(timeout * 1000)})
+                if response.status != 200:
+                    return None, None, response.status
                 result = None
                 # evaluate with script
                 if script:
@@ -54,28 +75,27 @@ class PyppeteerMiddleware():
                 # get html of page
                 content = await page.content()
                 
+                return content, result, response.status
+            except TimeoutError:
+                return None, None, 500
+            finally:
                 # if keep page, do not close it
                 if not keep_page:
                     await page.close()
-                
-                return content, result
-            except TimeoutError:
-                return None
         
-        content, result = None, None
+        content, result, status = [None] * 3
+        
         # retry for {retries} times
         for i in range(retries):
             if not content:
-                content, result = self.loop.run_until_complete(
+                content, result, status = self.loop.run_until_complete(
                     async_render(url=url, script=script, sleep=sleep, wait=wait,
                                  scrolldown=scrolldown, timeout=timeout, keep_page=keep_page))
             else:
                 break
-        
+        self.loop.run_until_complete(browser.close())
         # if need to return js evaluation result
-        if with_result:
-            return content, result
-        return content
+        return content, result, status
     
     def process_request(self, request, spider):
         """
@@ -83,14 +103,15 @@ class PyppeteerMiddleware():
         :param spider: spider object
         :return: HtmlResponse
         """
-        self.logger.debug('Render %s', request.url)
-        try:
-            html = self.render(request.url)
-            return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8',
-                                status=200)
-        except pyppeteer.errors.TimeoutError:
-            return HtmlResponse(url=request.url, status=500, request=request)
+        if request.meta.get('render'):
+            try:
+                self.logger.debug('rendering %s', request.url)
+                html, result, status = self.render(request.url, **self.args)
+                return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8',
+                                    status=status)
+            except websockets.exceptions.ConnectionClosed:
+                pass
     
     @classmethod
     def from_crawler(cls, crawler):
-        return cls(**crawler.settings.get('PYPPETEER_ARGS'))
+        return cls(**crawler.settings.get('PYPPETEER_ARGS', {}))

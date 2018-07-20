@@ -232,10 +232,7 @@ def project_configure(request, project_name):
         cmd = ' '.join(['gerapy', 'generate', project_name])
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
-        print('RETURN CODE', p.returncode)
         
-        print('stdout', stdout)
-        print('stderr', stderr)
         if not stderr:
             return JsonResponse({'status': '1'})
         else:

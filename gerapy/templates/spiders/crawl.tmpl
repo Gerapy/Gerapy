@@ -47,28 +47,6 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
         {%- if spider.storage.mongodb.database -%}
         "MONGODB_DATABASE": "{{ spider.storage.mongodb.database }}",
         {% endif %}
-        "ITEM_PIPELINES": {
-            {% if spider.storage.mysql.enable -%}
-                "gerapy.pipelines.MySQLPipeline": 300,
-            {%- endif %}
-            {% if spider.storage.mongodb.enable -%}
-                "gerapy.pipelines.MongoDBPipeline": 301,
-            {%- endif %}
-        },
-        "SPIDER_MIDDLEWARES": {
-            "scrapy_splash.SplashDeduplicateArgsMiddleware": 100,
-        },
-        "DOWNLOADER_MIDDLEWARES": {
-            {% if spider.cookies.enable -%}
-            "gerapy.downloadermiddlewares.cookies.CookiesMiddleware": 554,
-            {%- endif %}
-            {% if spider.proxy.enable -%}
-            "gerapy.downloadermiddlewares.proxy.ProxyMiddleware": 555,
-            {%- endif %}
-            "scrapy_splash.SplashCookiesMiddleware": 723,
-            "scrapy_splash.SplashMiddleware": 725,
-            "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 810
-        },
         {% if spider.custom_settings -%}
         {% for setting in spider.custom_settings -%}
         {% if setting.value.strip().startswith('{') or setting.value.strip().startswith('[') or setting.value|int != 0 -%}

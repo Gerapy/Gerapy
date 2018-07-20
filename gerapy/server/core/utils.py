@@ -1,7 +1,6 @@
 import fnmatch
 import re
 from copy import deepcopy
-import subprocess
 from subprocess import Popen, PIPE, STDOUT
 from os.path import abspath
 from shutil import ignore_patterns, copy2, copystat
@@ -12,7 +11,6 @@ import traceback
 import json, os, string
 from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
-from django.forms.models import model_to_dict
 from django.utils import timezone
 from gerapy.server.server.settings import PROJECTS_FOLDER
 
@@ -158,7 +156,7 @@ def render_template(tpl_file, dst_file, *args, **kwargs):
     template = Template(open(tpl_file, encoding='utf-8').read())
     os.remove(tpl_file)
     result = template.render(vars)
-    print(result)
+    #print(result)
     
     open(dst_file, 'w', encoding='utf-8').write(result)
 
@@ -288,6 +286,54 @@ def get_items_configuration(configuration):
                 item[attr] = list(item[attr])
     return items
 
+def process_custom_settings(spider):
+    """
+    process custom settings of some config items
+    :param spider:
+    :return:
+    """
+    custom_settings = spider.get('custom_settings')
+    def add_dict_to_custom_settings(custom_settings, keys):
+        """
+        if config doesn't exist, add default value
+        :param custom_settings:
+        :param keys:
+        :return:
+        """
+        for key in keys:
+            for item in custom_settings:
+                if item['key'] == key:
+                    break
+            else:
+                custom_settings.append({
+                    'key': key,
+                    'value': '{}'
+                })
+        return custom_settings
+    
+    keys = ['DOWNLOADER_MIDDLEWARES', 'SPIDER_MIDDLEWARES', 'ITEM_PIPELINES']
+    custom_settings = add_dict_to_custom_settings(custom_settings, keys)
+    for item in custom_settings:
+        if item['key'] == 'DOWNLOADER_MIDDLEWARES':
+            item_data = json.loads(item['value'])
+            if spider.get('cookies', {}).get('enable', {}): item_data['gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
+            if spider.get('proxy', {}).get('enable', {}): item_data['gerapy.downloadermiddlewares.proxy.ProxyMiddleware'] = 555
+            item_data['gerapy.downloadermiddlewares.pyppeteer.PyppeteerMiddleware'] = 601
+            item_data['scrapy_splash.SplashCookiesMiddleware'] = 723
+            item_data['scrapy_splash.SplashMiddleware'] = 725
+            item_data['scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware'] = 810
+            item['value'] = json.dumps(item_data)
+        if item['key'] == 'SPIDER_MIDDLEWARES':
+            item_data = json.loads(item['value'])
+            item_data['scrapy_splash.SplashDeduplicateArgsMiddleware'] = 100
+            item['value'] = json.dumps(item_data)
+        if item['key'] == 'ITEM_PIPELINES':
+            item_data = json.loads(item['value'])
+            if spider.get('storage', {}).get('mysql', {}).get('enable', {}): item_data['gerapy.pipelines.MySQLPipeline'] = 300
+            if spider.get('storage', {}).get('mongodb', {}).get('enable', {}): item_data['gerapy.pipelines.MongoDBPipeline'] = 301
+            item['value'] = json.dumps(item_data)
+    return spider
+
 
 def generate_project(project_name):
     """
@@ -311,7 +357,6 @@ def generate_project(project_name):
         tplfile = join(project_dir,
                        string.Template(path).substitute(project_name=project_name))
         items = get_items_configuration(configuration)
-        print('Items', items)
         vars = {
             'project_name': project_name,
             'items': items,
@@ -320,6 +365,7 @@ def generate_project(project_name):
     # generate spider
     spiders = configuration.get('spiders')
     for spider in spiders:
+        spider = process_custom_settings(spider)
         source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
         new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
         spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
