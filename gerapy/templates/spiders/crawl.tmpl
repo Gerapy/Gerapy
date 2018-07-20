@@ -111,10 +111,28 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
                 {%- if rule.strip -%}strip={{rule.strip}}, {% endif -%}
             ),
             {%- if rule.callback -%}callback='{{rule.callback}}',{% endif -%}
+            {%- if rule.method -%}callback='{{rule.method}}',{% endif -%}
+            {%- if rule.data -%}callback={{rule.data}},{% endif -%}
+            {%- if rule.params -%}callback={{rule.params}},{% endif -%}
+            {%- if rule.priority -%}callback={{rule.priority}},{% endif -%}
+            {%- if rule.dont_filter -%}callback={{rule.dont_filter}},{% endif -%}
+            {%- if rule.meta -%}callback={{rule.meta}},{% endif -%}
+            {%- if rule.cb_kwargs -%}callback={{rule.cb_kwargs}},{% endif -%}
+            {%- if rule.proxy -%}callback='{{rule.proxy}}',{% endif -%}
+            {%- if rule.render -%}callback={{rule.render}},{% endif -%}
+            {%- if rule.dont_redirect -%}callback={{rule.dont_redirect}},{% endif -%}
+            {%- if rule.dont_retry -%}callback={{rule.dont_retry}},{% endif -%}
+            {%- if rule.handle_httpstatus_list -%}callback={{rule.handle_httpstatus_list}},{% endif -%}
+            {%- if rule.handle_httpstatus_all -%}callback={{rule.handle_httpstatus_all}},{% endif -%}
+            {%- if rule.dont_cache -%}callback={{rule.dont_cache}},{% endif -%}
+            {%- if rule.dont_obey_robotstxt -%}callback={{rule.dont_obey_robotstxt}},{% endif -%}
+            {%- if rule.download_timeout -%}callback={{rule.download_timeout}},{% endif -%}
+            {%- if rule.max_retry_times -%}callback={{rule.max_retry_times}},{% endif -%}
             {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}',{% endif -%}
             {%- if rule.follow -%}follow='{{rule.follow}}',{% endif -%}
             {%- if rule.process_links -%}process_links='{{rule.process_links}}',{% endif -%}
             {%- if rule.process_request -%}process_request='{{rule.process_request}}',{% endif -%}
+            {%- if rule.process_value -%}process_request='{{rule.process_value}}',{% endif -%}
         ),
         {% endfor -%}
     )
