@@ -107,7 +107,8 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
             {%- if rule.max_retry_times -%}max_retry_times={{rule.max_retry_times}}, {% endif -%}
             {%- if rule.follow -%}follow={{rule.follow}}, {% endif -%}
             {%- if rule.process_links -%}process_links='{{rule.process_links}}', {% endif -%}
-            {%- if rule.process_request -%}process_request='{{rule.process_request}}', {% endif %}
+            {%- if rule.process_request -%}process_request='{{rule.process_request}}', {% endif -%}
+        ),
         {% endfor -%}
     )
     {% endif %}

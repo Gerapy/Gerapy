@@ -315,6 +315,7 @@ def process_custom_settings(spider):
     keys = ['DOWNLOADER_MIDDLEWARES', 'SPIDER_MIDDLEWARES', 'ITEM_PIPELINES']
     custom_settings = add_dict_to_custom_settings(custom_settings, keys)
     for item in custom_settings:
+        
         if item['key'] == 'DOWNLOADER_MIDDLEWARES':
             item_data = json.loads(item['value'])
             if spider.get('cookies', {}).get('enable', {}): item_data['gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
