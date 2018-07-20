@@ -103,37 +103,34 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
                 {%- if rule.restrict_xpaths -%}restrict_xpaths={{rule.restrict_xpaths}}, {% endif -%}
                 {%- if rule.restrict_css -%}restrict_css={{rule.restrict_css}}, {% endif -%}
                 {%- if rule.tags -%}tags={{rule.tags}}, {% endif -%}
-                {%- if rule.attrs -%}attrs={{rule.attrs}}, {%- endif -%}
+                {%- if rule.attrs -%}attrs={{rule.attrs}}, {% endif -%}
                 {%- if rule.canonicalize -%}canonicalize={{rule.canonicalize}}, {% endif -%}
                 {%- if rule.attrs -%}attrs={{rule.attrs}}, {% endif -%}
                 {%- if rule.unique -%}unique={{rule.unique}}, {% endif -%}
                 {%- if rule.process_value -%}process_value={{rule.process_value}}, {% endif -%}
                 {%- if rule.strip -%}strip={{rule.strip}}, {% endif -%}
             ),
-            {%- if rule.callback -%}callback='{{rule.callback}}',{% endif -%}
-            {%- if rule.method -%}callback='{{rule.method}}',{% endif -%}
-            {%- if rule.data -%}callback={{rule.data}},{% endif -%}
-            {%- if rule.params -%}callback={{rule.params}},{% endif -%}
-            {%- if rule.priority -%}callback={{rule.priority}},{% endif -%}
-            {%- if rule.dont_filter -%}callback={{rule.dont_filter}},{% endif -%}
-            {%- if rule.meta -%}callback={{rule.meta}},{% endif -%}
-            {%- if rule.cb_kwargs -%}callback={{rule.cb_kwargs}},{% endif -%}
-            {%- if rule.proxy -%}callback='{{rule.proxy}}',{% endif -%}
-            {%- if rule.render -%}callback={{rule.render}},{% endif -%}
-            {%- if rule.dont_redirect -%}callback={{rule.dont_redirect}},{% endif -%}
-            {%- if rule.dont_retry -%}callback={{rule.dont_retry}},{% endif -%}
-            {%- if rule.handle_httpstatus_list -%}callback={{rule.handle_httpstatus_list}},{% endif -%}
-            {%- if rule.handle_httpstatus_all -%}callback={{rule.handle_httpstatus_all}},{% endif -%}
-            {%- if rule.dont_cache -%}callback={{rule.dont_cache}},{% endif -%}
-            {%- if rule.dont_obey_robotstxt -%}callback={{rule.dont_obey_robotstxt}},{% endif -%}
-            {%- if rule.download_timeout -%}callback={{rule.download_timeout}},{% endif -%}
-            {%- if rule.max_retry_times -%}callback={{rule.max_retry_times}},{% endif -%}
-            {%- if rule.cb_kwargs -%}cb_kwargs='{{rule.cb_kwargs}}',{% endif -%}
-            {%- if rule.follow -%}follow='{{rule.follow}}',{% endif -%}
-            {%- if rule.process_links -%}process_links='{{rule.process_links}}',{% endif -%}
-            {%- if rule.process_request -%}process_request='{{rule.process_request}}',{% endif -%}
-            {%- if rule.process_value -%}process_request='{{rule.process_value}}',{% endif -%}
-        ),
+            {%- if rule.callback -%}callback='{{rule.callback}}', {% endif -%}
+            {%- if rule.method -%}method='{{rule.method}}', {% endif -%}
+            {%- if rule.data -%}data={{rule.data}}, {% endif -%}
+            {%- if rule.params -%}params={{rule.params}}, {% endif -%}
+            {%- if rule.priority -%}priority={{rule.priority}}, {% endif -%}
+            {%- if rule.dont_filter -%}dont_filter={{rule.dont_filter}}, {% endif -%}
+            {%- if rule.meta -%}meta={{rule.meta}}, {% endif -%}
+            {%- if rule.cb_kwargs -%}cb_kwargs={{rule.cb_kwargs}}, {% endif -%}
+            {%- if rule.proxy -%}proxy='{{rule.proxy}}', {% endif -%}
+            {%- if rule.render -%}render={{rule.render}}, {% endif -%}
+            {%- if rule.dont_redirect -%}dont_redirect={{rule.dont_redirect}}, {% endif -%}
+            {%- if rule.dont_retry -%}dont_retry={{rule.dont_retry}}, {% endif -%}
+            {%- if rule.handle_httpstatus_list -%}handle_httpstatus_list={{rule.handle_httpstatus_list}}, {% endif -%}
+            {%- if rule.handle_httpstatus_all -%}handle_httpstatus_all={{rule.handle_httpstatus_all}}, {% endif -%}
+            {%- if rule.dont_cache -%}dont_cache={{rule.dont_cache}}, {% endif -%}
+            {%- if rule.dont_obey_robotstxt -%}dont_obey_robotstxt={{rule.dont_obey_robotstxt}}, {% endif -%}
+            {%- if rule.download_timeout -%}download_timeout={{rule.download_timeout}}, {% endif -%}
+            {%- if rule.max_retry_times -%}max_retry_times={{rule.max_retry_times}}, {% endif -%}
+            {%- if rule.follow -%}follow={{rule.follow}}, {% endif -%}
+            {%- if rule.process_links -%}process_links='{{rule.process_links}}', {% endif -%}
+            {%- if rule.process_request -%}process_request='{{rule.process_request}}', {% endif -%}
         {% endfor -%}
     )
     {% endif %}

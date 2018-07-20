@@ -24,7 +24,7 @@ class Rule(object):
         self.priority = priority
         self.dont_filter = dont_filter
         self.meta = load_dict(meta) or {}
-        self.cb_kwargs = cb_kwargs or {}
+        self.cb_kwargs = load_dict(cb_kwargs) or {}
         self.proxy = proxy
         self.render = render
         self.dont_redirect = dont_redirect
