@@ -399,7 +399,10 @@ def load_list(x, transformer=None):
         data = json.loads(x)
         if not transformer:
             transformer = lambda x: x
+        print('Data', data)
         data = list(map(lambda x: transformer(x), data))
+        print('Transfoermer', transformer)
+        print('Data', data)
         return data
     except:
         return []

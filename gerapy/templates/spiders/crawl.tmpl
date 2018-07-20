@@ -103,7 +103,6 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
                 {%- if rule.restrict_xpaths -%}restrict_xpaths={{rule.restrict_xpaths}}, {% endif -%}
                 {%- if rule.restrict_css -%}restrict_css={{rule.restrict_css}}, {% endif -%}
                 {%- if rule.tags -%}tags={{rule.tags}}, {% endif -%}
-                {%- if rule.attrs -%}attrs={{rule.attrs}}, {% endif -%}
                 {%- if rule.canonicalize -%}canonicalize={{rule.canonicalize}}, {% endif -%}
                 {%- if rule.attrs -%}attrs={{rule.attrs}}, {% endif -%}
                 {%- if rule.unique -%}unique={{rule.unique}}, {% endif -%}

@@ -12,8 +12,11 @@
           <!-- 列表类型，如 allow, deny -->
           <div v-if="value instanceof Array">
             <div v-for="(arrayValue, arrayKey, arrayIndex) in value" :key="arrayKey">
-              <el-input
+              <el-input v-if="isNaN(rule[key][arrayKey])"
                 v-model="rule[key][arrayKey]" class="inline"
+                size="small"></el-input>
+              <el-input v-else
+                v-model.number="rule[key][arrayKey]" class="inline"
                 size="small"></el-input>
               <el-button type="danger" size="mini"
                          @click="onDeleteInput(rule, key, arrayKey)">
