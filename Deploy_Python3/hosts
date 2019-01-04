@@ -1,0 +1,9 @@
+# for testing with vagrant
+[gerapy1]
+192.168.33.10
+
+[gerapy1:vars]
+ansible_user=vagrant
+ansible_ssh_port=22
+ansible_ssh_private_key_file=./.vagrant/machines/default/virtualbox/private_key
+ansible_python_interpreter=/usr/bin/python
