@@ -21,8 +21,14 @@ After preparation is completed。
 
 Run the following command in the Deploy_Python3 directory：
 
-        - ansible-playbooks -i host site.yml
+        ansible-playbooks -i host site.yml
         
 Waiting to be completed
 
 Done
+
+#### Instructions for Vagrant:
+
+cd into project directory and run `vagrant up` then `cd Deploy_Python3` and run
+
+        ansible-playbook site.yml
