@@ -28,7 +28,7 @@
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="8" v-for="job in jobs">
+      <el-col :span="8" v-for="job in jobs" :key="job.id">
         <div class="panel">
           <panel-title :title="$lang[$store.state.lang].objects.job">
           </panel-title>
