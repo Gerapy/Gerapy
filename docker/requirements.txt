@@ -13,7 +13,6 @@ pymongo>=3.2.0
 pymysql
 selenium
 setproctitle
-apscheduler
 DbUtils
 pika
 celery[redis,auth,msgpack]
