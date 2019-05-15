@@ -692,15 +692,14 @@ def task_update(request, task_id):
     :param request: request object
     :param task_id: task id
     :return: json
-    """
-    if request.method == 'POST':
+    if request.method == "POST":
         task = Task.objects.filter(id=task_id)
-        data = json.loads(request.body)
-        data['clients'] = json.dumps(data.get('clients'))
-        data['configuration'] = json.dumps(data.get('configuration'))
-        data['modified'] = 1
+        data = json.loads(str(request.body, encoding="utf-8"))
+        data["clients"] = json.dumps(data.get("clients"))
+        data["configuration"] = json.dumps(data.get("configuration"))
+        data["modified"] = 1
         task.update(**data)
-        return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
+        return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))    """
 
 
 def task_remove(request, task_id):
@@ -724,12 +723,12 @@ def task_info(request, task_id):
     :param task_id: task id
     :return: json
     """
-    if request.method == 'GET':
+    if request.method == "GET":
         task = Task.objects.get(id=task_id)
         data = model_to_dict(task)
-        data['clients'] = json.loads(data.get('clients'))
-        data['configuration'] = json.loads(data.get('configuration'))
-        return JsonResponse({'data': data})
+        data["clients"] = json.dumps(data.get("clients"))
+        data["configuration"] = json.dumps(data.get("configuration"))
+        return JsonResponse({"data": data})
 
 
 def task_index(request):
