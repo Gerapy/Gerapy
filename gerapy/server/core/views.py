@@ -19,8 +19,10 @@ from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATE
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
     get_output_error, bytes2str, clients_of_task, get_job_id
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='/admin/login')
 def index(request):
     """
     render index page
