@@ -49,6 +49,11 @@ gerapy runserver 0.0.0.0:8888
 
 Then it will run with public host and port 8888.
 
+If you want to add a admin to your scrapy website, you can use `python manage.py createsuperuser` to add a admin, so that before show your scrapy website you must login.
+![](http://ww4.sinaimg.cn/large/006tNc79gy1g3nshfd1tmj314a0u0dhx.jpg)
+
+After login, you will be redirected to main page, so anyone who know your ip but don't know your user and passwd can't see your scray info.
+
 You can create a configurable project and then configure and generate code automatically.Also you can drag your Scrapy Project to `gerapy/projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this
 project in the web interface.
 
