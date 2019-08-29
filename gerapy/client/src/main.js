@@ -1,30 +1,29 @@
-import 'normalize.css'
-import 'font-awesome/scss/font-awesome.scss'
-import 'element-ui/lib/theme-default/index.css'
 import Vue from 'vue'
-import '../theme/index.css'
-import ElementUI from 'element-ui'
+import App from './App.vue'
 import router from './router'
-import store from 'store'
-import api from './api'
-import lang from './lang'
-import App from './App'
-import VueCodeMirror from 'vue-codemirror'
+import ElementUI from 'element-ui'
+import './assets/scss/element.scss'
+import './assets/scss/main.scss'
+import store from './store'
+import {mapGetters} from 'vuex'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 Vue.use(ElementUI)
-
-Vue.use(api)
-
-Vue.use(lang)
-
-Vue.use(VueCodeMirror)
+Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
-Vue.config.devtools = process.env.NODE_ENV === 'development'
+// 注册全局语言配置
+Vue.mixin({
+	computed: {
+		...mapGetters(['$lang'])
+	}
+})
 
 new Vue({
-  router,
-  store,
-  ...App
-}).$mount('mainbody')
+	router,
+	store,
+	render:
+		h => h(App),
+}).$mount('#app')
