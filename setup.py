@@ -5,15 +5,30 @@ import gerapy
 
 
 def read_file(filename):
+    """
+    return file content
+    :param filename:
+    :return:
+    """
     with open(filename) as fp:
         return fp.read().strip()
 
 def read_requirements(filename):
+    """
+    get requirements for gerapy
+    :param filename:
+    :return:
+    """
     return [line.strip() for line in read_file(filename).splitlines()
             if not line.startswith('#')]
 
 
 def package_files(directories):
+    """
+    get relative path of files in directories
+    :param directories:
+    :return:
+    """
     paths = []
     for item in directories:
         if isfile(item):
