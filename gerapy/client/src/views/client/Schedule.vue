@@ -105,9 +105,9 @@ export default {
       },
       // 任务状态文本
       jobStatusText: {
-        finished: this.$lang[this.$store.state.lang].buttons.finished,
-        running: this.$lang[this.$store.state.lang].buttons.running,
-        pending: this.$lang[this.$store.state.lang].buttons.pending
+        finished: this.$lang.buttons.finished,
+        running: this.$lang.buttons.running,
+        pending: this.$lang.buttons.pending
       },
       // 任务信息 {'jobid': {'spider': 'spider1', 'project': 'project1'}}
       jobsInfo: {},
@@ -116,7 +116,7 @@ export default {
       // 加载logs标志
       logLoadData: true,
       // 加载log提示语
-      logLoadDataText: this.$lang[this.$store.state.lang].messages.loading,
+      logLoadDataText: this.$lang.messages.loading,
       // 定时刷新log指针
       logLoadDataInterval: null,
       // 标记正在加载哪个log
@@ -214,13 +214,13 @@ export default {
         })
         .then(() => {
           this.$message.success(
-            this.$lang[this.$store.state.lang].messages.successRun
+            this.$lang.messages.successRun
           );
           this.getJobs();
         })
         .catch(() => {
           this.$message.error(
-            this.$lang[this.$store.state.lang].messages.errorRun
+            this.$lang.messages.errorRun
           );
         });
     },
@@ -272,14 +272,14 @@ export default {
         })
         .then(() => {
           this.$message.success(
-            this.$lang[this.$store.state.lang].messages.canceling
+            this.$lang.messages.canceling
           );
           this.getJobs();
         })
         .catch(() => {
           //如果错误
           this.$message.error(
-            this.$lang[this.$store.state.lang].messages.errorCancel
+            this.$lang.messages.errorCancel
           );
         });
     }

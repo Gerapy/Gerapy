@@ -156,7 +156,7 @@
         }).then(({data: tree}) => {
           this.tree = tree
         }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorLoad)
+          this.$message.error(this.$lang.messages.errorLoad)
         })
       },
       handleNodeClick(data) {
@@ -178,17 +178,17 @@
           ).then(({data: code}) => {
             this.code = code
           }).catch(() => {
-            this.$message.error(this.$lang[this.$store.state.lang].messages.errorLoad)
+            this.$message.error(this.$lang.messages.errorLoad)
           })
         }
       },
       renameFile() {
-        this.$prompt(this.$lang[this.$store.state.lang].titles.renameFile, this.$lang[this.$store.state.lang].buttons.confirm, {
-          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
-          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
+        this.$prompt(this.$lang.titles.renameFile, this.$lang.buttons.confirm, {
+          confirmButtonText: this.$lang.buttons.yes,
+          cancelButtonText: this.$lang.buttons.no,
           inputValue: this.activeNode.label,
           inputPattern: /[^\/\s]/,
-          inputErrorMessage: this.$lang[this.$store.state.lang].messages.errorFormat
+          inputErrorMessage: this.$lang.messages.errorFormat
         }).then(({value}) => {
           // 删除文件
           this.$fetch.apiProject.projectFileRename({
@@ -196,37 +196,37 @@
             pre: this.activeNode.label,
             new: value
           }).then(() => {
-            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
+            this.$message.success(this.$lang.messages.successSave)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
+            this.$message.error(this.$lang.messages.errorSave)
           })
         })
       },
       createFile() {
-        this.$prompt(this.$lang[this.$store.state.lang].titles.createFile, this.$lang[this.$store.state.lang].buttons.confirm, {
-          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
-          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
+        this.$prompt(this.$lang.titles.createFile, this.$lang.buttons.confirm, {
+          confirmButtonText: this.$lang.buttons.yes,
+          cancelButtonText: this.$lang.buttons.no,
           inputValue: this.activeNode.label,
           inputPattern: /[^\/\s]/,
-          inputErrorMessage: this.$lang[this.$store.state.lang].messages.errorFormat
+          inputErrorMessage: this.$lang.messages.errorFormat
         }).then(({value}) => {
           // 删除文件
           this.$fetch.apiProject.projectFileCreate({
             path: this.activeNode.path,
             name: value
           }).then(() => {
-            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
+            this.$message.success(this.$lang.messages.successSave)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error(this.$lang[this.$store.state.lang].messages.errorSave)
+            this.$message.error(this.$lang.messages.errorSave)
           })
         })
       },
       deleteFile() {
-        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
-          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
-          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
+        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
+          confirmButtonText: this.$lang.buttons.yes,
+          cancelButtonText: this.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           // 删除文件
@@ -234,10 +234,10 @@
             path: this.activeNode.path,
             label: this.activeNode.label
           }).then(() => {
-            this.$message.success(this.$lang[this.$store.state.lang].messages.successDelete)
+            this.$message.success(this.$lang.messages.successDelete)
             this.getProjectTree(this.projectName)
           }).catch(() => {
-            this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
+            this.$message.error(this.$lang.messages.errorDelete)
           })
         }).catch((error) => {
           console.log(error)
@@ -254,7 +254,7 @@
             callback()
           }
         }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
+          this.$message.error(this.$lang.messages.errorDelete)
         })
       }
     }

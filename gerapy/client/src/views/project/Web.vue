@@ -126,10 +126,10 @@
     },
     methods: {
       onCopy: function () {
-        this.$message.success(this.$lang[this.$store.state.lang].messages.successCopy)
+        this.$message.success(this.$lang.messages.successCopy)
       },
       onError: function () {
-        this.$message.error(this.$lang[this.$store.state.lang].messages.errorCopy)
+        this.$message.error(this.$lang.messages.errorCopy)
       },
     },
     mounted() {

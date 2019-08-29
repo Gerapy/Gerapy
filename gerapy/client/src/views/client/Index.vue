@@ -122,9 +122,9 @@
           '-1': 'danger',
         },
         statusText: {
-          '1': this.$lang[this.$store.state.lang].buttons.normal,
-          '0': this.$lang[this.$store.state.lang].buttons.connecting,
-          '-1': this.$lang[this.$store.state.lang].buttons.error,
+          '1': this.$lang.buttons.normal,
+          '0': this.$lang.buttons.connecting,
+          '-1': this.$lang.buttons.error,
         }
       }
     },
@@ -177,18 +177,18 @@
         this.$fetch.apiClient.remove({
           id: id
         }).then(() => {
-          this.$message.success(this.$lang[this.$store.state.lang].messages.successDelete)
+          this.$message.success(this.$lang.messages.successDelete)
           this.loadData = false
           this.getClientData()
         }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorDelete)
+          this.$message.error(this.$lang.messages.errorDelete)
           this.loadData = false
         })
       },
       onSingleDelete(id) {
-        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
-          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
-          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
+        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
+          confirmButtonText: this.$lang.buttons.yes,
+          cancelButtonText: this.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.deleteClient(id)
@@ -196,9 +196,9 @@
       },
       //批量删除
       onBatchDelete(){
-        this.$confirm(this.$lang[this.$store.state.lang].messages.confirm, this.$lang[this.$store.state.lang].buttons.confirm, {
-          confirmButtonText: this.$lang[this.$store.state.lang].buttons.yes,
-          cancelButtonText: this.$lang[this.$store.state.lang].buttons.no,
+        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
+          confirmButtonText: this.$lang.buttons.yes,
+          cancelButtonText: this.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true

@@ -193,7 +193,7 @@
 
         }).catch((error) => {
           this.fetching = false
-          this.$message.error(this.$lang[this.$store.state.lang].messages.errorParse + error)
+          this.$message.error(this.$lang.messages.errorParse + error)
         })
       }
     }

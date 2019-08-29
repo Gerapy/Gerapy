@@ -39,7 +39,7 @@
           this.onSubmitLoading = true
           let formData = this.$refs.substance.formData
           this.$fetch.apiTask.update({id: this.routeId}, formData).then(() => {
-            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
+            this.$message.success(this.$lang.messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {
             this.onSubmitLoading = false

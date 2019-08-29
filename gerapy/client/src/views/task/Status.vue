@@ -88,7 +88,7 @@
         }).then(({data: {data: data}}) => {
           this.jobs = data
         }).catch(() => {
-          this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+          this.$message.error(this.$lang.messages.loadError)
         })
       },
       getTaskData() {
@@ -98,7 +98,7 @@
           }).then(({data: {data: data}}) => {
             this.task = data
           }).catch(() => {
-            this.$message.error(this.$lang[this.$store.state.lang].messages.loadError)
+            this.$message.error(this.$lang.messages.loadError)
           })
         }
       },

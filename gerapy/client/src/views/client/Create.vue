@@ -77,26 +77,26 @@
           name: [
             {
               required: true,
-              message: this.$lang[this.$store.state.lang].columns.name + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              message: this.$lang.columns.name + ' ' + this.$lang.messages.isNull,
               trigger: 'blur'
             },
           ],
           ip: [
             {
               required: true,
-              message: this.$lang[this.$store.state.lang].columns.ip + ' ' + this.$lang[this.$store.state.lang].messages.isNull,
+              message: this.$lang.columns.ip + ' ' + this.$lang.messages.isNull,
               trigger: 'blur'
             }
           ],
           port: [
             {
               required: true,
-              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.isNull
+              message: this.$lang.columns.port + ' ' + this.$lang.messages.isNull
               , trigger: 'blur'
             },
             {
               pattern: port,
-              message: this.$lang[this.$store.state.lang].columns.port + ' ' + this.$lang[this.$store.state.lang].messages.notValid,
+              message: this.$lang.columns.port + ' ' + this.$lang.messages.notValid,
               trigger: 'blur'
             }
             ,
@@ -114,7 +114,7 @@
           this.$fetch.apiClient.create(
             this.form
           ).then(() => {
-            this.$message.success(this.$lang[this.$store.state.lang].messages.successSave)
+            this.$message.success(this.$lang.messages.successSave)
             this.onSubmitLoading = false
           }).catch(() => {
             this.onSubmitLoading = false
