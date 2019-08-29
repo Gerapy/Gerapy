@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea
 /.vscode
+/.vagrant
 *.pyc
 /gerapy.egg-info
 /dist
