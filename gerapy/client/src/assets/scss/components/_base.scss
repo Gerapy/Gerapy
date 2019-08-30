@@ -7,11 +7,19 @@ html, body {
   background-color: #eff0f4;
 }
 
-.fl {
+pre {
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.fl, .pull-left {
   float: left;
 }
 
-.fr {
+.fr, .pull-right {
   float: right;
 }
 
@@ -68,4 +76,8 @@ html, body {
 .el-button--mini {
   padding: 4px !important;
   margin: 0 2px !important;
+}
+
+.el-collapse-item__header {
+  font-weight: initial;
 }
