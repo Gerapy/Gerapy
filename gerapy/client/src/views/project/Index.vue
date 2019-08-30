@@ -18,7 +18,7 @@
 			</div>
 		</el-dialog>
 		<panel-title :title="$lang.objects.project">
-			<el-button @click.stop="getProjectData" size="mini">
+			<el-button @click.stop="onRefresh" size="mini">
 				<i class="fa fa-refresh"></i>
 				刷新
 			</el-button>
@@ -49,7 +49,7 @@
 							<el-button type="primary" icon="el-icon-check" size="mini" round></el-button>
             </span>
 						<span v-else>
-							<el-button type="warning" icon="el-icon-close" size="mini" round></el-button>
+							<el-button type="primary" icon="el-icon-close" size="mini" round></el-button>
             </span>
 					</template>
 				</el-table-column>
@@ -62,7 +62,7 @@
 							<el-button type="primary" icon="el-icon-check" size="mini" round></el-button>
             </span>
 						<span v-else>
-							<el-button type="warning" icon="el-icon-close" size="mini" round></el-button>
+							<el-button type="primary" icon="el-icon-close" size="mini" round></el-button>
             </span>
 					</template>
 				</el-table-column>
@@ -165,6 +165,10 @@
 				}).catch(() => {
 					this.loading = false
 				})
+			},
+			onRefresh() {
+				this.$message.info(this.$store.getters.$lang.messages.loading)
+				this.getProjectData()
 			},
 			onDeleteProject(name) {
 				this.loading = true

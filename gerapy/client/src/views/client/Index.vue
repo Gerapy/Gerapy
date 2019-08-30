@@ -61,7 +61,7 @@
 							<el-button type="primary" icon="el-icon-check" size="mini" round></el-button>
             </span>
 						<span v-else>
-							<el-button type="warning" icon="el-icon-close" size="mini" round></el-button>
+							<el-button type="primary" icon="el-icon-close" size="mini" round></el-button>
             </span>
 					</template>
 				</el-table-column>

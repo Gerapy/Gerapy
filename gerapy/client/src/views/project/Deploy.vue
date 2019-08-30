@@ -8,7 +8,7 @@
 					<div class="panel-body">
 						<el-table
 							:data="clients"
-							v-loading="loadData"
+							v-loading="loading"
 							:element-loading-text="$lang.messages.loading"
 							@selection-change="onBatchSelect"
 							:style="{width: '100%'}">
@@ -78,16 +78,16 @@
 							</el-table-column>
 						</el-table>
 						<bottom-bar>
-							<el-button
-								type="info"
-								size="mini"
-								:disabled="batchSelect.length === 0"
-								@click="onBatchDeploy"
-								slot-scope="handler">
-              <span>
-                <i class="fa fa-cloud-upload"></i>
-                {{ $lang.buttons.batchDeploy }}
-              </span>
+							<el-button slot="handler"
+												 type="primary"
+												 size="mini"
+												 :disabled="batchSelect.length === 0"
+												 @click="onBatchDeploy"
+												 slot-scope="handler">
+									<span>
+										<i class="fa fa-cloud-upload"></i>
+										{{ $lang.buttons.batchDeploy }}
+									</span>
 							</el-button>
 						</bottom-bar>
 					</div>
@@ -131,7 +131,7 @@
 							<el-form-item>
 								<el-button type="primary" size="small" @click="onBuild">
 									<i class="fa fa-codepen"></i>
-									<span v-if="buildInfo.egg">{{ $lang.buttons.re
+									<span v-if="buildInfo.egg"> {{ $lang.buttons.re
                     }}</span>{{ $lang.buttons.build }}
 								</el-button>
 							</el-form-item>
@@ -152,10 +152,8 @@
 				buildInfo: {},
 				notBuildText: this.$store.getters.$lang.messages.notBuilt,
 				clients: [],
-				//请求时的loading效果
-				loadData: false,
+				loading: false,
 				projectName: this.$route.params.name,
-				//批量选择数组
 				batchSelect: [],
 				projectDescriptions: {},
 				projectDateTimes: {},
@@ -191,15 +189,15 @@
 				console.log(this.batchSelect)
 			},
 			getBuildInfo() {
-				this.loadData = true
+				this.loading = true
 				this.$http.get(this.format(this.$store.state.url.project.build, {
 					name: this.projectName
 				})).then(({data: data}) => {
 					this.buildInfo = data
 					console.log(data)
-					this.loadData = false
+					this.loading = false
 				}).catch(() => {
-					this.loadData = false
+					this.loading = false
 				})
 			},
 			getClientStatus(id) {
@@ -213,50 +211,50 @@
 				})
 			},
 			getClientData() {
-				this.loadData = true
+				this.loading = true
 				this.$http.get(this.$store.state.url.client.index
 				).then(({data: clients}) => {
 					this.clients = clients
-					this.loadData = false
+					this.loading = false
 					this.clients.forEach(({pk: id}) => {
 						this.getProjectVersion(id)
 						this.getClientStatus(id)
 					})
 				}).catch(() => {
-					this.loadData = false
+					this.loading = false
 				})
 			},
 			deploy(id) {
 				if (this.clientsStatus[id]) {
-					this.$http.post(this.$store.state.url.client.projectDeploy, {
+					this.$http.post(this.format(this.$store.state.url.client.projectDeploy, {
 						id: id,
 						name: this.projectName,
-					}).then(() => {
+					})).then(() => {
 						this.$message.success(this.$store.getters.$lang.titles.client + ' ' + id + ' ' +
 							this.$store.getters.$lang.messages.successDeploy
 						)
 						this.getProjectVersion(id)
-						this.loadData = false
-					}).catch((data) => {
+						this.loading = false
+					}).catch(() => {
 						this.$message.error(this.$store.getters.$lang.titles.client + ' ' + id + ' ' + this.$store.getters.$lang.messages.errorDeploy)
-						this.loadData = false
+						this.loading = false
 					})
 				} else {
 					this.$message.error(this.$store.getters.$lang.titles.client + ' ' + id + ' ' + this.$store.getters.$lang.messages.errorDeploy)
-					this.loadData = false
+					this.loading = false
 				}
 			},
 			getProjectVersion(id) {
-				this.loadData = true
+				this.loading = true
 				this.$http.get(this.format(this.$store.state.url.client.projectVersion, {
 					id: id,
 					name: this.projectName,
 				})).then(({data: version}) => {
 					this.$set(this.projectDescriptions, id, version['description'])
 					this.$set(this.projectDateTimes, id, version['deployed_at'])
-					this.loadData = false
+					this.loading = false
 				}).catch(() => {
-					this.loadData = false
+					this.loading = false
 				})
 			},
 			onBatchDeploy() {
@@ -265,7 +263,7 @@
 					cancelButtonText: this.$store.getters.$lang.buttons.no,
 					type: 'warning'
 				}).then(() => {
-					this.loadData = true
+					this.loading = true
 					console.log(this.batchSelect)
 					this.batchSelect.forEach(({pk: id}) => {
 						this.deploy(id)
@@ -294,10 +292,10 @@
 					}).then(({data: data}) => {
 						this.buildInfo = data
 						console.log(data)
-						this.loadData = false
+						this.loading = false
 						this.$message.success(this.$store.getters.$lang.messages.successBuild)
 					}).catch(() => {
-						this.loadData = false
+						this.loading = false
 						this.$message.error(this.$store.getters.$lang.messages.errorBuild)
 					})
 				})
