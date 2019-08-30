@@ -89,11 +89,8 @@ def client_status(request, client_id):
     if request.method == 'GET':
         # get client object
         client = Client.objects.get(id=client_id)
-        try:
-            requests.get(scrapyd_url(client.ip, client.port), timeout=3)
-            return JsonResponse({'result': '1'})
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'}, status=500)
+        requests.get(scrapyd_url(client.ip, client.port), timeout=3)
+        return JsonResponse({'result': '1'})
 
 
 def client_update(request, client_id):
@@ -149,12 +146,9 @@ def spider_list(request, client_id, project_name):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         scrapyd = get_scrapyd(client)
-        try:
-            spiders = scrapyd.list_spiders(project_name)
-            spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
-            return JsonResponse(spiders)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'}, status=500)
+        spiders = scrapyd.list_spiders(project_name)
+        spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
+        return JsonResponse(spiders)
 
 
 def spider_start(request, client_id, project_name, spider_name):
@@ -169,11 +163,8 @@ def spider_start(request, client_id, project_name, spider_name):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         scrapyd = get_scrapyd(client)
-        try:
-            job = scrapyd.schedule(project_name, spider_name)
-            return JsonResponse({'job': job})
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'}, status=500)
+        job = scrapyd.schedule(project_name, spider_name)
+        return JsonResponse({'job': job})
 
 
 def project_list(request, client_id):
@@ -186,11 +177,8 @@ def project_list(request, client_id):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         scrapyd = get_scrapyd(client)
-        try:
-            projects = scrapyd.list_projects()
-            return JsonResponse(projects)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'}, status=500)
+        projects = scrapyd.list_projects()
+        return JsonResponse(projects)
 
 
 def project_index(request):

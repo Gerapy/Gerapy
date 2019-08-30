@@ -22,7 +22,9 @@ Vue.mixin({
 	},
 	methods: {
 		// register global methods
-		format: require('string-format-obj')
+		format: require('string-format-obj'),
+		basename: require('path').basename,
+		join: require('path').join
 	}
 })
 

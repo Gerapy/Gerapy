@@ -61,7 +61,7 @@
 							<el-button type="primary" icon="el-icon-check" size="mini" round></el-button>
             </span>
 						<span v-else>
-							<el-button icon="el-icon-close" size="mini" round></el-button>
+							<el-button type="warning" icon="el-icon-close" size="mini" round></el-button>
             </span>
 					</template>
 				</el-table-column>
@@ -88,17 +88,6 @@
 					</template>
 				</el-table-column>
 			</el-table>
-			<div>
-				<el-button
-					type="danger"
-					icon="delete"
-					size="mini"
-					:disabled="batchSelect.length === 0"
-					@click="onBatchDelete"
-					slot-scope="handler">
-					<span>{{ $lang.buttons.batchDelete }}</span>
-				</el-button>
-			</div>
 		</div>
 	</div>
 </template>
@@ -143,10 +132,6 @@
 			},
 			onGetClientStatus(id) {
 				this.$set(this.clientsStatus, id, 0)
-				console.log('x', 'id', id,)
-				console.log('x', this.format(this.$store.state.url.client.status, {
-					id: id
-				}))
 				this.$http.get(this.format(this.$store.state.url.client.status, {
 					id: id
 				})).then(({data: {result: result}}) => {

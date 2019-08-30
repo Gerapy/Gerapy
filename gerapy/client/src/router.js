@@ -31,7 +31,7 @@ const router = new Router({
 			path: '/client/:id/schedule',
 			name: 'clientSchedule',
 			component: () => import('./views/client/Schedule.vue')
-		},		/*
+		},
 
 		// project management
 		{
@@ -39,43 +39,46 @@ const router = new Router({
 			name: 'projectIndex',
 			component: () => import('./views/project/Index.vue')
 		},
-		{
-			path: '/project/:id/edit',
-			name: 'projectEdit',
-			component: () => import('./views/project/Edit.vue')
-		},
-		{
-			path: '/project/:id/configure',
-			name: 'projectConfigure',
-			component: () => import('./views/project/Configure.vue')
-		},
-		{
-			path: '/project/:id/deploy',
-			name: 'projectDeploy',
-			component: () => import('./views/project/Deploy.vue')
-		},
-		// task management
-		{
-			path: '/task',
-			name: 'taskIndex',
-			component: () => import('./views/task/Index.vue')
-		},
-		{
-			path: '/task/:id/create',
-			name: 'taskCreate',
-			component: () => import('./views/task/Create.vue')
-		},
-		{
-			path: '/task/:id/edit',
-			name: 'taskConfigure',
-			component: () => import('./views/task/Edit.vue')
-		},
-		{
-			path: '/task/:id/status',
-			name: 'taskStatus',
-			component: () => import('./views/task/Status.vue')
-		}
-		*/
+
+	{
+		path: '/project/:name/edit',
+		name: 'projectEdit',
+		component: () => import('./views/project/Edit.vue')
+	},
+				/*
+
+	{
+		path: '/project/:name/configure',
+		name: 'projectConfigure',
+		component: () => import('./views/project/Configure.vue')
+	},
+	{
+		path: '/project/:name/deploy',
+		name: 'projectDeploy',
+		component: () => import('./views/project/Deploy.vue')
+	},
+	// task management
+	{
+		path: '/task',
+		name: 'taskIndex',
+		component: () => import('./views/task/Index.vue')
+	},
+	{
+		path: '/task/:id/create',
+		name: 'taskCreate',
+		component: () => import('./views/task/Create.vue')
+	},
+	{
+		path: '/task/:id/edit',
+		name: 'taskConfigure',
+		component: () => import('./views/task/Edit.vue')
+	},
+	{
+		path: '/task/:id/status',
+		name: 'taskStatus',
+		component: () => import('./views/task/Status.vue')
+	}
+	*/
 	]
 })
 

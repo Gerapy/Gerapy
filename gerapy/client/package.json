@@ -13,10 +13,12 @@
     "element-ui": "^2.12.0",
     "font-awesome": "^4.7.0",
     "node-sass": "^4.12.0",
+    "path": "^0.12.7",
     "sass-loader": "^8.0.0",
     "string-format-obj": "^1.1.1",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
+    "vue-codemirror": "^4.0.6",
     "vue-router": "^3.1.2",
     "vuex": "^3.1.1",
     "vuex-persist": "^2.0.1"

@@ -58,8 +58,7 @@
 									<i v-if="['finished'].includes(job.status)" class="fa fa-check"></i>
                   {{ jobStatusText[job.status] }}
                 </el-button>
-                <el-button type="danger" size="mini" class="pull-right m-r-md"
-													 v-if="['pending', 'running'].includes(job.status)" @click.stop="onCancelJob(job.id)">
+                <el-button type="danger" size="mini" class="pull-right m-r-md" v-if="['pending', 'running'].includes(job.status)" @click.stop="onCancelJob(job.id)">
                   <i class="fa fa-remove"></i>
                   <span v-if="['pending'].includes(job.status)">
                     {{ $lang.buttons.cancel }}
@@ -234,7 +233,7 @@
 						this.$set(this.logs, this.logLoadingActive, data)
 						// 加载日志完成
 						this.logLoading = false
-						// 定时任务
+						// 定时任务获取最新爬取日志
 						this.$store.commit(
 							'setTimeout',
 							setTimeout(() => {
