@@ -53,30 +53,28 @@ const router = new Router({
 			name: 'projectConfigure',
 			component: () => import('./views/project/Configure.vue')
 		},
-		/*
+		// task management
+		{
+			path: '/task',
+			name: 'taskIndex',
+			component: () => import('./views/task/Index.vue')
+		},
+		{
+			path: '/task/:id/create',
+			name: 'taskCreate',
+			component: () => import('./views/task/Create.vue')
+		},
+		{
+			path: '/task/:id/edit',
+			name: 'taskEdit',
+			component: () => import('./views/task/Edit.vue')
+		},
+		{
+			path: '/task/:id/status',
+			name: 'taskStatus',
+			component: () => import('./views/task/Status.vue')
+		}
 
-// task management
-{
-path: '/task',
-name: 'taskIndex',
-component: () => import('./views/task/Index.vue')
-},
-{
-path: '/task/:id/create',
-name: 'taskCreate',
-component: () => import('./views/task/Create.vue')
-},
-{
-path: '/task/:id/edit',
-name: 'taskConfigure',
-component: () => import('./views/task/Edit.vue')
-},
-{
-path: '/task/:id/status',
-name: 'taskStatus',
-component: () => import('./views/task/Status.vue')
-}
-*/
 	]
 })
 
