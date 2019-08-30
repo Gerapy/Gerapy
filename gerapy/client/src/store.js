@@ -62,6 +62,9 @@ export default new Vuex.Store({
 				cancelJob: '/api/client/{id}/project/{project}/job/{job}/cancel',
 				projectVersion: '/api/client/{id}/project/{name}/version',
 				projectDeploy: '/api/client/{id}/project/{name}/deploy',
+			},
+			util: {
+				render: '/api/render'
 			}
 		}
 	},

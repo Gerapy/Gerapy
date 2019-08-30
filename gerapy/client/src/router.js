@@ -32,14 +32,12 @@ const router = new Router({
 			name: 'clientSchedule',
 			component: () => import('./views/client/Schedule.vue')
 		},
-
 		// project management
 		{
 			path: '/project',
 			name: 'projectIndex',
 			component: () => import('./views/project/Index.vue')
 		},
-
 		{
 			path: '/project/:name/edit',
 			name: 'projectEdit',
@@ -50,13 +48,12 @@ const router = new Router({
 			name: 'projectDeploy',
 			component: () => import('./views/project/Deploy.vue')
 		},
+		{
+			path: '/project/:name/configure',
+			name: 'projectConfigure',
+			component: () => import('./views/project/Configure.vue')
+		},
 		/*
-
-{
-path: '/project/:name/configure',
-name: 'projectConfigure',
-component: () => import('./views/project/Configure.vue')
-},
 
 // task management
 {

@@ -77,13 +77,8 @@
 </template>
 
 <script>
-  import ElInput from "../../../node_modules/element-ui/packages/input/src/input";
-  import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item";
   export default {
-    components: {
-      ElFormItem,
-      ElInput
-    },
+  	name: 'Mysql',
     props: {
       config: {
         type: Object,
@@ -109,7 +104,6 @@
     },
     methods: {
       onAddTable() {
-        console.log(this.config.tables)
         this.config.tables.push({})
         this.$set(this.config, 'tables', this.config.tables)
       },

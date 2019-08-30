@@ -129,7 +129,7 @@
 	import PanelTitle from '../../components/PanelTitle'
 
 	export default {
-		name: 'projectIndex',
+		name: 'ProjectIndex',
 		data() {
 			return {
 				createProjectDialog: false,

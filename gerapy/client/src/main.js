@@ -9,9 +9,11 @@ import store from './store'
 import {mapGetters} from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueClipboard from 'vue-clipboard2'
 
 Vue.use(ElementUI)
 Vue.use(VueAxios, axios)
+Vue.use(VueClipboard)
 
 Vue.config.productionTip = false
 

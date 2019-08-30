@@ -1,7 +1,6 @@
 <template>
   <div>
     <h4 class="inline">{{ $lang.titles.cookies }}</h4>
-
     <el-collapse>
       <el-collapse-item>
         <template slot="title">

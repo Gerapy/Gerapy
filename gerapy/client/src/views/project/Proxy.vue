@@ -1,9 +1,8 @@
 <template>
   <div>
     <h4 class="inline">{{ $lang.titles.proxy }}</h4>
-
     <el-collapse>
-      <el-collapse-item>
+      <el-collapse-item v-if="proxy">
         <template slot="title">
             <span>
               {{ proxy.uri }}

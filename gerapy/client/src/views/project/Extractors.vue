@@ -58,7 +58,7 @@
 </template>
 
 <script>
-  import extractor from 'pages/project/extractor'
+  import Extractor from './Extractor'
 
   export default {
     name: 'Extractors',
@@ -85,7 +85,7 @@
       }
     },
     components: {
-      extractor,
+      Extractor,
     },
     methods: {
       onAddExtractorItem() {

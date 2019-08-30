@@ -102,7 +102,7 @@ export const ruleItemOptions = [
     value: 'process_request',
     label: 'process_request'
   },
-];
+]
 
 export const ruleItemInit = {
   allow: [],
