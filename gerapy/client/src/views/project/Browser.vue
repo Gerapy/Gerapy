@@ -78,10 +78,10 @@
     },
     methods: {
       onCopy: function (e) {
-        this.$message.success(this.$lang.messages.successCopy)
+        this.$message.success(this.$store.getters.$lang.messages.successCopy)
       },
       onError: function (e) {
-        this.$message.error(this.$lang.messages.errorCopy)
+        this.$message.error(this.$store.getters.$lang.messages.errorCopy)
       },
       hide(){
         this.$emit('hide', false)

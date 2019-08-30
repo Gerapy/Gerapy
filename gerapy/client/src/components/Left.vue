@@ -37,7 +37,7 @@
 		name: 'Left',
 	}
 </script>
-<style>
+<style scoped>
 	.left-side .logo {
 		text-align: left !important;
 	}
@@ -45,5 +45,9 @@
 	.left-side .logo img {
 		width: 150px;
 		margin-left: 10px;
+	}
+
+	.left-side .el-menu {
+		border-right: none;
 	}
 </style>

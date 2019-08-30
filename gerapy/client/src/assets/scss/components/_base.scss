@@ -15,15 +15,15 @@ html, body {
   float: right;
 }
 
-.align_center {
+.align-center {
   text-align: center;
 }
 
-.align_left {
+.align-left {
   text-align: left;
 }
 
-.align_right {
+.align-right {
   text-align: right;
 }
 
@@ -47,34 +47,10 @@ html, body {
   position: absolute;
 }
 
-.m_auto {
-  margin: auto;
-}
-
-.width_100 {
-  width: 100%;
-}
-
-.height_100 {
-  height: 100%;
-}
-
 .nowrap {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.d_box {
-  display: flex;
-  box-sizing: border-box;
-  flex: 1;
-  width: 100%;
-}
-
-.d_boxflex {
-  flex: 1;
-  display: block;
 }
 
 .hr-line-dashed {
@@ -87,4 +63,9 @@ html, body {
 
 .text-center {
   text-align: center;
+}
+
+.el-button--mini {
+  padding: 4px !important;
+  margin: 0 2px !important;
 }

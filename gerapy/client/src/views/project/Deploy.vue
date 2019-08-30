@@ -150,7 +150,7 @@
     data(){
       return {
         buildInfo: {},
-        notBuildText: this.$lang.messages.notBuilt,
+        notBuildText: this.$store.getters.$lang.messages.notBuilt,
         clients: [],
         //请求时的loading效果
         loadData: false,
@@ -166,13 +166,13 @@
           '-1': 'danger',
         },
         statusText: {
-          '1': this.$lang.buttons.normal,
-          '0': this.$lang.buttons.connecting,
-          '-1': this.$lang.buttons.error,
+          '1': this.$store.getters.$lang.buttons.normal,
+          '0': this.$store.getters.$lang.buttons.connecting,
+          '-1': this.$store.getters.$lang.buttons.error,
         },
         rules: {
           description: [
-            {required: true, message: this.$lang.messages.emptyDescription, trigger: 'blur'},
+            {required: true, message: this.$store.getters.$lang.messages.emptyDescription, trigger: 'blur'},
           ]
         }
       }
@@ -234,17 +234,17 @@
             id: id,
             name: this.projectName,
           }).then(() => {
-            this.$message.success(this.$lang.titles.client + ' ' + id + ' ' +
-              this.$lang.messages.successDeploy
+            this.$message.success(this.$store.getters.$lang.titles.client + ' ' + id + ' ' +
+              this.$store.getters.$lang.messages.successDeploy
             )
             this.getProjectVersion(id)
             this.loadData = false
           }).catch((data) => {
-            this.$message.error(this.$lang.titles.client + ' ' + id + ' ' + this.$lang.messages.errorDeploy)
+            this.$message.error(this.$store.getters.$lang.titles.client + ' ' + id + ' ' + this.$store.getters.$lang.messages.errorDeploy)
             this.loadData = false
           })
         } else {
-          this.$message.error(this.$lang.titles.client + ' ' + id + ' ' + this.$lang.messages.errorDeploy)
+          this.$message.error(this.$store.getters.$lang.titles.client + ' ' + id + ' ' + this.$store.getters.$lang.messages.errorDeploy)
           this.loadData = false
         }
       },
@@ -262,9 +262,9 @@
         })
       },
       onBatchDeploy() {
-        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
-          confirmButtonText: this.$lang.buttons.yes,
-          cancelButtonText: this.$lang.buttons.no,
+        this.$confirm(this.$store.getters.$lang.messages.confirm, this.$store.getters.$lang.buttons.confirm, {
+          confirmButtonText: this.$store.getters.$lang.buttons.yes,
+          cancelButtonText: this.$store.getters.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true
@@ -273,14 +273,14 @@
             this.deploy(id)
           })
         }).catch(() => {
-          this.$message.error(this.$lang.messages.errorDeploy)
+          this.$message.error(this.$store.getters.$lang.messages.errorDeploy)
         })
       },
       onDeploy(id) {
         if (this.buildInfo.egg) {
           this.deploy(id)
         } else {
-          this.$message.error(this.$lang.messages.buildFirst)
+          this.$message.error(this.$store.getters.$lang.messages.buildFirst)
         }
       },
       onBuild() {
@@ -297,10 +297,10 @@
             this.buildInfo = data
             console.log(data)
             this.loadData = false
-            this.$message.success(this.$lang.messages.successBuild)
+            this.$message.success(this.$store.getters.$lang.messages.successBuild)
           }).catch(() => {
             this.loadData = false
-            this.$message.error(this.$lang.messages.errorBuild)
+            this.$message.error(this.$store.getters.$lang.messages.errorBuild)
           })
         })
       }

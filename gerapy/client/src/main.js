@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import ElementUI from 'element-ui'
+import 'font-awesome/scss/font-awesome.scss'
 import './assets/scss/element.scss'
 import './assets/scss/main.scss'
 import store from './store'
@@ -14,10 +15,14 @@ Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
-// 注册全局语言配置
 Vue.mixin({
 	computed: {
+		// register global language configuration
 		...mapGetters(['$lang'])
+	},
+	methods: {
+		// register global methods
+		format: require('string-format-obj')
 	}
 })
 

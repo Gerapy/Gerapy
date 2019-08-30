@@ -195,19 +195,19 @@
         this.$fetch.apiProject.projectRemove({
           name: name
         }).then(() => {
-          this.$message.success(this.$lang.messages.successDelete)
+          this.$message.success(this.$store.getters.$lang.messages.successDelete)
           this.loadData = false
           this.getProjectData()
         }).catch((error) => {
           this.loadData = false
-          this.$message.error(this.$lang.messages.errorDelete)
+          this.$message.error(this.$store.getters.$lang.messages.errorDelete)
         })
       },
       // 单个删除
       onSingleDelete(name) {
-        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
-          confirmButtonText: this.$lang.buttons.yes,
-          cancelButtonText: this.$lang.buttons.no,
+        this.$confirm(this.$store.getters.$lang.messages.confirm, this.$store.getters.$lang.buttons.confirm, {
+          confirmButtonText: this.$store.getters.$lang.buttons.yes,
+          cancelButtonText: this.$store.getters.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.deleteProject(name)
@@ -215,9 +215,9 @@
       },
       //批量删除
       onBatchDelete(){
-        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
-          confirmButtonText: this.$lang.buttons.yes,
-          cancelButtonText: this.$lang.buttons.no,
+        this.$confirm(this.$store.getters.$lang.messages.confirm, this.$store.getters.$lang.buttons.confirm, {
+          confirmButtonText: this.$store.getters.$lang.buttons.yes,
+          cancelButtonText: this.$store.getters.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true
@@ -225,19 +225,19 @@
             this.deleteProject(name)
           })
         }).catch(() => {
-          this.$message.error(this.$lang.messages.errorDelete)
+          this.$message.error(this.$store.getters.$lang.messages.errorDelete)
         })
       },
       onCreateProject() {
         this.$fetch.apiProject.projectCreate({
           name: this.projectName
         }).then(() => {
-          this.$message.success(this.$lang.messages.successSave)
+          this.$message.success(this.$store.getters.$lang.messages.successSave)
           this.loadData = false
           this.$router.push({name: 'projectConfigure', params: {name: this.projectName}})
         }).catch((error) => {
           this.loadData = false
-          this.$message.error(this.$lang.messages.errorSave)
+          this.$message.error(this.$store.getters.$lang.messages.errorSave)
         })
       }
     }

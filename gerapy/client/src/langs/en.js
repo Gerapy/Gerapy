@@ -16,6 +16,7 @@ export default {
     tasks: 'tasks',
   },
   buttons: {
+    refresh: 'refresh',
     confirm: 'confirm',
     render: 'render',
     yes: 'yes',

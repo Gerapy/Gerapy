@@ -194,21 +194,21 @@
           name: [
             {
               required: true,
-              message: this.$lang.columns.name + ' ' + this.$lang.messages.isNull,
+              message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
               trigger: 'blur'
             },
           ],
           project: [
             {
               required: true,
-              message: this.$lang.columns.project + ' ' + this.$lang.messages.isNull,
+              message: this.$store.getters.$lang.columns.project + ' ' + this.$store.getters.$lang.messages.isNull,
               trigger: 'blur'
             }
           ],
           spider: [
             {
               required: true,
-              message: this.$lang.columns.spider + ' ' + this.$lang.messages.isNull,
+              message: this.$store.getters.$lang.columns.spider + ' ' + this.$store.getters.$lang.messages.isNull,
               trigger: 'blur'
             }
           ]
@@ -241,7 +241,7 @@
           })
         }).catch(() => {
           this.clients = []
-          this.$message.error(this.$lang.messages.loadError)
+          this.$message.error(this.$store.getters.$lang.messages.loadError)
         })
       },
       getTaskData() {
@@ -251,7 +251,7 @@
           }).then(({data: {data: client}}) => {
             this.formData = client
           }).catch(() => {
-            this.$message.error(this.$lang.messages.loadError)
+            this.$message.error(this.$store.getters.$lang.messages.loadError)
           })
         }
       },

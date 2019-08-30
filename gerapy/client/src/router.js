@@ -3,107 +3,77 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-import store from './store'
-
 const router = new Router({
-	// mode: 'history',
+	mode: 'history',
 	routes: [
 		{
 			path: '/',
 			name: 'home',
 			component: () => import('./views/home/Index.vue')
 		},
-		/*
+		// client management
 		{
-			path: '/login',
-			name: 'login',
-			component: () => import('./views/Login.vue')
+			path: '/client',
+			name: 'clientIndex',
+			component: () => import('./views/client/Index.vue')
 		},
 		{
-			path: '/config/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'configHome',
-					component: () => import('./views/config/Home.vue')
-				},
-				{
-					path: 'edit/:id',
-					name: 'configEdit',
-					component: () => import('./views/config/Edit.vue')
-				}
-			]
+			path: '/client/create',
+			name: 'clientCreate',
+			component: () => import('./views/client/Create.vue')
 		},
 		{
-			path: '/media/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'mediaHome',
-					component: () => import('./views/media/Home.vue')
-				},
-				{
-					path: 'edit/:name',
-					name: 'mediaEdit',
-					component: () => import('./views/media/Edit.vue')
-				}
-			]
+			path: '/client/:id/edit',
+			name: 'clientEdit',
+			component: () => import('./views/client/Edit.vue')
 		},
 		{
-			path: '/detection/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'detectionHome',
-					component: () => import('./views/detection/Home.vue')
-				}
-			]
+			path: '/client/:id/schedule',
+			name: 'clientSchedule',
+			component: () => import('./views/client/Schedule.vue')
+		},		/*
+
+		// project management
+		{
+			path: '/project',
+			name: 'projectIndex',
+			component: () => import('./views/project/Index.vue')
 		},
 		{
-			path: '/task/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'taskHome',
-					component: () => import('./views/task/Home.vue')
-				}
-			]
+			path: '/project/:id/edit',
+			name: 'projectEdit',
+			component: () => import('./views/project/Edit.vue')
 		},
 		{
-			path: '/editor/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'editorHome',
-					component: () => import('./views/editor/Home.vue')
-				},
-				{
-					path: 'edit/:id',
-					name: 'editorEdit',
-					component: () => import('./views/editor/Edit.vue')
-				}
-			]
+			path: '/project/:id/configure',
+			name: 'projectConfigure',
+			component: () => import('./views/project/Configure.vue')
 		},
 		{
-			path: '/script/:domain',
-			component: () => import('./views/Base.vue'),
-			children: [
-				{
-					path: '',
-					name: 'scriptHome',
-					component: () => import('./views/script/Home.vue')
-				},
-				{
-					path: 'edit/:id',
-					name: 'scriptEdit',
-					component: () => import('./views/script/Edit.vue')
-				}
-			]
+			path: '/project/:id/deploy',
+			name: 'projectDeploy',
+			component: () => import('./views/project/Deploy.vue')
+		},
+		// task management
+		{
+			path: '/task',
+			name: 'taskIndex',
+			component: () => import('./views/task/Index.vue')
+		},
+		{
+			path: '/task/:id/create',
+			name: 'taskCreate',
+			component: () => import('./views/task/Create.vue')
+		},
+		{
+			path: '/task/:id/edit',
+			name: 'taskConfigure',
+			component: () => import('./views/task/Edit.vue')
+		},
+		{
+			path: '/task/:id/status',
+			name: 'taskStatus',
+			component: () => import('./views/task/Status.vue')
 		}
 		*/
 	]

@@ -37,116 +37,118 @@ const routes = [{
 }, {
   path: '*',
   redirect: '/404'
-}, {
-  path: '/',
-  redirect: '/home',
-  component: viewPageComponent,
-  children: [{
-    path: '/home',
-    name: 'home',
-    component: homeComponent,
-    meta: {
-      title: "主页",
-      auth: true
-    }
-  }, {
-    path: '/client',
-    name: 'clientIndex',
-    component: clientIndexComponent,
-    meta: {
-      title: "主机管理",
-      auth: false
-    }
-  }, {
-    path: '/client/create',
-    name: 'clientCreate',
-    component: clientCreateComponent,
-    meta: {
-      title: "新增主机",
-      auth: true
-    }
-  }, {
-    path: '/client/:id',
-    name: 'clientEdit',
-    component: clientEditComponent,
-    meta: {
-      title: "修改主机",
-      auth: true
-    }
-  }, {
-    path: '/client/:id/schedule',
-    name: 'clientSchedule',
-    component: clientScheduleComponent,
-    meta: {
-      title: "调度主机",
-      auth: true
-    }
-  }, {
-    path: '/project',
-    name: 'projectIndex',
-    component: projectIndexComponent,
-    meta: {
-      title: "项目管理",
-      auth: false
-    }
-  }, {
-    path: '/project/:name/edit',
-    name: 'projectEdit',
-    component: projectEditComponent,
-    meta: {
-      title: "项目编辑",
-      auth: true
-    }
-  }, {
-    path: '/project/:name/configure',
-    name: 'projectConfigure',
-    component: projectConfigureComponent,
-    meta: {
-      title: "项目配置",
-      auth: true
-    }
-  }, {
-    path: '/project/:name/deploy',
-    name: 'projectDeploy',
-    component: projectDeployComponent,
-    meta: {
-      title: "项目部署",
-      auth: true
-    }
-  }, {
-    path: '/task',
-    name: 'taskIndex',
-    component: taskIndexComponent,
-    meta: {
-      title: "任务管理",
-      auth: false
-    }
-  }, {
-    path: '/task/create',
-    name: 'taskCreate',
-    component: taskCreateComponent,
-    meta: {
-      title: "任务添加",
-      auth: false
-    }
-  }, {
-    path: '/task/:id/edit',
-    name: 'taskEdit',
-    component: taskEditComponent,
-    meta: {
-      title: "任务编辑",
-      auth: true
-    }
-  }, {
-    path: '/task/:id/status',
-    name: 'taskStatus',
-    component: taskStatusComponent,
-    meta: {
-      title: "任务状态",
-      auth: true
-    }
+},
+  {
+    path: '/',
+    redirect: '/home',
+    component: viewPageComponent,
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: homeComponent,
+        meta: {
+          title: "主页",
+          auth: true
+        }
+      }, {
+        path: '/client',
+        name: 'clientIndex',
+        component: clientIndexComponent,
+        meta: {
+          title: "主机管理",
+          auth: false
+        }
+      }, {
+        path: '/client/create',
+        name: 'clientCreate',
+        component: clientCreateComponent,
+        meta: {
+          title: "新增主机",
+          auth: true
+        }
+      }, {
+        path: '/client/:id',
+        name: 'clientEdit',
+        component: clientEditComponent,
+        meta: {
+          title: "修改主机",
+          auth: true
+        }
+      }, {
+        path: '/client/:id/schedule',
+        name: 'clientSchedule',
+        component: clientScheduleComponent,
+        meta: {
+          title: "调度主机",
+          auth: true
+        }
+      }, {
+        path: '/project',
+        name: 'projectIndex',
+        component: projectIndexComponent,
+        meta: {
+          title: "项目管理",
+          auth: false
+        }
+      }, {
+        path: '/project/:name/edit',
+        name: 'projectEdit',
+        component: projectEditComponent,
+        meta: {
+          title: "项目编辑",
+          auth: true
+        }
+      }, {
+        path: '/project/:name/configure',
+        name: 'projectConfigure',
+        component: projectConfigureComponent,
+        meta: {
+          title: "项目配置",
+          auth: true
+        }
+      }, {
+        path: '/project/:name/deploy',
+        name: 'projectDeploy',
+        component: projectDeployComponent,
+        meta: {
+          title: "项目部署",
+          auth: true
+        }
+      }, {
+        path: '/task',
+        name: 'taskIndex',
+        component: taskIndexComponent,
+        meta: {
+          title: "任务管理",
+          auth: false
+        }
+      }, {
+        path: '/task/create',
+        name: 'taskCreate',
+        component: taskCreateComponent,
+        meta: {
+          title: "任务添加",
+          auth: false
+        }
+      }, {
+        path: '/task/:id/edit',
+        name: 'taskEdit',
+        component: taskEditComponent,
+        meta: {
+          title: "任务编辑",
+          auth: true
+        }
+      }, {
+        path: '/task/:id/status',
+        name: 'taskStatus',
+        component: taskStatusComponent,
+        meta: {
+          title: "任务状态",
+          auth: true
+        }
+      }]
   }]
-}]
 const router = new VueRouter({
   routes,
   mode: 'hash', //default: hash ,history

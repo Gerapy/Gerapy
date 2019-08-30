@@ -92,9 +92,9 @@
         //批量选择数组
         batchSelect: [],
         statusText: {
-          '1': this.$lang.buttons.normal,
-          '0': this.$lang.buttons.connecting,
-          '-1': this.$lang.buttons.error,
+          '1': this.$store.getters.$lang.buttons.normal,
+          '0': this.$store.getters.$lang.buttons.connecting,
+          '-1': this.$store.getters.$lang.buttons.error,
         }
       }
     },
@@ -131,18 +131,18 @@
         this.$fetch.apiTask.remove({
           id: id
         }).then(() => {
-          this.$message.success(this.$lang.messages.successDelete)
+          this.$message.success(this.$store.getters.$lang.messages.successDelete)
           this.loadData = false
           this.getTaskData()
         }).catch(() => {
-          this.$message.error(this.$lang.messages.errorDelete)
+          this.$message.error(this.$store.getters.$lang.messages.errorDelete)
           this.loadData = false
         })
       },
       onSingleDelete(id) {
-        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
-          confirmButtonText: this.$lang.buttons.yes,
-          cancelButtonText: this.$lang.buttons.no,
+        this.$confirm(this.$store.getters.$lang.messages.confirm, this.$store.getters.$lang.buttons.confirm, {
+          confirmButtonText: this.$store.getters.$lang.buttons.yes,
+          cancelButtonText: this.$store.getters.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.deleteTask(id)
@@ -150,9 +150,9 @@
       },
       //批量删除
       onBatchDelete() {
-        this.$confirm(this.$lang.messages.confirm, this.$lang.buttons.confirm, {
-          confirmButtonText: this.$lang.buttons.yes,
-          cancelButtonText: this.$lang.buttons.no,
+        this.$confirm(this.$store.getters.$lang.messages.confirm, this.$store.getters.$lang.buttons.confirm, {
+          confirmButtonText: this.$store.getters.$lang.buttons.yes,
+          cancelButtonText: this.$store.getters.$lang.buttons.no,
           type: 'warning'
         }).then(() => {
           this.loadData = true

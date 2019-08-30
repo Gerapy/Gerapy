@@ -252,13 +252,13 @@
           configuration: this.configuration
         }).then(({data: {status: status, message: message}}) => {
           if (status == '1') {
-            this.$message.success(this.$lang.messages.successSave)
+            this.$message.success(this.$store.getters.$lang.messages.successSave)
           } else {
             this.error = message
           }
           this.savingProject = false
         }).catch(({data: {message: message}}) => {
-          this.$message.error(this.$lang.messages.errorSave)
+          this.$message.error(this.$store.getters.$lang.messages.errorSave)
           this.savingProject = false
         })
       },
@@ -286,14 +286,14 @@
       },
       onGenerate() {
         if (this.projectBuiltAt) {
-          this.$confirm(this.$lang.messages.reGenerate, this.$lang.buttons.confirm, {
-            confirmButtonText: this.$lang.buttons.yes,
-            cancelButtonText: this.$lang.buttons.no,
+          this.$confirm(this.$store.getters.$lang.messages.reGenerate, this.$store.getters.$lang.buttons.confirm, {
+            confirmButtonText: this.$store.getters.$lang.buttons.yes,
+            cancelButtonText: this.$store.getters.$lang.buttons.no,
             type: 'warning'
           }).then(() => {
             this.generateProject()
           }).catch(() => {
-            this.$message.error(this.$lang.messages.errorDelete)
+            this.$message.error(this.$store.getters.$lang.messages.errorDelete)
           })
         } else {
           this.generateProject()

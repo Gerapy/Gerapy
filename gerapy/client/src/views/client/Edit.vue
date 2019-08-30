@@ -1,142 +1,139 @@
 <template>
-  <div class="panel">
-    <panel-title :title="$route.meta.title"></panel-title>
-    <div class="panel-body"
-         v-loading="loadData"
-         :element-loading-text="$lang.messages.loading">
-      <el-row>
-        <el-col :span="8">
-          <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-            <el-form-item :label="$lang.columns.name" prop="name">
-              <el-input v-model="form.name"
-                        :placeholder="$lang.messages.enter + ' ' + $lang.columns.name"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item :label="$lang.columns.ip" prop="ip">
-              <el-input v-model="form.ip"
-                        :placeholder="$lang.messages.enter + ' ' + $lang.columns.ip"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item :label="$lang.columns.port" prop="port">
-              <el-input v-model="form.port"
-                        :placeholder="$lang.messages.enter + ' ' + $lang.columns.port"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item :label="$lang.columns.auth" prop="auth">
-              <el-switch
-                v-model="form.auth">
-              </el-switch>
-            </el-form-item>
-            <el-form-item :label="$lang.columns.username" prop="username" v-if="form.auth">
-              <el-input v-model="form.username"
-                        :placeholder="$lang.messages.enter + ' ' + $lang.columns.username"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item :label="$lang.columns.password" prop="password" v-if="form.auth">
-              <el-input v-model="form.password" type="password"
-                        :placeholder="$lang.messages.enter + ' ' + $lang.columns.password"
-                        size="small"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
-                <i class="fa fa-check"></i>
-                {{ $lang.buttons.update }}
-              </el-button>
-              <el-button @click="$router.back()" size="small">
-                <i class="fa fa-reply"></i>
-                {{ $lang.buttons.return }}
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-    </div>
+	<div class="panel">
+		<panel-title :title="$route.meta.title"></panel-title>
+		<div class="panel-body"
+				 v-loading="loadData"
+				 :element-loading-text="$lang.messages.loading">
+			<el-row>
+				<el-col :span="8">
+					<el-form ref="form" :model="form" :rules="rules" label-width="100px">
+						<el-form-item :label="$lang.columns.name" prop="name">
+							<el-input v-model="form.name"
+												:placeholder="$lang.messages.enter + ' ' + $lang.columns.name"
+												size="small"></el-input>
+						</el-form-item>
+						<el-form-item :label="$lang.columns.ip" prop="ip">
+							<el-input v-model="form.ip"
+												:placeholder="$lang.messages.enter + ' ' + $lang.columns.ip"
+												size="small"></el-input>
+						</el-form-item>
+						<el-form-item :label="$lang.columns.port" prop="port">
+							<el-input v-model="form.port"
+												:placeholder="$lang.messages.enter + ' ' + $lang.columns.port"
+												size="small"></el-input>
+						</el-form-item>
+						<el-form-item :label="$lang.columns.auth" prop="auth">
+							<el-switch
+								v-model="form.auth">
+							</el-switch>
+						</el-form-item>
+						<el-form-item :label="$lang.columns.username" prop="username" v-if="form.auth">
+							<el-input v-model="form.username"
+												:placeholder="$lang.messages.enter + ' ' + $lang.columns.username"
+												size="small"></el-input>
+						</el-form-item>
+						<el-form-item :label="$lang.columns.password" prop="password" v-if="form.auth">
+							<el-input v-model="form.password" type="password"
+												:placeholder="$lang.messages.enter + ' ' + $lang.columns.password"
+												size="small"></el-input>
+						</el-form-item>
+						<el-form-item>
+							<el-button type="primary" size="small" @click="onSubmitForm" :loading="onSubmitLoading">
+								<i class="fa fa-check"></i>
+								{{ $lang.buttons.update }}
+							</el-button>
+							<el-button @click="$router.back()" size="small">
+								<i class="fa fa-reply"></i>
+								{{ $lang.buttons.return }}
+							</el-button>
+						</el-form-item>
+					</el-form>
+				</el-col>
+			</el-row>
+		</div>
 
-  </div>
+	</div>
 </template>
-<script type="text/javascript">
-  import {panelTitle} from 'components'
-  import {ip, port} from '../../common/tools/regex'
+<script>
+	import PanelTitle from '../../components/PanelTitle'
+	import {ip, port} from '../../utils/regex'
 
-  export default{
-    data(){
-      return {
-        form: {
-          name: '',
-          ip: '',
-          port: '',
-          description: '',
-          auth: false,
-          username: '',
-          password: ''
-        },
-        routeId: this.$route.params.id,
-        loadData: false,
-        onSubmitLoading: false,
-        rules: {
-          name: [
-            {
-              required: true,
-              message: this.$lang.columns.name + ' ' + this.$lang.messages.isNull,
-              trigger: 'blur'
-            },
-          ],
-          ip: [
-            {
-              required: true,
-              message: this.$lang.columns.ip + ' ' + this.$lang.messages.isNull,
-              trigger: 'blur'
-            }
-          ],
-          port: [
-            {
-              pattern: port,
-              message: this.$lang.columns.port + ' ' + this.$lang.messages.notValid,
-              trigger: 'blur'
-            }
-            ,
-          ]
-        }
-
-      }
-    },
-    created(){
-      console.log('RouterID', this.routeId)
-      this.routeId !== null && this.getFormData()
-    },
-    methods: {
-      getFormData(){
-        this.loadData = true
-        this.$fetch.apiClient.show({
-          id: this.routeId
-        }).then(({data: data}) => {
-          this.form = data
-          this.form.auth = data.auth ? true : false
-          this.loadData = false
-        }).catch(() => {
-          this.loadData = false
-        })
-      },
-      //提交
-      onSubmitForm(){
-        this.$refs.form.validate((valid) => {
-          if (!valid)
-            return false
-          this.onSubmitLoading = true
-          this.$fetch.apiClient.update({
-              id: this.form.id
-            }, this.form
-          ).then(() => {
-            this.$message.success(this.$lang.messages.successSave)
-            this.onSubmitLoading = false
-          }).catch(() => {
-            this.onSubmitLoading = false
-          })
-        })
-      }
-    },
-    components: {
-      panelTitle
-    }
-  }
+	export default {
+		data() {
+			return {
+				form: {
+					name: '',
+					ip: '',
+					port: '',
+					description: '',
+					auth: false,
+					username: '',
+					password: ''
+				},
+				routeId: this.$route.params.id,
+				loadData: false,
+				onSubmitLoading: false,
+				rules: {
+					name: [
+						{
+							required: true,
+							message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
+							trigger: 'blur'
+						},
+					],
+					ip: [
+						{
+							required: true,
+							message: this.$store.getters.$lang.columns.ip + ' ' + this.$store.getters.$lang.messages.isNull,
+							trigger: 'blur'
+						}
+					],
+					port: [
+						{
+							pattern: port,
+							message: this.$store.getters.$lang.columns.port + ' ' + this.$store.getters.$lang.messages.notValid,
+							trigger: 'blur'
+						}
+					]
+				}
+			}
+		},
+		created() {
+			this.routeId !== null && this.onGetFormData()
+		},
+		methods: {
+			onGetFormData() {
+				this.loadData = true
+				this.$http.get(this.format(this.$store.state.url.client.show, {
+					id: this.routeId
+				})).then(({data: data}) => {
+					this.form = data
+					this.form.auth = !!data.auth
+					this.loadData = false
+				}).catch(() => {
+					this.loadData = false
+				})
+			},
+			onSubmitForm() {
+				this.$refs.form.validate((valid) => {
+					if (!valid) {
+						return false
+					}
+					this.onSubmitLoading = true
+					this.$http.post(this.format(this.$store.state.url.client.update, {
+							id: this.form.id
+						}), this.form
+					).then(() => {
+						this.$message.success(this.$store.getters.$lang.messages.successSave)
+						this.onSubmitLoading = false
+					}).catch(() => {
+						this.onSubmitLoading = false
+					})
+				})
+			}
+		},
+		components: {
+			PanelTitle
+		}
+	}
 </script>
