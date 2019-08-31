@@ -37,55 +37,57 @@
 					:title="$lang.titles.error"
 					type="error"
 					:closable="false">
-					<template slot-scope="description">
+					<template slot>
             <pre>
               {{ error }}
             </pre>
 					</template>
 				</el-alert>
 			</el-col>
-			<el-tabs v-model="activeTab">
-				<el-tab-pane label="Follows" name="follows">
-					<el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
-						<h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
-						<div v-for="followRequest in followRequests">
-							<div class="follow-request">
-              <span :span="24">
-                {{ followRequest.url }}
-              </span>
-								<el-button class="pull-right btn-follow" @click="onFollow(followRequest)" size="mini" type="primary">
-									<i class="fa fa-play"></i>
-								</el-button>
+			<el-col :span="24">
+				<el-tabs v-model="activeTab">
+					<el-tab-pane label="Follows" name="follows">
+						<el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
+							<h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
+							<div v-for="followRequest in followRequests">
+								<div class="follow-request">
+									<span :span="24">
+									{{ followRequest.url }}
+									</span>
+									<el-button class="pull-right btn-follow" @click="onFollow(followRequest)" size="mini" type="primary">
+										<i class="fa fa-play"></i>
+									</el-button>
+								</div>
 							</div>
-						</div>
-					</el-col>
-					<el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
-						<h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
-						<div>
-							<div class="follow-item" v-for="followItem in followItems">
-								<p :span="24" v-for="(value, key) in followItem" :key="key" class="m-v-sm">
-                  <span class="key m-r-sm">
-                    <el-button type="primary" size="mini">{{ key }}</el-button>
-                  </span>
-									<span class="value">
-                    {{ value }}
-                  </span>
-								</p>
+						</el-col>
+						<el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
+							<h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
+							<div>
+								<div class="follow-item" v-for="followItem in followItems">
+									<p :span="24" v-for="(value, key) in followItem" :key="key" class="m-v-sm">
+										<span class="key m-r-sm">
+											<el-button type="primary" size="mini">{{ key }}</el-button>
+										</span>
+										<span class="value">
+											{{ value }}
+										</span>
+									</p>
+								</div>
 							</div>
+						</el-col>
+					</el-tab-pane>
+					<el-tab-pane label="Web" name="web">
+						<div id="parser-web">
+							<web :html="activeResponseHtml"></web>
 						</div>
-					</el-col>
-				</el-tab-pane>
-				<el-tab-pane label="Web" name="web">
-					<div id="parser-web">
-						<web :html="activeResponseHtml"></web>
-					</div>
-				</el-tab-pane>
-				<el-tab-pane label="HTML" name="html">
-					<div id="parser-html">
-						<pre>{{ activeResponseHtml }}</pre>
-					</div>
-				</el-tab-pane>
-			</el-tabs>
+					</el-tab-pane>
+					<el-tab-pane label="HTML" name="html">
+						<div id="parser-html">
+							<pre>{{ activeResponseHtml }}</pre>
+						</div>
+					</el-tab-pane>
+				</el-tabs>
+			</el-col>
 		</el-row>
 	</div>
 </template>
@@ -94,6 +96,7 @@
 	import Web from './Web'
 
 	export default {
+		name: 'Parser',
 		components: {
 			Web
 		},
@@ -154,9 +157,9 @@
 				this.addActiveRequest()
 				this.fetching = true
 				this.error = null
-				this.$fetch.apiProject.projectParse({
+				this.$http.post(this.format(this.$store.state.url.project.parse, {
 					name: this.projectName,
-				}, {
+				}), {
 					url: this.activeRequest.url,
 					start: this.activeRequest.start,
 					callback: this.activeRequest.callback,
@@ -192,7 +195,6 @@
 						this.fetching = false
 						this.error = data.message
 					}
-
 				}).catch((error) => {
 					this.fetching = false
 					this.$message.error(this.$store.getters.$lang.messages.errorParse + error)

@@ -15,4 +15,5 @@ pymongo>=3.2.0
 pymysql>=0.7.10
 pyquery
 beautifulsoup4>=4.7.0
-
+websocket
+pyppeteer

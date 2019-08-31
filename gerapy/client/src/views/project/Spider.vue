@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<!--<parser :projectName="projectName" :spider="spider"></parser>-->
+		<parser :projectName="projectName" :spider="spider"></parser>
 		<!-- 名称开始 -->
 		<el-form-item>
 			<h4 class="inline m-r-sm">{{ $lang.columns.name }}</h4>
