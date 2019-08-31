@@ -1,172 +1,140 @@
 <template>
-	<div>
-		<div class="panel">
-			<el-alert v-if="error"
-								title="Error"
-								type="error"
-								:closable="false"
-								id="error-message"
-								:show-icon="false">
-				<template slot-scope="description">
-          <pre>
-            {{ error }}
-          </pre>
-				</template>
-			</el-alert>
-			<el-button @click="saveProject" type="primary" id="save-project">
-				<i class="fa fa-spin fa-circle-o-notch" v-if="savingProject"></i>
-				<i class="fa fa-save" v-else></i>
-			</el-button>
-			<panel-title :title="$lang.titles.configureProject">
+	<div id="project-configure">
+		<div class="panel" id="info">
+			<panel-title :title="$lang.titles.project">
 			</panel-title>
-			<div class="panel-body" id="project-create">
-				<el-row>
-					<el-col :span="24">
-						<el-form ref="form" :model="configuration" label-width="100px">
-							<el-form-item>
-								<h4 class="inline m-r-sm">{{ $lang.columns.projectName }}</h4>
-								{{ projectName }}
-							</el-form-item>
-							<el-form-item>
-								<h4 class="inline m-r-sm">{{ $lang.columns.generateCode }}</h4>
-								{{ projectGeneratedAt ? projectGeneratedAt : $lang.descriptions.notGenerated }}
-								<!--<el-button type="primary" class="inline" size="mini"-->
-								<!--@click="onGenerate(projectName)">-->
-								<!--<i class="fa fa-magic"></i>-->
-								<!--{{ $lang.buttons.generate }}-->
-								<!--</el-button>-->
-							</el-form-item>
-							<div class="hr-line-dashed"></div>
-							<!-- 提取实体 -->
-							<h4 class="inline m-v-md">{{ $lang.titles.items }}</h4>
-							<!-- 添加规则配置浮窗 -->
-							<el-dialog :visible.sync="addItem" size="tiny">
-								<el-form>
-									<el-form-item :label="$lang.columns.column">
-										<el-input size="small" v-model="item" class="inline"
-															:placeholder="$lang.columns.column">
-										</el-input>
-									</el-form-item>
-								</el-form>
-								<div slot="footer">
-									<el-button @click="addItem=false" size="small">{{ $lang.buttons.cancel }}
-									</el-button>
-									<el-button @click="onAddItem()"
-														 type="primary" size="small">{{ $lang.buttons.add }}
-									</el-button>
-								</div>
-							</el-dialog>
-
-							<!-- 添加配置浮窗 -->
-							<el-button type="primary" class="inline" size="mini"
-												 @click="onAddInput(configuration.items, {name:'', attrs:{}})">
-								<i class="fa fa-plus"></i>
-								{{ $lang.buttons.addItem }}
-							</el-button>
-							<el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
-													 v-if="configuration.items.length">
-								<el-collapse-item v-for="(item, itemKey, itemIndex) in configuration.items" :name="itemKey"
-																	:key="itemKey">
-									<!-- 每个实体配置 -->
-									<template slot="title">
-                    <span>
-                      {{ $lang.titles.item }} {{ itemKey + 1 }}
-                    </span>
-										<span class="pull-right">
-                      <el-button type="primary" class="inline" size="mini"
-																 @click.stop="addItem=true,activeItem=itemKey">
-                        <i class="fa fa-plus"></i>
-                        {{ $lang.buttons.addColumn }}
-                      </el-button>
-                      <el-button type="danger" size="mini" class="m-r-md"
-																 @click="onDeleteInput(configuration.items, itemKey)">
-                          <i class="fa fa-remove"></i>
-                          {{ $lang.buttons.delete }}
-                      </el-button>
-                    </span>
-									</template>
-									<!-- 每个实体配置 -->
-									<el-form-item>
-										<h4 class="inline m-r-sm">{{ $lang.columns.name }}</h4>
-										<el-input
-											v-model="item['name']" class="inline" :placeholder="$lang.columns.name"
-											size="small"></el-input>
-									</el-form-item>
-									<el-form-item>
-										<div v-for="(attr, attrKey, attrIndex) in item.attrs" :key="attrKey" class="item">
-											<el-button class="inline inline-first m-r-sm" type="primary" size="mini">
-												{{ attrIndex + 1 }}
-											</el-button>
-											<span class="inline inline-second">{{ attrKey }}</span>
-											<el-input
-												v-model="attr['value']" class="inline inline-third"
-												:placeholder="$lang.columns.value"
-												size="small"></el-input>
-											<el-input
-												v-model="attr['in_processor']" class="inline inline-fourth"
-												:placeholder="$lang.columns.inProcessor"
-												size="small"></el-input>
-											<el-input
-												v-model="attr['out_processor']" class="inline inline-fifth"
-												:placeholder="$lang.columns.outProcessor"
-												size="small"></el-input>
-											<el-button type="danger" size="mini" class="m-r-md"
-																 @click="onDeleteInput(item.attrs, attrKey)">
-												<i class="fa fa-remove"></i>
-												{{ $lang.buttons.delete }}
-											</el-button>
-										</div>
-									</el-form-item>
-								</el-collapse-item>
-							</el-collapse>
-							<!-- 提取实体结束 -->
-
-							<!-- 爬虫配置 -->
-							<h4 class="inline m-v-md">{{ $lang.titles.listSpider }}</h4>
-
-							<el-button type="primary" class="inline" size="mini"
-												 @click="onAddSpider">
-								<i class="fa fa-plus"></i>
-								{{ $lang.buttons.addSpider }}
-							</el-button>
-
-							<el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
-
-								<el-collapse-item v-for="(spider, spiderKey, spiderIndex) in configuration.spiders" :name="spiderKey"
-																	:key="spiderKey">
-									<spider :projectName="projectName" :spider="spider" :spiderKey="spiderKey"
-													:items="configuration.items" :onAddInput="onAddInput"
-													:onDeleteInput="onDeleteInput"></spider>
-									<template slot="title">
-                    <span>
-                      <el-button class="inline m-r-sm" type="primary" size="mini">
-                          {{ spiderKey + 1 }}
-                      </el-button>
-                    </span>
-										<span>
-                      {{ spider.name }}
-                    </span>
-										<span class="pull-right">
-                    <el-button type="danger" size="mini" class="m-r-md"
-															 @click="onDeleteInput(configuration.spiders, spiderKey)">
-                    <i class="fa fa-remove"></i>
-                    {{ $lang.buttons.delete }}
-                    </el-button>
-                    </span>
-									</template>
-								</el-collapse-item>
-							</el-collapse>
-							<!-- 爬虫配置结束 -->
-						</el-form>
-					</el-col>
-				</el-row>
-			</div>
+			<el-form label-width="140px" label-position="left">
+				<el-form-item :label="$lang.columns.projectName">
+					{{ projectName }}
+				</el-form-item>
+				<el-form-item :label="$lang.columns.generateCode">
+					{{ projectGeneratedAt ? projectGeneratedAt : $lang.descriptions.notGenerated }}
+				</el-form-item>
+			</el-form>
 		</div>
+		<!-- 实体配置 -->
+		<div class="panel" id="items">
+			<panel-title :title="$lang.titles.items">
+			</panel-title>
+			<el-form label-width="100px">
+				<el-form-item label-width="0px">
+					<el-button type="primary" class="inline" size="mini"
+										 @click="onAddInput(configuration.items, {name:'', attrs:{}})">
+						<i class="fa fa-plus"></i>
+						{{ $lang.buttons.addItem }}
+					</el-button>
+				</el-form-item>
+
+				<!-- 添加规则配置浮窗 -->
+				<el-dialog :visible.sync="addItem" size="tiny">
+					<el-form>
+						<el-form-item :label="$lang.columns.column">
+							<el-input size="small" v-model="column" class="inline"
+												:placeholder="$lang.columns.column">
+							</el-input>
+						</el-form-item>
+					</el-form>
+					<div slot="footer">
+						<el-button @click="addItem = false" size="small">{{ $lang.buttons.cancel }}
+						</el-button>
+						<el-button @click="onAddItem()"
+											 type="primary" size="small">{{ $lang.buttons.add }}
+						</el-button>
+					</div>
+				</el-dialog>
+				<!-- 添加规则配置浮窗结束 -->
+
+				<el-form-item label-width="0px">
+					<el-collapse :accordion="accordion" :value="parseInt(configuration.items.length-1)"
+											 v-if="configuration.items.length">
+						<el-collapse-item v-for="(item, itemIndex) in configuration.items" :name="'item' + itemIndex"
+															:key="'item' + itemIndex">
+							<template slot="title">
+								<el-form-item label-width="0" class="inline">
+									<el-button type="primary" size="mini" class="m-r-xs">
+										{{ itemIndex + 1 }}
+									</el-button>
+								</el-form-item>
+								<el-form-item label-width="0" class="inline">
+									{{ item.name }}
+								</el-form-item>
+								<el-form-item label-width="0" class="inline">
+									<el-button type="primary" class="inline" size="mini"
+														 @click.stop="addItem = true, activeItem = itemIndex, column = null">
+										<i class="fa fa-plus"></i>
+										{{ $lang.buttons.addColumn }}
+									</el-button>
+								</el-form-item>
+								<el-form-item>
+									<el-button type="danger" size="mini" class="m-r-md"
+														 @click="$delete(configuration.items, itemIndex)">
+										<i class="fa fa-remove"></i>
+										{{ $lang.buttons.delete }}
+									</el-button>
+								</el-form-item>
+							</template>
+							<item :item="item"></item>
+						</el-collapse-item>
+					</el-collapse>
+				</el-form-item>
+			</el-form>
+		</div>
+		<!-- 实体配置结束 -->
+
+		<!-- 爬虫配置 -->
+		<div class="panel" id="spiders">
+			<panel-title :title="$lang.titles.listSpider">
+			</panel-title>
+
+			<el-form label-width="100px">
+				<el-form-item label-width="0">
+					<el-button type="primary" class="inline" size="mini"
+										 @click="onAddSpider">
+						<i class="fa fa-plus"></i>
+						{{ $lang.buttons.addSpider }}
+					</el-button>
+				</el-form-item>
+				<el-form-item label-width="0">
+					<el-collapse v-model="activeSpider" accordion v-if="configuration.spiders.length">
+						<el-collapse-item v-for="(spider, spiderIndex) in configuration.spiders" :name="spiderIndex"
+															:key="spiderIndex">
+							<spider :projectName="projectName" :spider="spider" :spiderIndex="spiderIndex"
+											:items="configuration.items" :onAddInput="onAddInput"
+											:onDeleteInput="onDeleteInput"></spider>
+							<template slot="title">
+								<el-form-item label-width="0" class="inline">
+									<el-button class="inline m-r-sm" type="primary" size="mini">
+										{{ spiderIndex + 1 }}
+									</el-button>
+								</el-form-item>
+								<el-form-item label-width="0" class="inline">
+									{{ spider.name }}
+								</el-form-item>
+								<el-form-item label-width="0" class="inline">
+									<el-button type="danger" size="mini" class="m-r-md"
+														 @click="onDeleteInput(configuration.spiders, spiderIndex)">
+										<i class="fa fa-remove"></i>
+										{{ $lang.buttons.delete }}
+									</el-button>
+								</el-form-item>
+							</template>
+						</el-collapse-item>
+					</el-collapse>
+				</el-form-item>
+			</el-form>
+		</div>
+		<!-- 爬虫配置结束 -->
+
+		<el-button @click="saveProject" type="primary" id="save">
+			<i class="fa fa-spin fa-circle-o-notch" v-if="savingProject"></i>
+			<i class="fa fa-save" v-else></i>
+		</el-button>
 	</div>
 </template>
 <script>
 	import PanelTitle from '../../components/PanelTitle'
 	import Spider from './Spider'
+	import Item from './Item'
 
 	export default {
 		name: 'ProjectConfigure',
@@ -184,8 +152,7 @@
 				// 提取实体
 				addItem: false,
 				activeItem: null,
-				item: null,
-
+				column: null,
 				configuration: {
 					spiders: [],
 					items: []
@@ -214,7 +181,8 @@
 		},
 		components: {
 			PanelTitle,
-			Spider
+			Spider,
+			Item
 		},
 		created() {
 			this.getProject()
@@ -271,7 +239,7 @@
 				array.push(arg)
 			},
 			onAddItem() {
-				this.$set(this.configuration.items[this.activeItem]['attrs'], this.item, {})
+				this.$set(this.configuration.items[this.activeItem]['attrs'], this.column, {})
 				this.addItem = false
 			},
 			onGenerate() {
@@ -324,78 +292,35 @@
 </script>
 
 <style lang="scss">
-	#error-message {
-		position: fixed;
-		bottom: 40px;
-		z-index: 100;
-		width: 500px;
-		right: 80px;
-		font-size: 13px;
+	#project-configure {
+		#info, #items, #spiders {
+			.el-form {
+				padding: 20px 30px;
+			}
+		}
+		#info {
+			.el-form {
+				.el-form-item {
+					margin-bottom: 0;
+				}
+			}
+		}
 	}
 
 	.inline {
 		display: inline-block;
-		max-width: calc(100% - 80px);
-	}
-
-	.inline-short {
-		max-width: 100px !important;
-	}
-
-	.inline-long {
-		max-width: 400px !important;
-	}
-
-	.wrap {
-		border: 1px dashed #EEE;
-		padding: 20px;
-	}
-
-	#project-create {
-		.inline {
-			max-width: 200px;
+		&.short {
+			max-width: 100px !important;
 		}
-		.el-form-item__content {
-			margin-left: 10px !important;
+		&.medium {
+			max-width: 200px !important;
 		}
-
-		.el-collapse-item__wrap {
-			background-color: white !important;
-		}
-		h4, h5 {
-			font-weight: 200;
-		}
-		.el-textarea {
-			textarea {
-				width: 300px;
-			}
-		}
-		.extractor-rule {
-			.inline-first {
-				width: 100px;
-			}
-			.inline-second {
-				width: calc(100% - 380px);
-			}
-			.inline-third, .inline-fourth, .inline-fifth {
-				width: 200px;
-			}
-		}
-		.item {
-			.inline-first {
-				min-width: 16px;
-			}
-			.inline-second {
-				width: 80px;
-				text-align: center;
-			}
-			.inline-third, .inline-fourth {
-				width: calc((100% - 200px) / 2);
-			}
+		&.long {
+			max-width: 400px !important;
 		}
 	}
 
-	#save-project {
+	#save {
 		position: fixed;
 		width: 40px;
 		height: 40px;
@@ -404,5 +329,6 @@
 		bottom: 20px;
 		z-index: 1000;
 		font-size: 12px;
+		padding-left: 15px;
 	}
 </style>

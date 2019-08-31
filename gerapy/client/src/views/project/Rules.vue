@@ -1,6 +1,12 @@
 <template>
 	<div>
-		<h4 class="inline">{{ $lang.titles.rules }}</h4>
+		<el-form-item :label="$lang.titles.rules">
+			<el-button type="primary" class="inline" size="mini" @click="onAddInput(rules, {})">
+				<i class="fa fa-plus"></i>
+				{{ $lang.buttons.addRule }}
+			</el-button>
+		</el-form-item>
+
 		<!-- 添加规则项配置浮窗 -->
 		<el-dialog :visible.sync="addRuleItem" size="tiny">
 			<el-form>
@@ -25,38 +31,44 @@
 			</div>
 		</el-dialog>
 		<!-- 添加规则项配置浮窗 -->
-		<el-button type="primary" class="inline" size="mini" @click="onAddInput(rules, {})">
-			<i class="fa fa-plus"></i>
-			{{ $lang.buttons.addRule }}
-		</el-button>
-		<el-collapse :value="parseInt(rules.length-1)"
-								 v-if="rules.length">
-			<el-collapse-item v-for="(rule, ruleKey, ruleIndex) in rules" :name="ruleKey"
-												:key="ruleKey">
-				<!-- 每条规则标题及操作配置 -->
-				<template slot="title">
-            <span>
-              {{ $lang.titles.rule }} {{ ruleKey + 1 }}
-            </span>
-					<span class="pull-right">
-              <el-button type="primary" class="inline" size="mini"
-												 @click.stop="addRuleItem=true,activeRule=ruleKey">
-                <i class="fa fa-plus"></i>
-                {{ $lang.buttons.addColumn }}
-              </el-button>
-              <el-button type="danger" size="mini" class="m-r-md"
-												 @click="onDeleteInput(rules, ruleKey)">
-                  <i class="fa fa-remove"></i>
-                  {{ $lang.buttons.delete }}
-              </el-button>
-            </span>
-				</template>
-				<!-- 每条规则标题及操作配置 -->
-				<!-- 每条规则配置选项 -->
-				<rule :rule="rule" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></rule>
-				<!-- 每条规则配置选项 -->
-			</el-collapse-item>
-		</el-collapse>
+		<el-form-item label-width="100px">
+			<el-collapse :value="parseInt(rules.length-1)"
+									 v-if="rules.length">
+				<el-collapse-item v-for="(rule, ruleIndex) in rules" :name="'rule' + ruleIndex"
+													:key="'rule' + ruleIndex">
+					<!-- 每条规则标题及操作配置 -->
+					<template slot="title">
+						<el-form-item class="inline">
+							<el-button class="inline m-r-sm" type="primary" size="mini">
+								{{ ruleIndex + 1 }}
+							</el-button>
+						</el-form-item>
+						<el-form-item class="inline">
+							{{ $lang.titles.rule }} {{ ruleIndex + 1 }}
+						</el-form-item>
+						<el-form-item>
+							<el-button type="primary" class="inline" size="mini"
+												 @click.stop="addRuleItem=true,activeRule=ruleIndex">
+								<i class="fa fa-plus"></i>
+								{{ $lang.buttons.addColumn }}
+							</el-button>
+						</el-form-item>
+						<el-form-item>
+							<el-button type="danger" size="mini" class="m-r-md"
+												 @click="onDeleteInput(rules, ruleIndex)">
+								<i class="fa fa-remove"></i>
+								{{ $lang.buttons.delete }}
+							</el-button>
+						</el-form-item>
+					</template>
+					<!-- 每条规则标题及操作配置 -->
+
+					<!-- 每条规则配置选项 -->
+					<rule :rule="rule" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></rule>
+					<!-- 每条规则配置选项 -->
+				</el-collapse-item>
+			</el-collapse>
+		</el-form-item>
 	</div>
 </template>
 

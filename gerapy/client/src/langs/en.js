@@ -65,6 +65,7 @@ export default {
     deployProject: 'Deploy Project',
     buildProject: 'Build Project',
     configureProject: 'Configure Project',
+    project: 'Project',
     listSpider: 'Spider List',
     client: 'Client',
     item: 'Item',
@@ -85,7 +86,9 @@ export default {
     proxy: 'Proxy',
     cookies: 'Cookies',
     createTask: 'Create Task',
-    editTask: 'Edit Task'
+    editTask: 'Edit Task',
+    field: 'Field',
+    column: 'Column',
   },
   menus: {
     clients: 'Clients',
@@ -161,7 +164,7 @@ export default {
     projectName: 'Project Name',
     generateCode: 'Generate Code',
     column: 'Column',
-    allowedDomains: 'Allowed Domains',
+    allowedDomains: 'Domains',
     startUrls: 'Start Urls',
     innerCode: 'Inner Code',
     outerCode: 'Outer Code',

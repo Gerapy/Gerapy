@@ -81,3 +81,21 @@ pre {
 .el-collapse-item__header {
   font-weight: initial;
 }
+
+.label-left {
+  label {
+    text-align: left !important;
+  }
+}
+
+.label-center {
+  label {
+    text-align: center !important;
+  }
+}
+
+.label-right {
+  label {
+    text-align: right !important;
+  }
+}

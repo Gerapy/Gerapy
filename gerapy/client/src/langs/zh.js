@@ -65,6 +65,7 @@ export default {
 		deployProject: '部署项目',
 		buildProject: '打包项目',
 		configureProject: '配置项目',
+		project: '项目',
 		listSpider: '爬虫列表',
 		client: '主机',
 		item: '实体',
@@ -86,7 +87,8 @@ export default {
 		cookies: 'Cookies',
 		createTask: '创建任务',
 		editTask: '编辑任务',
-
+		field: '字段',
+		column: '字段',
 	},
 	menus: {
 		clients: '主机管理',

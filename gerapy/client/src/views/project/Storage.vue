@@ -1,35 +1,31 @@
 <template>
 	<div>
-		<h4 class="inline">{{ $lang.titles.storage }}</h4>
-		<el-collapse>
-			<el-collapse-item>
-				<template slot="title">
-            <span>
-              MySQL
-            </span>
-					<span class="pull-right m-r-md">
-            <el-switch
-							v-model="storage.mysql.enable">
-            </el-switch>
-          </span>
-				</template>
-				<mysql :config="storage.mysql" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></mysql>
-			</el-collapse-item>
-			<el-collapse-item>
-				<template slot="title">
-            <span>
-              MongoDB
-            </span>
-					<span class="pull-right m-r-md">
-            <el-switch
-							v-model="storage.mongodb.enable">
-            </el-switch>
-          </span>
-				</template>
-				<mongodb :config="storage.mongodb" :items="items" :onAddInput="onAddInput"
-								 :onDeleteInput="onDeleteInput"></mongodb>
-			</el-collapse-item>
-		</el-collapse>
+		<el-form-item :label="$lang.titles.storage">
+			<el-collapse>
+				<el-collapse-item>
+					<template slot="title">
+						<el-form-item class="inline" label-width="80px" label="MongoDB">
+							<el-switch
+								v-model="storage.mongodb.enable">
+							</el-switch>
+						</el-form-item>
+					</template>
+					<mongodb :config="storage.mongodb" :items="items" :onAddInput="onAddInput"
+									 :onDeleteInput="onDeleteInput"></mongodb>
+				</el-collapse-item>
+				<el-collapse-item>
+					<template slot="title">
+						<el-form-item class="inline" label-width="80px" label="MySQL">
+							<el-switch
+								v-model="storage.mysql.enable">
+							</el-switch>
+						</el-form-item>
+					</template>
+					<mysql :config="storage.mysql" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></mysql>
+				</el-collapse-item>
+
+			</el-collapse>
+		</el-form-item>
 	</div>
 </template>
 
