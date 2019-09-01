@@ -168,7 +168,7 @@ export default {
     startUrls: 'Start Urls',
     innerCode: 'Inner Code',
     outerCode: 'Outer Code',
-    customSettings: 'Custom Settings',
+    customSettings: 'Settings',
     classAttrs: 'Class Attrs',
     outProcessor: 'Out Processor',
     inProcessor: 'In Processor',

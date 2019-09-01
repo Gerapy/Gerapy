@@ -41,6 +41,13 @@ class Rule(object):
             self.follow = False if callback else True
         else:
             self.follow = follow
+    
+    def __str__(self):
+        """
+        object to str
+        :return:
+        """
+        return str(self.__dict__.items())
 
 
 class CrawlSpider(BaseSpider):
@@ -99,8 +106,10 @@ class CrawlSpider(BaseSpider):
         :return: new request object
         """
         url = furl(link.url).add(rule.params).url if rule.params else link.url
-        if rule.method == 'POST':
-            r = FormRequest(url=url, formdata=rule.data, headers=rule.headers, priority=rule.priority,
+        # process by method
+        if rule.method.upper() == 'POST':
+            r = FormRequest(url=url, method=rule.method, formdata=rule.data, headers=rule.headers,
+                            priority=rule.priority,
                             dont_filter=rule.dont_filter, callback=self._response_downloaded)
         else:
             r = Request(url=url, method=rule.method, headers=rule.headers, priority=rule.priority,
@@ -108,7 +117,7 @@ class CrawlSpider(BaseSpider):
         # update meta args
         r.meta.update(**rule.meta)
         # update rule index and link text
-        r.meta.update(rule=index, link_text=link.text)
+        # r.meta.update(rule=index, link_text=link.text)
         meta_items = ['dont_redirect', 'dont_retry', 'handle_httpstatus_list', 'handle_httpstatus_all',
                       'dont_cache', 'dont_obey_robotstxt', 'download_timeout', 'max_retry_times', 'proxy', 'render']
         meta_args = {meta_item: getattr(rule, meta_item) for meta_item in meta_items if

@@ -35,7 +35,7 @@
 					</div>
 					<!-- 列表类型 -->
 					<!-- 字符串类型，如 callback, process_request -->
-					<div v-if="typeof value === 'string'">
+					<div v-if="typeof value === 'string' || value === null">
 						<el-form-item class="inline" :style="{width: '500px'}">
 							<el-input
 								v-model="rule[key]" class="inline"

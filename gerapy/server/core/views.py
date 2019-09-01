@@ -1,6 +1,6 @@
 from urllib.parse import unquote
 import base64
-import json, os, requests, time, pytz, pymongo
+import json, os, requests, time, pytz, pymongo, re
 from shutil import rmtree
 from requests.exceptions import ConnectionError
 from os.path import join, exists, dirname
@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from subprocess import Popen, PIPE
+from gerapy import get_logger
 from gerapy.server.core.response import JsonResponse
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
@@ -19,6 +20,8 @@ from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATE
     render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
     get_output_error, bytes2str, clients_of_task, get_job_id
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
+
+logger = get_logger(__name__)
 
 
 def index(request):
@@ -409,38 +412,37 @@ def project_parse(request, project_name):
     :return: requests, items, response
     """
     if request.method == 'POST':
-        print(project_name)
         project_path = join(PROJECTS_FOLDER, project_name)
-        print('Project Path', project_path)
         data = json.loads(request.body)
+        logger.debug('post data %s', data)
         spider_name = data.get('spider')
-        # start = data.get('start', 0)
-        # method = data.get('method', 'GET')
-        # headers = data.get('headers', {})
-        # meta = data.get('meta', {})
-        # url = data.get('url')
-        # callback = data.get('callback')
-        # construct args cmd
         args = {
-            'start': data.get('start', 0),
+            'start': data.get('start', False),
             'method': data.get('method', 'GET'),
             'url': data.get('url'),
-            'callback': data.get('callback')
+            'callback': data.get('callback'),
+            'cookies': "'" + json.dumps(data.get('cookies', {}), ensure_ascii=False) + "'",
+            'headers': "'" + json.dumps(data.get('headers', {}), ensure_ascii=False) + "'",
+            'meta': "'" + json.dumps(data.get('meta', {}), ensure_ascii=False) + "'",
+            'dont_filter': data.get('dont_filter', False),
+            'priority': data.get('priority', 0),
         }
-        # args = ['start', 'method', 'url', 'callback']
         args_cmd = ' '.join(
-            ['--{arg} {value}'.format(arg=arg, value=value) if value else '' for arg, value in args.items()])
+            ['--{arg} {value}'.format(arg=arg, value=value) for arg, value in args.items()])
+        logger.debug('args cmd %s', args_cmd)
         cmd = 'gerapy parse {args_cmd} {project_path} {spider_name}'.format(
             args_cmd=args_cmd,
             project_path=project_path,
             spider_name=spider_name
         )
+        logger.debug('parse cmd %s', cmd)
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        logger.debug('stdout %s, stderr %s', stdout, stderr)
         if not stderr:
-            return JsonResponse({'status': '1', 'result': json.loads(stdout)})
+            return JsonResponse({'status': True, 'result': json.loads(stdout)})
         else:
-            return JsonResponse({'status': '0', 'message': stderr})
+            return JsonResponse({'status': False, 'message': stderr})
 
 
 def project_file_read(request):

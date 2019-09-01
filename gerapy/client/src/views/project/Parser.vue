@@ -2,37 +2,93 @@
 	<div>
 		<el-row class="m-b-md">
 			<el-col :span="24" id="console" class="p-md">
-				<p>
-					<el-button type="primary" size="mini">project</el-button>
+				<el-form-item label-width="80px">
+					<template slot="label">
+						<el-button type="primary" size="mini">project</el-button>
+					</template>
 					{{ projectName }}
-				</p>
-				<p>
-					<el-button type="primary" size="mini">url</el-button>
-					<a :href="activeRequest.url">{{ activeRequest.url }}</a>
-				</p>
-				<p>
-					<el-button type="primary" size="mini">method</el-button>
-					{{ activeRequest.method }}
-				</p>
-				<p>
-					<el-button type="primary" size="mini">callback</el-button>
-					{{ activeRequest.callback }}
-				</p>
-				<el-button class="pull-right btn-run" @click="onRun" size="mini" type="primary">
-					<i class="fa fa-play"></i>
-				</el-button>
-				<span class="pull-right m-r-md">
-          <el-button-group class="btn-group-bf">
-            <el-button @click="onBackward" size="mini" type="primary" :disabled="!canBackward">
-              <i class="fa fa-step-backward"></i>
-            </el-button>
-            <el-button @click="onForward" size="mini" type="primary" :disabled="!canForward">
-              <i class="fa fa-step-forward"></i>
-            </el-button>
-          </el-button-group>
-        </span>
+				</el-form-item>
+				<el-form-item label-width="80px">
+					<template slot="label">
+						<el-button type="primary" size="mini">spider</el-button>
+					</template>
+					{{ spider.name }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request">
+					<template slot="label">
+						<el-button type="primary" size="mini">start</el-button>
+					</template>
+					{{ !!active.request.start }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">url</el-button>
+					</template>
+					{{ active.request.url }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">method</el-button>
+					</template>
+					{{ active.request.method }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">dont_filter</el-button>
+					</template>
+					{{ active.request.dont_filter }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">priority</el-button>
+					</template>
+					{{ active.request.priority }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">method</el-button>
+					</template>
+					{{ active.request.method }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">cookies</el-button>
+					</template>
+					{{ active.request.cookies }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">headers</el-button>
+					</template>
+					{{ active.request.headers }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">meta</el-button>
+					</template>
+					{{ active.request.meta }}
+				</el-form-item>
+				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+					<template slot="label">
+						<el-button type="primary" size="mini">callback</el-button>
+					</template>
+					{{ active.request.callback }}
+				</el-form-item>
+				<el-form-item class="text-right">
+					<el-button-group class="btn-group-bf">
+						<el-button @click="onBackward" size="mini" type="primary" :disabled="!canBackward">
+							<i class="fa fa-step-backward"></i>
+						</el-button>
+						<el-button @click="onForward" size="mini" type="primary" :disabled="!canForward">
+							<i class="fa fa-step-forward"></i>
+						</el-button>
+					</el-button-group>
+					<el-button @click="onRun" size="mini" type="primary" :style="{width: '30px'}">
+						<i class="fa fa-play"></i>
+					</el-button>
+				</el-form-item>
 			</el-col>
-			<el-col :span="24" v-if="error" class="m-t-md">
+			<el-col :span="24" id="error" v-if="error" class="m-t-md">
 				<el-alert
 					:title="$lang.titles.error"
 					type="error"
@@ -44,46 +100,50 @@
 					</template>
 				</el-alert>
 			</el-col>
-			<el-col :span="24">
-				<el-tabs v-model="activeTab">
+			<el-col :span="24" id="follows">
+				<el-tabs v-model="active.tab">
 					<el-tab-pane label="Follows" name="follows">
 						<el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
-							<h4 :class="followRequests.length?'m-b-sm':''+ 'm-l-xs'">Follow Requests</h4>
-							<div v-for="followRequest in followRequests">
+							<p :class="follow.requests.length? 'm-b-sm': ''+ 'm-l-xs'">Follow Requests</p>
+							<div v-for="request in follow.requests">
 								<div class="follow-request">
-									<span :span="24">
-									{{ followRequest.url }}
-									</span>
-									<el-button class="pull-right btn-follow" @click="onFollow(followRequest)" size="mini" type="primary">
-										<i class="fa fa-play"></i>
-									</el-button>
+									<el-form-item class="inline">
+										<el-button type="primary" size="mini">{{ request.method }}</el-button>
+										<span :style="{fontSize: '13px'}">{{ request.url }}</span>
+										<el-button type="primary" size="mini" v-if="request.callback">
+											<i class="fa fa-angle-right"></i>
+											{{ request.callback }}
+										</el-button>
+									</el-form-item>
+									<el-form-item class="inline pull-right" :style="{height: '40px'}">
+										<el-button :style="{marginTop: '10px', width: '30px'}" @click="onFollow(request)" size="mini"
+															 type="primary">
+											<i class="fa fa-play"></i>
+										</el-button>
+									</el-form-item>
 								</div>
 							</div>
 						</el-col>
 						<el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
-							<h4 :class="followItems.length?'m-b-sm':'' + 'm-l-xs'">Follow Items</h4>
-							<div>
-								<div class="follow-item" v-for="followItem in followItems">
-									<p :span="24" v-for="(value, key) in followItem" :key="key" class="m-v-sm">
-										<span class="key m-r-sm">
-											<el-button type="primary" size="mini">{{ key }}</el-button>
-										</span>
-										<span class="value">
-											{{ value }}
-										</span>
-									</p>
-								</div>
+							<p :class="follow.items.length? 'm-b-sm': '' + 'm-l-xs'">Follow Items</p>
+							<div class="follow-item" v-for="item in follow.items">
+								<el-form-item v-for="(value, key) in item" :key="key" label-width="80px">
+									<template slot="label">
+										<el-button type="primary" size="mini" :style="{width: '100%'}">{{ key }}</el-button>
+									</template>
+									{{ value }}
+								</el-form-item>
 							</div>
 						</el-col>
 					</el-tab-pane>
 					<el-tab-pane label="Web" name="web">
-						<div id="parser-web">
-							<web :html="activeResponseHtml"></web>
+						<div id="follow-web">
+							<web :html="active.response.html"></web>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="HTML" name="html">
-						<div id="parser-html">
-							<pre>{{ activeResponseHtml }}</pre>
+						<div id="follow-html">
+							<pre>{{ active.response.html }}</pre>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -110,27 +170,36 @@
 		},
 		data() {
 			return {
-				fetching: false,
-				activeResponseHtml: null,
-				activeTab: 'follows',
-				start: true,
-				activeRequest: {
-					url: null,
-					start: 1
+				active: {
+					response: {},
+					request: {
+						url: null,
+						start: true
+					},
+					index: null,
+					requests: [],
+					tab: 'follows',
 				},
+				follow: {
+					requests: [],
+					items: []
+				},
+				fetching: false,
 				error: null,
-				followRequests: [],
-				followItems: [],
-				activeRequests: [],
-				activeRequestIndex: null,
 			}
 		},
 		computed: {
 			canBackward() {
-				return this.activeRequestIndex >= 1 && this.activeRequests.length >= 2
+				if (!this.active.request || !this.active.requests) {
+					return false
+				}
+				return this.active.index >= 1 && this.active.requests.length >= 2
 			},
 			canForward() {
-				return this.activeRequestIndex >= 0 && this.activeRequestIndex < this.activeRequests.length - 1
+				if (!this.active.request || !this.active.requests) {
+					return false
+				}
+				return this.active.index >= 0 && this.active.index < this.active.requests.length - 1
 			}
 		},
 		methods: {
@@ -138,60 +207,62 @@
 				this.onFetch()
 			},
 			onBackward() {
-				this.activeRequestIndex -= 1
-				this.activeRequest = this.activeRequests[this.activeRequestIndex]
+				this.$set(this.active, 'index', this.active.index - 1)
+				this.$set(this.active, 'request', this.active.requests[this.active.index])
 			},
 			onForward() {
-				this.activeRequestIndex += 1
-				this.activeRequest = this.activeRequests[this.activeRequestIndex]
+				this.$set(this.active, 'index', this.active.index + 1)
+				this.$set(this.active, 'request', this.active.requests[this.active.index])
 			},
 			onFollow(request) {
-				this.activeRequest = request
+				this.$set(this.active, 'request', request)
 				this.onFetch()
 			},
+			// 添加 request 到调试台历史记录中
 			addActiveRequest() {
-				this.activeRequests.push(this.activeRequest)
-				this.activeRequestIndex = this.activeRequests.length - 1
+				this.active.requests.push(this.active.request)
+				this.$set(this.active, 'index', this.active.requests.length - 1)
 			},
 			onFetch() {
 				this.addActiveRequest()
 				this.fetching = true
 				this.error = null
+				// 模拟请求
 				this.$http.post(this.format(this.$store.state.url.project.parse, {
 					name: this.projectName,
 				}), {
-					url: this.activeRequest.url,
-					start: this.activeRequest.start,
-					callback: this.activeRequest.callback,
-					spider: this.spider.name
+					spider: this.spider.name,
+					url: this.active.request.url,
+					start: this.active.request.start,
+					callback: this.active.request.callback,
+					cookies: this.active.request.cookies,
+					headers: this.active.request.headers,
+					method: this.active.request.method,
+					meta: this.active.request.meta,
+					dont_filter: this.active.request.dont_filter,
+					priority: this.active.request.priority
 				}).then(({data: data}) => {
-					if (data.status === '1') {
+					if (data.status === true) {
 						let result = data.result
 						this.fetching = false
-						this.followRequests = []
+						// 后续跟进请求
 						let requests = result.requests
 						if (requests) {
-							requests.forEach((request) => {
-								this.followRequests.push({
-									url: request.url,
-									method: request.method,
-									callback: request.callback,
-								})
-							})
+							this.$set(this.follow, 'requests', requests)
 						}
+						// 后续跟进结果
 						let items = result.items
 						if (items) {
-							this.followItems = []
-							items.forEach((item) => {
-								this.followItems.push(item)
-							})
+							this.$set(this.follow, 'items', items)
 						}
+						// 当前页面响应结果
 						let response = result.response
 						if (response) {
-							this.activeResponseHtml = response.html
+							this.$set(this.active, 'response', response)
 						}
 					}
-					if (data.status === '0') {
+					if (data.status === false) {
+						// 执行出现错误
 						this.fetching = false
 						this.error = data.message
 					}
@@ -219,55 +290,55 @@
 				font-weight: 400;
 			}
 		}
-	}
-
-	.follow-request {
-		position: relative;
-		height: 40px;
-		line-height: 40px;
-		padding-left: 5px;
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		cursor: pointer;
-		border-bottom: 1px solid rgb(223, 230, 236);
-	}
-
-	.follow-item {
-		border-bottom: 1px solid rgb(223, 230, 236);
-	}
-
-	.btn-group-bf {
-		button {
-			min-width: 30px;
+		label {
+			.el-button {
+				width: 100%;
+			}
 		}
 	}
 
-	.btn-run {
-		margin-top: 2px;
-		min-width: 30px;
-	}
-
-	.btn-follow {
-		width: 30px;
-		height: 20px;
-		margin-top: 10px;
-	}
-
-	#follow-requests, #follow-items {
-		border: 1px solid rgb(223, 230, 236);
-		overflow-y: scroll;
-		max-height: 200px;
-	}
-
-	#follow-items {
-		.follow-item {
-			.key {
-				width: 10%;
+	#follows {
+		#follow-requests, #follow-items {
+			border: 1px solid rgb(223, 230, 236);
+			overflow-y: scroll;
+			max-height: 200px;
+		}
+		#follow-items {
+			.follow-item {
+				border-bottom: 1px solid rgb(223, 230, 236);
+				.key {
+					width: 10%;
+				}
+				.value {
+					width: 90%;
+				}
 			}
-			.value {
-				width: 90%;
+		}
+		#follow-requests {
+			.follow-request {
+				position: relative;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 5px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				cursor: pointer;
+				border-bottom: 1px solid rgb(223, 230, 236);
 			}
+		}
+
+		#follow-web {
+			iframe {
+				border: 1px solid #dfe6ec;
+			}
+		}
+
+		#follow-html {
+			max-height: 500px;
+			overflow: scroll;
+			border: 1px solid #dfe6ec;
+			padding: 15px;
 		}
 	}
 
@@ -279,16 +350,4 @@
 		background-color: #28ccaa !important;
 	}
 
-	#parser-web {
-		iframe {
-			border: 1px solid #dfe6ec;
-		}
-	}
-
-	#parser-html {
-		max-height: 500px;
-		overflow: scroll;
-		border: 1px solid #dfe6ec;
-		padding: 15px;
-	}
 </style>

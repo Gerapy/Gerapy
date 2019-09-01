@@ -13,7 +13,7 @@ import json, os, string
 from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.utils import timezone
-from gerapy.server.server.settings import PROJECTS_FOLDER
+from gerapy.settings import PROJECTS_FOLDER
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -157,7 +157,7 @@ def render_template(tpl_file, dst_file, *args, **kwargs):
     template = Template(open(tpl_file, encoding='utf-8').read())
     os.remove(tpl_file)
     result = template.render(vars)
-    #print(result)
+    # print(result)
     
     open(dst_file, 'w', encoding='utf-8').write(result)
 
@@ -187,8 +187,11 @@ def process_request(request):
         'url': request.url,
         'method': request.method,
         'meta': request.meta,
+        'callback': request.callback,
+        'cookies': request.cookies,
         'headers': request.headers,
-        'callback': request.callback
+        'priority': request.priority,
+        'dont_filter': request.dont_filter,
     }
 
 
@@ -287,6 +290,7 @@ def get_items_configuration(configuration):
                 item[attr] = list(item[attr])
     return items
 
+
 def process_custom_settings(spider):
     """
     process custom settings of some config items
@@ -294,6 +298,7 @@ def process_custom_settings(spider):
     :return:
     """
     custom_settings = spider.get('custom_settings')
+    
     def add_dict_to_custom_settings(custom_settings, keys):
         """
         if config doesn't exist, add default value
@@ -318,8 +323,10 @@ def process_custom_settings(spider):
         
         if item['key'] == 'DOWNLOADER_MIDDLEWARES':
             item_data = json.loads(item['value'])
-            if spider.get('cookies', {}).get('enable', {}): item_data['gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
-            if spider.get('proxy', {}).get('enable', {}): item_data['gerapy.downloadermiddlewares.proxy.ProxyMiddleware'] = 555
+            if spider.get('cookies', {}).get('enable', {}): item_data[
+                'gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
+            if spider.get('proxy', {}).get('enable', {}): item_data[
+                'gerapy.downloadermiddlewares.proxy.ProxyMiddleware'] = 555
             item_data['gerapy.downloadermiddlewares.pyppeteer.PyppeteerMiddleware'] = 601
             item_data['scrapy_splash.SplashCookiesMiddleware'] = 723
             item_data['scrapy_splash.SplashMiddleware'] = 725
@@ -331,8 +338,10 @@ def process_custom_settings(spider):
             item['value'] = json.dumps(item_data)
         if item['key'] == 'ITEM_PIPELINES':
             item_data = json.loads(item['value'])
-            if spider.get('storage', {}).get('mysql', {}).get('enable', {}): item_data['gerapy.pipelines.MySQLPipeline'] = 300
-            if spider.get('storage', {}).get('mongodb', {}).get('enable', {}): item_data['gerapy.pipelines.MongoDBPipeline'] = 301
+            if spider.get('storage', {}).get('mysql', {}).get('enable', {}): item_data[
+                'gerapy.pipelines.MySQLPipeline'] = 300
+            if spider.get('storage', {}).get('mongodb', {}).get('enable', {}): item_data[
+                'gerapy.pipelines.MongoDBPipeline'] = 301
             item['value'] = json.dumps(item_data)
     return spider
 

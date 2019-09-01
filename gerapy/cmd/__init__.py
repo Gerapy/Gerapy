@@ -4,6 +4,47 @@ from gerapy.cmd.parse import parse
 from gerapy.cmd.generate import generate
 from gerapy.server.manage import manage
 import argparse
+import json
+
+
+def str2bool(v):
+    """
+    convert string to bool
+    :param v:
+    :return:
+    """
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
+def str2json(v):
+    """
+    convert str to json data
+    :param v:
+    :return:
+    """
+    try:
+        return json.loads(v)
+    except:
+        return None
+
+
+def str2str(v):
+    """
+    convert str to str, process for 'None', 'null', '',
+    :param v:
+    :return:
+    """
+    if v.lower() in ('none', 'null', 'undefined', 'nil', 'false'):
+        return None
+    return str(v)
+
 
 parser = argparse.ArgumentParser()
 
@@ -37,11 +78,16 @@ parser_parse = subparsers.add_parser('parse', help='parse project for debugging'
 parser_parse.add_argument('project', type=str, help='target project')
 parser_parse.add_argument('spider', type=str, help='target spider')
 parser_parse.add_argument('-d', '--dir', default='.', type=str, help='default workspace')
-parser_parse.add_argument('-s', '--start', default=0, type=int, help='parse start requests or not')
+parser_parse.add_argument('-s', '--start', default=False, type=str2bool, nargs='?', const=True,
+                          help='parse start requests or not')
 parser_parse.add_argument('-u', '--url', default='', type=str, help='url to parse')
-parser_parse.add_argument('-c', '--callback', default='parse', type=str, help='callback')
+parser_parse.add_argument('-c', '--callback', default='parse', type=str2str, nargs='?', help='callback')
 parser_parse.add_argument('-m', '--method', default='GET', type=str, help='method')
-parser_parse.add_argument('-a', '--meta', default=None, type=str, help='meta')
+parser_parse.add_argument('-a', '--meta', default=None, type=str2json, nargs='?', help='extra meta info')
+parser_parse.add_argument('-p', '--priority', default=0, type=int, help='priority')
+parser_parse.add_argument('-f', '--dont_filter', default=False, type=str2bool, nargs='?', help='do not filter')
+parser_parse.add_argument('--headers', default=None, type=str2json, nargs='?', help='headers')
+parser_parse.add_argument('--cookies', default=None, type=str2json, nargs='?', help='cookies, list or dict')
 
 # loaddata
 # todo
@@ -54,12 +100,19 @@ parser_dumpdata.add_argument('appname', default='core', nargs='?', type=str, hel
 
 
 def cmd():
+    """
+    run from cmd
+    :return:
+    """
     args = parser.parse_args()
     command = args.command
+    # init workspace for gerapy
     if command == 'init':
         init(args.folder)
+    # generate code according to configuration
     elif command == 'generate':
         generate(args.project)
+    # debug parse for project
     elif command == 'parse':
         parse(args)
     else:

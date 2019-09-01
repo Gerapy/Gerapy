@@ -4,6 +4,11 @@ import json
 
 
 def parse(args):
+    """
+    parse result by request args
+    :param args:
+    :return:
+    """
     project_path = join(args.dir, args.project)
     if args.start:
         results = get_start_requests(project_path, args.spider)

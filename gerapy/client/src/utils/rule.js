@@ -1,4 +1,5 @@
 export const ruleItemOptions = [
+	// in scrapy link extractors
 	{
 		value: 'allow',
 		label: 'allow'
@@ -21,12 +22,49 @@ export const ruleItemOptions = [
 		value: 'restrict_css',
 		label: 'restrict_css'
 	}, {
+		value: 'restrict_text',
+		label: 'restrict_text'
+	}, {
+		value: 'tags',
+		label: 'tags'
+	}, {
+		value: 'attrs',
+		label: 'attrs'
+	}, {
+		value: 'canonicalize',
+		label: 'canonicalize'
+	}, {
+		value: 'unique',
+		label: 'unique'
+	}, {
+		value: 'strip',
+		label: 'strip'
+	}, {
+		value: 'process_value',
+		label: 'process_value'
+	},
+	// scrapy rules
+	{
+		value: 'process_links',
+		label: 'process_links'
+	}, {
+		value: 'process_request',
+		label: 'process_request'
+	}, {
 		value: 'follow',
 		label: 'follow'
 	}, {
+		value: 'cb_kwargs',
+		label: 'cb_kwargs'
+	}, {
+		value: 'meta',
+		label: 'meta'
+	}, {
 		value: 'callback',
 		label: 'callback'
-	}, {
+	},
+	// gerapy rules
+	{
 		value: 'method',
 		label: 'method'
 	}, {
@@ -41,12 +79,6 @@ export const ruleItemOptions = [
 	}, {
 		value: 'dont_filter',
 		label: 'dont_filter'
-	}, {
-		value: 'meta',
-		label: 'meta'
-	}, {
-		value: 'cb_kwargs',
-		label: 'cb_kwargs'
 	}, {
 		value: 'proxy',
 		label: 'proxy'
@@ -77,30 +109,6 @@ export const ruleItemOptions = [
 	}, {
 		value: 'max_retry_times',
 		label: 'max_retry_times'
-	}, {
-		value: 'tags',
-		label: 'tags'
-	}, {
-		value: 'attrs',
-		label: 'attrs'
-	}, {
-		value: 'canonicalize',
-		label: 'canonicalize'
-	}, {
-		value: 'unique',
-		label: 'unique'
-	}, {
-		value: 'strip',
-		label: 'strip'
-	}, {
-		value: 'process_value',
-		label: 'process_value'
-	}, {
-		value: 'process_links',
-		label: 'process_links'
-	}, {
-		value: 'process_request',
-		label: 'process_request'
 	},
 ]
 
@@ -112,16 +120,17 @@ export const ruleItemInit = {
 	deny_extensions: [],
 	restrict_xpaths: [],
 	restrict_css: [],
+	restrict_text: [],
 	follow: false,
-	callback: '',
-	method: '',
-	data: '',
-	params: '',
-	priority: '',
+	callback: 'parse',
+	method: 'GET',
+	data: null,
+	params: null,
+	priority: null,
 	dont_filter: false,
-	meta: '',
-	cb_kwargs: '',
-	proxy: '',
+	meta: null,
+	cb_kwargs: null,
+	proxy: null,
 	render: false,
 	dont_redirect: false,
 	dont_retry: false,
@@ -129,14 +138,14 @@ export const ruleItemInit = {
 	handle_httpstatus_all: false,
 	dont_cache: false,
 	dont_obey_robotstxt: false,
-	download_timeout: '',
-	max_retry_times: '',
+	download_timeout: null,
+	max_retry_times: null,
 	tags: [],
 	attrs: [],
 	canonicalize: false,
 	unique: false,
 	strip: false,
-	process_value: '',
-	process_links: '',
-	process_request: '',
+	process_value: null,
+	process_links: null,
+	process_request: null,
 }

@@ -1,9 +1,7 @@
 <template>
 	<div class="label-left">
-		<parser :projectName="projectName" :spider="spider"></parser>
-
 		<!-- 名称开始 -->
-		<el-form-item :label="$lang.columns.name">
+		<el-form-item :label="$lang.columns.name" class="inline">
 			<el-input v-model="spider.name" size="small"
 								:placeholder="$lang.columns.name"></el-input>
 		</el-form-item>
@@ -53,6 +51,33 @@
 		</el-form-item>
 		<!-- 起始链接结束 -->
 
+		<!-- 合法域名 -->
+		<el-form-item :label="$lang.columns.allowedDomains" :style="{marginBottom: '15px'}">
+			<el-form-item>
+				<el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowed_domains)">
+					<i class="fa fa-plus"></i>
+					{{ $lang.buttons.addDomain }}
+				</el-button>
+			</el-form-item>
+			<div v-for="(value, key) in spider.allowed_domains" :key="'spider_allowed_domains' + key">
+				<el-form-item class="inline" :style="{width: '400px'}">
+					<el-input
+						v-model="spider.allowed_domains[key]" class="inline"
+						:placeholder="$lang.columns.allowedDomains"
+						size="small"></el-input>
+				</el-form-item>
+				<el-form-item class="inline">
+					<el-button type="danger" size="mini" @click="$delete(spider.allowed_domains, key)">
+						<i class="fa fa-remove"></i>
+						{{ $lang.buttons.delete }}
+					</el-button>
+				</el-form-item>
+			</div>
+		</el-form-item>
+		<!-- 合法域名结束 -->
+
+		<parser :projectName="projectName" :spider="spider"></parser>
+
 		<!-- 类属性开始 -->
 		<el-form-item :label="$lang.columns.classAttrs">
 			<el-form-item>
@@ -84,31 +109,6 @@
 			</div>
 		</el-form-item>
 		<!-- 类属性结束 -->
-
-		<!-- 合法域名 -->
-		<el-form-item :label="$lang.columns.allowedDomains">
-			<el-form-item>
-				<el-button type="primary" class="inline" size="mini" @click="onAddInput(spider.allowed_domains)">
-					<i class="fa fa-plus"></i>
-					{{ $lang.buttons.addDomain }}
-				</el-button>
-			</el-form-item>
-			<div v-for="(value, key) in spider.allowed_domains" :key="'spider_allowed_domains' + key">
-				<el-form-item class="inline" :style="{width: '400px'}">
-					<el-input
-						v-model="spider.allowed_domains[key]" class="inline"
-						:placeholder="$lang.columns.allowedDomains"
-						size="small"></el-input>
-				</el-form-item>
-				<el-form-item class="inline">
-					<el-button type="danger" size="mini" @click="$delete(spider.allowed_domains, key)">
-						<i class="fa fa-remove"></i>
-						{{ $lang.buttons.delete }}
-					</el-button>
-				</el-form-item>
-			</div>
-		</el-form-item>
-		<!-- 合法域名结束 -->
 
 		<!-- 爬取规则开始 -->
 		<el-form-item>
@@ -143,7 +143,7 @@
 		<!-- Cookies结束 -->
 
 		<!-- 配置项开始 -->
-		<el-form-item :label="$lang.columns.customSettings">
+		<el-form-item :label="$lang.columns.customSettings" :style="{marginBottom: '15px'}">
 			<el-button type="primary" class="inline" size="mini"
 								 @click="onAddInput(spider.custom_settings, {'key': null, 'value': null})">
 				<i class="fa fa-plus"></i>
