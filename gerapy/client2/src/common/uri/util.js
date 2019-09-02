@@ -1,1 +1,0 @@
-exports.render = '/api/render'
