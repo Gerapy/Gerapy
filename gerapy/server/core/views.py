@@ -1,9 +1,9 @@
 from urllib.parse import unquote
 import base64
-import json, os, requests, time, pytz, pymongo, re
+import json, os, requests, time, pytz, pymongo
 from shutil import rmtree
 from requests.exceptions import ConnectionError
-from os.path import join, exists, dirname
+from os.path import join, exists
 from django.shortcuts import render
 from django.core.serializers import serialize
 from django.http import HttpResponse
@@ -16,9 +16,8 @@ from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.utils import IGNORES, is_valid_name, copy_tree, TEMPLATES_DIR, TEMPLATES_TO_RENDER, \
-    render_template, get_traceback, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, generate_project, \
-    get_output_error, bytes2str, clients_of_task, get_job_id
+from gerapy.server.core.utils import IGNORES, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
+    clients_of_task, get_job_id
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
 
 logger = get_logger(__name__)
@@ -427,6 +426,11 @@ def project_parse(request, project_name):
             'dont_filter': data.get('dont_filter', False),
             'priority': data.get('priority', 0),
         }
+        # set request body
+        body = data.get('body', '')
+        if args.get('method').lower() != 'get':
+            args['body'] = "'" + json.dumps(body, ensure_ascii=False) + "'"
+        
         args_cmd = ' '.join(
             ['--{arg} {value}'.format(arg=arg, value=value) for arg, value in args.items()])
         logger.debug('args cmd %s', args_cmd)

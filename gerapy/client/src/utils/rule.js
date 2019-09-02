@@ -110,6 +110,10 @@ export const ruleItemOptions = [
 		value: 'max_retry_times',
 		label: 'max_retry_times'
 	},
+	{
+		value: 'process_body',
+		label: 'process_body'
+	},
 ]
 
 export const ruleItemInit = {
@@ -148,4 +152,5 @@ export const ruleItemInit = {
 	process_value: null,
 	process_links: null,
 	process_request: null,
+	process_body: null,
 }

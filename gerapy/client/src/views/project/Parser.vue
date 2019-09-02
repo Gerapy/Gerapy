@@ -44,11 +44,12 @@
 					</template>
 					{{ active.request.priority }}
 				</el-form-item>
-				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
+				<el-form-item label-width="80px"
+											v-if="active.request && !active.request.start && active.request.method.toLowerCase() !== 'get'">
 					<template slot="label">
-						<el-button type="primary" size="mini">method</el-button>
+						<el-button type="primary" size="mini">body</el-button>
 					</template>
-					{{ active.request.method }}
+					{{ active.request.body }}
 				</el-form-item>
 				<el-form-item label-width="80px" v-if="active.request && !active.request.start">
 					<template slot="label">
@@ -104,10 +105,13 @@
 				<el-tabs v-model="active.tab">
 					<el-tab-pane label="Follows" name="follows">
 						<el-col :span="24" id="follow-requests" class="p-md" v-loading="fetching">
-							<p :class="follow.requests.length? 'm-b-sm': ''+ 'm-l-xs'">Follow Requests</p>
-							<div v-for="request in follow.requests">
+							<p :class="follow.requests.length? 'm-b-sm': ''+ 'm-l-xs'">Follow Requests
+								<el-button type="primary" size="mini">{{ follow.requests.length }}</el-button>
+							</p>
+							<div v-for="(request, requestIndex) in follow.requests">
 								<div class="follow-request">
 									<el-form-item class="inline">
+										<el-button type="primary" size="mini">{{ requestIndex + 1 }}</el-button>
 										<el-button type="primary" size="mini">{{ request.method }}</el-button>
 										<span :style="{fontSize: '13px'}">{{ request.url }}</span>
 										<el-button type="primary" size="mini" v-if="request.callback">
@@ -125,7 +129,9 @@
 							</div>
 						</el-col>
 						<el-col :span="24" id="follow-items" class="m-t p-md" v-loading="fetching">
-							<p :class="follow.items.length? 'm-b-sm': '' + 'm-l-xs'">Follow Items</p>
+							<p :class="follow.items.length? 'm-b-sm': '' + 'm-l-xs'">Follow Items
+								<el-button type="primary" size="mini">{{ follow.items.length }}</el-button>
+							</p>
 							<div class="follow-item" v-for="item in follow.items">
 								<el-form-item v-for="(value, key) in item" :key="key" label-width="80px">
 									<template slot="label">
@@ -227,10 +233,7 @@
 				this.addActiveRequest()
 				this.fetching = true
 				this.error = null
-				// 模拟请求
-				this.$http.post(this.format(this.$store.state.url.project.parse, {
-					name: this.projectName,
-				}), {
+				let postData = {
 					spider: this.spider.name,
 					url: this.active.request.url,
 					start: this.active.request.start,
@@ -240,8 +243,16 @@
 					method: this.active.request.method,
 					meta: this.active.request.meta,
 					dont_filter: this.active.request.dont_filter,
-					priority: this.active.request.priority
-				}).then(({data: data}) => {
+					priority: this.active.request.priority,
+				}
+				// 如果不是 GET 类型的请求，增加请求体
+				if (postData.method && postData.method.toLowerCase() !== 'get') {
+					postData.body = this.active.request.body
+				}
+				// 模拟请求
+				this.$http.post(this.format(this.$store.state.url.project.parse, {
+					name: this.projectName,
+				}), postData).then(({data: data}) => {
 					if (data.status === true) {
 						let result = data.result
 						this.fetching = false
@@ -298,10 +309,14 @@
 	}
 
 	#follows {
+		$max-height: 400px;
 		#follow-requests, #follow-items {
 			border: 1px solid rgb(223, 230, 236);
 			overflow-y: scroll;
-			max-height: 200px;
+			max-height: $max-height;
+			.el-loading-mask {
+				height: 10000px;
+			}
 		}
 		#follow-items {
 			.follow-item {
@@ -331,6 +346,7 @@
 		#follow-web {
 			iframe {
 				border: 1px solid #dfe6ec;
+				min-height: 500px;
 			}
 		}
 

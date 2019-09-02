@@ -53,11 +53,6 @@ const router = new Router({
 			name: 'projectConfigure',
 			component: () => import('./views/project/Configure.vue')
 		},
-		{
-			path: '/project/:name/configure2',
-			name: 'projectConfigure2',
-			component: () => import('./views/project/Configure2.vue')
-		},
 		// task management
 		{
 			path: '/task',

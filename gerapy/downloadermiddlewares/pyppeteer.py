@@ -1,14 +1,16 @@
 import websockets
 from scrapy.http import HtmlResponse
-from logging import getLogger
 import asyncio
 import pyppeteer
 import logging
 from concurrent.futures._base import TimeoutError
+from gerapy import get_logger
 
 pyppeteer_level = logging.WARNING
 logging.getLogger('websockets.protocol').setLevel(pyppeteer_level)
 logging.getLogger('pyppeteer').setLevel(pyppeteer_level)
+
+logger = get_logger(__name__)
 
 
 class PyppeteerMiddleware():
@@ -17,7 +19,6 @@ class PyppeteerMiddleware():
         init logger, loop, browser
         :param args:
         """
-        self.logger = getLogger(__name__)
         self.args = args
         self.loop = asyncio.get_event_loop()
     
@@ -105,7 +106,6 @@ class PyppeteerMiddleware():
         """
         if request.meta.get('render'):
             try:
-                self.logger.debug('rendering %s', request.url)
                 html, result, status = self.render(request.url, **self.args)
                 return HtmlResponse(url=request.url, body=html, request=request, encoding='utf-8',
                                     status=status)

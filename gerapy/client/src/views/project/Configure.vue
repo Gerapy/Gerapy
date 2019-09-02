@@ -8,7 +8,15 @@
 					{{ projectName }}
 				</el-form-item>
 				<el-form-item :label="$lang.columns.generateCode">
-					{{ projectGeneratedAt ? projectGeneratedAt : $lang.descriptions.notGenerated }}
+					<span>{{ projectGeneratedAt ? projectGeneratedAt : $lang.descriptions.notGenerated }}</span>
+					<span v-if="projectGeneratedAt">
+						<router-link :to="{name: 'projectEdit', params: {name: projectName}}" tag="span">
+							<el-button type="primary" size="mini">
+								<i class="fa fa-edit"></i>
+								{{ $lang.buttons.edit }}
+							</el-button>
+						</router-link>
+					</span>
 				</el-form-item>
 			</el-form>
 		</div>

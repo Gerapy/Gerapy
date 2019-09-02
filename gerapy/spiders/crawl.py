@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from furl import furl
-from scrapy.http.request.form import FormRequest
 from scrapy.spiders import CrawlSpider as BaseSpider, signals
 from scrapy_splash import SplashRequest
 from scrapy import Request
-from gerapy.server.core.utils import load_dict, load_list
+from gerapy.server.core.utils import str2list, str2dict, str2body
 
 
 class Rule(object):
@@ -14,22 +13,22 @@ class Rule(object):
                  handle_httpstatus_list=None, handle_httpstatus_all=None,
                  dont_cache=None, dont_obey_robotstxt=None,
                  download_timeout=None, max_retry_times=None,
-                 process_links=None, process_request=lambda x: x):
+                 process_links=None, process_request=lambda x: x, process_body=None):
         self.link_extractor = link_extractor
         self.callback = callback
         self.method = method
-        self.data = load_dict(data)
-        self.params = load_dict(params)
-        self.headers = load_dict(headers)
+        self.data = str2body(data)
+        self.params = str2dict(params)
+        self.headers = str2dict(headers)
         self.priority = priority
         self.dont_filter = dont_filter
-        self.meta = load_dict(meta) or {}
-        self.cb_kwargs = load_dict(cb_kwargs) or {}
+        self.meta = str2dict(meta)
+        self.cb_kwargs = str2dict(cb_kwargs)
         self.proxy = proxy
         self.render = render
         self.dont_redirect = dont_redirect
         self.dont_retry = dont_retry
-        self.handle_httpstatus_list = load_list(handle_httpstatus_list, lambda x: int(x))
+        self.handle_httpstatus_list = str2list(handle_httpstatus_list, lambda x: int(x))
         self.handle_httpstatus_all = handle_httpstatus_all
         self.dont_cache = dont_cache
         self.dont_obey_robotstxt = dont_obey_robotstxt
@@ -37,6 +36,7 @@ class Rule(object):
         self.max_retry_times = max_retry_times
         self.process_links = process_links
         self.process_request = process_request
+        self.process_body = process_body
         if follow is None:
             self.follow = False if callback else True
         else:
@@ -97,7 +97,7 @@ class CrawlSpider(BaseSpider):
         return SplashRequest(url=request.url, dont_process_response=True, args=args, callback=request.callback,
                              meta=meta)
     
-    def _generate_request(self, index, rule, link):
+    def _generate_request(self, index, rule, link, response):
         """
         generate request by rule
         :param index: rule index
@@ -106,18 +106,25 @@ class CrawlSpider(BaseSpider):
         :return: new request object
         """
         url = furl(link.url).add(rule.params).url if rule.params else link.url
+        
+        # init request body
+        body = None
         # process by method
         if rule.method.upper() == 'POST':
-            r = FormRequest(url=url, method=rule.method, formdata=rule.data, headers=rule.headers,
-                            priority=rule.priority,
-                            dont_filter=rule.dont_filter, callback=self._response_downloaded)
-        else:
-            r = Request(url=url, method=rule.method, headers=rule.headers, priority=rule.priority,
-                        dont_filter=rule.dont_filter, callback=self._response_downloaded)
+            # if process_body defined, use its result
+            if callable(rule.process_body):
+                body = rule.process_body(response)
+            # if data defined in rule, use data
+            if rule.data:
+                body = rule.data
+        
+        r = Request(url=url, method=rule.method, body=body, headers=rule.headers,
+                    priority=rule.priority,
+                    dont_filter=rule.dont_filter, callback=self._response_downloaded)
+        
         # update meta args
         r.meta.update(**rule.meta)
-        # update rule index and link text
-        # r.meta.update(rule=index, link_text=link.text)
+        
         meta_items = ['dont_redirect', 'dont_retry', 'handle_httpstatus_list', 'handle_httpstatus_all',
                       'dont_cache', 'dont_obey_robotstxt', 'download_timeout', 'max_retry_times', 'proxy', 'render']
         meta_args = {meta_item: getattr(rule, meta_item) for meta_item in meta_items if
@@ -141,5 +148,5 @@ class CrawlSpider(BaseSpider):
             for link in links:
                 seen.add(link)
                 # change _build_request to _generate_request
-                r = self._generate_request(index, rule, link)
+                r = self._generate_request(index, rule, link, response)
                 yield rule.process_request(r)

@@ -89,7 +89,7 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
             ),
             {% if rule.callback -%}callback='{{rule.callback}}', {% endif -%}
             {%- if rule.method -%}method='{{rule.method}}', {% endif -%}
-            {%- if rule.data -%}data={{rule.data}}, {% endif -%}
+            {%- if rule.data -%}data='{{rule.data}}', {% endif -%}
             {%- if rule.params -%}params={{rule.params}}, {% endif -%}
             {%- if rule.priority -%}priority={{rule.priority}}, {% endif -%}
             {%- if rule.dont_filter -%}dont_filter={{rule.dont_filter}}, {% endif -%}
@@ -106,8 +106,9 @@ class {{ spider.name|capitalize }}Spider(CrawlSpider):
             {%- if rule.download_timeout -%}download_timeout={{rule.download_timeout}}, {% endif -%}
             {%- if rule.max_retry_times -%}max_retry_times={{rule.max_retry_times}}, {% endif -%}
             {%- if rule.follow -%}follow={{rule.follow}}, {% endif -%}
-            {%- if rule.process_links -%}process_links='{{rule.process_links}}', {% endif -%}
-            {%- if rule.process_request -%}process_request='{{rule.process_request}}', {% endif -%}
+            {%- if rule.process_links -%}process_links={{rule.process_links}}, {% endif -%}
+            {%- if rule.process_body -%}process_body={{rule.process_body}}, {% endif -%}
+            {%- if rule.process_request -%}process_request={{rule.process_request}}, {% endif -%}
         ),
         {% endfor -%}
     )

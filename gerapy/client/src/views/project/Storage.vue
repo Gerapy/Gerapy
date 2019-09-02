@@ -23,7 +23,6 @@
 					</template>
 					<mysql :config="storage.mysql" :items="items" :onAddInput="onAddInput" :onDeleteInput="onDeleteInput"></mysql>
 				</el-collapse-item>
-
 			</el-collapse>
 		</el-form-item>
 	</div>

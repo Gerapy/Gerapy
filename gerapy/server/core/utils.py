@@ -183,7 +183,7 @@ def process_request(request):
     :param request:
     :return:
     """
-    return {
+    result = {
         'url': request.url,
         'method': request.method,
         'meta': request.meta,
@@ -193,6 +193,13 @@ def process_request(request):
         'priority': request.priority,
         'dont_filter': request.dont_filter,
     }
+    # set body
+    if request.method.lower() != 'get':
+        result['body'] = request.body
+        if isinstance(result['body'], bytes):
+            result['body'] = result['body'].decode('utf-8')
+        result['body'] = str2body(result['body'])
+    return result
 
 
 def process_response(response):
@@ -444,7 +451,7 @@ def load_dict(x, transformer=None):
         return {}
 
 
-def load_list(x, transformer=None):
+def str2list(x, transformer=None):
     """
     convert to list
     :param x:
@@ -456,10 +463,69 @@ def load_list(x, transformer=None):
         data = json.loads(x)
         if not transformer:
             transformer = lambda x: x
-        print('Data', data)
         data = list(map(lambda x: transformer(x), data))
-        print('Transfoermer', transformer)
-        print('Data', data)
         return data
     except:
         return []
+
+
+def str2bool(v):
+    """
+    convert string to bool
+    :param v:
+    :return:
+    """
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    return True
+
+
+def str2json(v):
+    """
+    convert str to json data
+    :param v:
+    :return:
+    """
+    try:
+        return json.loads(v)
+    except:
+        return None
+
+
+def str2dict(v):
+    """
+    convert str to dict data
+    :param v:
+    :return:
+    """
+    try:
+        return json.loads(v)
+    except:
+        return {}
+
+
+def str2body(v):
+    """
+    convert str to json data or keep original string
+    :param v:
+    :return:
+    """
+    try:
+        return json.loads(v)
+    except:
+        return v
+
+
+def str2str(v):
+    """
+    convert str to str, process for 'None', 'null', '',
+    :param v:
+    :return:
+    """
+    if v.lower() in ('none', 'null', 'undefined', 'nil', 'false'):
+        return None
+    return str(v)

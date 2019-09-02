@@ -1,3 +1,4 @@
+import json
 import os
 from twisted.internet import reactor
 from scrapy.crawler import CrawlerRunner
@@ -89,7 +90,7 @@ class SpiderParser():
                 cb_method = getattr(spider, cb, None)
                 if callable(cb_method):
                     cb = cb_method
-            
+                    
             # run truly callback to get items and requests, then to this method
             items, requests = self.run_callback(response, cb)
             
@@ -110,6 +111,14 @@ class SpiderParser():
         # update method
         request.method = args.method if args.method else request.method
         
+        # update request body for post or other methods
+        if request.method.lower() != 'get':
+            # to be detailed, temp defined
+            if isinstance(args.body, dict):
+                request = request.replace(body=json.dumps(args.body))
+            else:
+                request = request.replace(body=args.body)
+                
         # update headers
         request.headers = args.headers if args.headers else request.headers
         
@@ -123,8 +132,8 @@ class SpiderParser():
         request.priority = int(args.priority) if hasattr(args, 'priority') else request.priority
         
         # update callback
-        request.meta['callback'] = request.callback
         request.callback = callback
+        
         return request
     
     def run(self):

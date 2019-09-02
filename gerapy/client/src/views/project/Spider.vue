@@ -42,10 +42,7 @@
 			</div>
 			<div v-if="spider.start_urls.mode === 'code'">
 				<el-form-item label-width="0">
-					<el-input type="textarea"
-										v-model="spider.start_urls.code" class="inline"
-										:placeholder="$lang.columns.code" :rows="5"
-										size="small"></el-input>
+					<code-editor v-model="spider.start_urls.code"></code-editor>
 				</el-form-item>
 			</div>
 		</el-form-item>
@@ -173,13 +170,13 @@
 		<!-- 配置项结束 -->
 
 		<el-form-item :label="$lang.columns.innerCode" :style="{marginBottom: '15px'}">
-			<el-input type="textarea" v-model="spider.code.in_class" size="small"
-								:placeholder="$lang.columns.innerCode" :rows="4"></el-input>
+			<code-editor v-model="spider.code.in_class"></code-editor>
 		</el-form-item>
 
 		<el-form-item :label="$lang.columns.outerCode">
-			<el-input type="textarea" v-model="spider.code.out_class" size="small"
-								:placeholder="$lang.columns.innerCode" :rows="4"></el-input>
+			<!--<el-input type="textarea" v-model="spider.code.out_class" size="small"-->
+			<!--:placeholder="$lang.columns.innerCode" :rows="4"></el-input>-->
+			<code-editor v-model="spider.code.out_class"></code-editor>
 		</el-form-item>
 	</div>
 </template>
@@ -191,6 +188,7 @@
 	import Parser from './Parser'
 	import Proxy from './Proxy'
 	import Cookies from './Cookies'
+	import CodeEditor from '../../components/CodeEditor'
 
 	export default {
 		name: 'Spider',
@@ -220,7 +218,8 @@
 			Storage,
 			Parser,
 			Proxy,
-			Cookies
+			Cookies,
+			CodeEditor
 		}
 	}
 </script>

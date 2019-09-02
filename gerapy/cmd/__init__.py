@@ -2,49 +2,9 @@ from gerapy import version
 from gerapy.cmd.init import init
 from gerapy.cmd.parse import parse
 from gerapy.cmd.generate import generate
+from gerapy.server.core.utils import str2bool, str2str, str2json, str2body
 from gerapy.server.manage import manage
 import argparse
-import json
-
-
-def str2bool(v):
-    """
-    convert string to bool
-    :param v:
-    :return:
-    """
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
-
-
-def str2json(v):
-    """
-    convert str to json data
-    :param v:
-    :return:
-    """
-    try:
-        return json.loads(v)
-    except:
-        return None
-
-
-def str2str(v):
-    """
-    convert str to str, process for 'None', 'null', '',
-    :param v:
-    :return:
-    """
-    if v.lower() in ('none', 'null', 'undefined', 'nil', 'false'):
-        return None
-    return str(v)
-
 
 parser = argparse.ArgumentParser()
 
@@ -86,6 +46,7 @@ parser_parse.add_argument('-m', '--method', default='GET', type=str, help='metho
 parser_parse.add_argument('-a', '--meta', default=None, type=str2json, nargs='?', help='extra meta info')
 parser_parse.add_argument('-p', '--priority', default=0, type=int, help='priority')
 parser_parse.add_argument('-f', '--dont_filter', default=False, type=str2bool, nargs='?', help='do not filter')
+parser_parse.add_argument('-b', '--body', default=None, type=str2body, nargs='?', help='request body')
 parser_parse.add_argument('--headers', default=None, type=str2json, nargs='?', help='headers')
 parser_parse.add_argument('--cookies', default=None, type=str2json, nargs='?', help='cookies, list or dict')
 
