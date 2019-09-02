@@ -60,6 +60,21 @@ export default {
 		status: '状态',
 		nextTime: '下次执行'
 	},
+	heads: {
+		home: '首页',
+		clientIndex: '主机列表',
+		clientCreate: '主机创建',
+		clientEdit: '主机编辑',
+		clientSchedule: '主机调度',
+		projectIndex: '项目列表',
+		projectEdit: '项目编辑',
+		projectDeploy: '项目部署',
+		projectConfigure: '项目配置',
+		taskIndex: '任务列表',
+		taskCreate: '任务创建',
+		taskEdit: '任务编辑',
+		taskStatus: '任务状态'
+	},
 	titles: {
 		createClient: '创建主机',
 		deployProject: '部署项目',

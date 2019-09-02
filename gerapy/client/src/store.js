@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 import {en, zh} from './langs/index'
 
-console.log(en)
 Vue.use(Vuex)
 
 const vuexPersist = new VuexPersist({

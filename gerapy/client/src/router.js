@@ -74,8 +74,24 @@ const router = new Router({
 			name: 'taskStatus',
 			component: () => import('./views/task/Status.vue')
 		}
+	],
+	scrollBehavior(to, from, savedPosition) {
+		if (savedPosition) {
+			return savedPosition
+		} else {
+			return {x: 0, y: 0}
+		}
+	}
+})
 
-	]
+router.beforeEach((to, from, next) => {
+	document.title = router.app.$store.getters.$lang.heads[to.name]
+	next()
+})
+
+router.afterEach(() => {
+	router.app.$store.commit('clearIntervals')
+	router.app.$store.commit('clearTimeout')
 })
 
 export default router
