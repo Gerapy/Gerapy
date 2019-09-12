@@ -36,14 +36,10 @@ sudo python3 setup.py install
 
 ```
 npm install
-npm run dev
+npm run serve
 ```
 
-就跑起来了，在 3000 端口上，接口用的 8000 端口。
-
-因此，只跑起来前端是没有卵用的，接口都是无效的，因为 8000 没跑起来。
-
-所以接下来跑后端。
+接下来跑后端。
 
 ## 后端
 
@@ -57,18 +53,12 @@ npm run dev
 gerapy init
 cd gerapy
 gerapy migrate
-gerapy runserver
+gerapy runserver 0.0.0.0:5000
 ```
-
-这流程和博客文章写得一样，就是在 8000 端口上开起来服务。
-
-然后你再访问 3000 就可以看到东西了。
-
-现在就是开发模式。
 
 ## 修改
 
-前端修改的话主要改 gerapy/client/src/pages，这里是 Vue 文件。
+前端修改的话主要改 gerapy/client/src/，这里是 Vue 文件。
 
 后端主要改 gerapy/server/core/views.py，是 Django API。
 
