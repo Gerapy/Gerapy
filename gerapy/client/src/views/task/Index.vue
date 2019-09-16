@@ -35,6 +35,7 @@
 				<el-table-column
 					align="center"
 					prop="spider"
+					width="200"
 					:label="$lang.columns.spider">
 				</el-table-column>
 				<el-table-column

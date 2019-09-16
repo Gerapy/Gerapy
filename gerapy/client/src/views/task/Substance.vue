@@ -1,8 +1,18 @@
 <template>
-	<el-form ref="form" :model="formData" :rules="rules" label-width="100px">
+	<el-form ref="form" :model="formData" :rules="rules" label-width="100px" label-position="right">
 		<el-form-item :label="$lang.columns.name" prop="name">
 			<el-input v-model="formData.name"
 								:placeholder="$lang.messages.enter + ' ' + $lang.columns.name"
+								size="small"></el-input>
+		</el-form-item>
+		<el-form-item :label="$lang.columns.project" prop="project">
+			<el-input v-model="formData.project"
+								:placeholder="$lang.messages.enter + ' ' + $lang.columns.project"
+								size="small"></el-input>
+		</el-form-item>
+		<el-form-item :label="$lang.columns.spider" prop="spider">
+			<el-input v-model="formData.spider"
+								:placeholder="$lang.messages.enter + ' ' + $lang.columns.spider"
 								size="small"></el-input>
 		</el-form-item>
 		<el-form-item :label="$lang.columns.clients" prop="clients">
@@ -15,16 +25,6 @@
 					:value="item.value">
 				</el-option>
 			</el-select>
-		</el-form-item>
-		<el-form-item :label="$lang.columns.project" prop="project">
-			<el-input v-model="formData.project"
-								:placeholder="$lang.messages.enter + ' ' + $lang.columns.project"
-								size="small"></el-input>
-		</el-form-item>
-		<el-form-item :label="$lang.columns.spider" prop="spider">
-			<el-input v-model="formData.spider"
-								:placeholder="$lang.messages.enter + ' ' + $lang.columns.spider"
-								size="small"></el-input>
 		</el-form-item>
 		<el-form-item :label="$lang.columns.trigger" prop="trigger">
 			<el-select v-model="formData.trigger" :placeholder="$lang.messages.select" size="small">
@@ -50,90 +50,128 @@
 		</div>
 		<div v-if="formData.trigger === 'interval'">
 			<el-form-item :label="$lang.columns.runDate">
-				<el-input v-model.number="formData.configuration.weeks"
-									:placeholder="$lang.columns.weeks"
-									class="inline width-100" type="number"
-									size="small"></el-input>
-				<el-input v-model.number="formData.configuration.days"
-									class="inline width-100" type="number"
-									:placeholder="$lang.columns.days"
-									size="small"></el-input>
-				<el-input v-model.number="formData.configuration.hours"
-									class="inline width-100" type="number"
-									:placeholder="$lang.columns.hours"
-									size="small"></el-input>
-				<el-input v-model.number="formData.configuration.minutes"
-									class="inline width-100" type="number"
-									:placeholder="$lang.columns.minutes"
-									size="small"></el-input>
-				<el-input v-model.number="formData.configuration.seconds"
-									class="inline width-100" type="number"
-									:placeholder="$lang.columns.seconds"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.timezone"
-									class="inline width-100"
-									:placeholder="$lang.columns.timezone"
-									size="small"></el-input>
-				<el-date-picker
-					v-model="formData.configuration.start_date"
-					type="datetime" size="small" :picker-options="dateOptions"
-					:placeholder="$lang.columns.startDate">
-				</el-date-picker>
-				<el-date-picker
-					v-model="formData.configuration.end_date" :picker-options="dateOptions"
-					type="datetime" size="small"
-					:placeholder="$lang.columns.endDate">
-				</el-date-picker>
+				<el-form-item :label="$lang.columns.weeks">
+					<el-input v-model.number="formData.configuration.weeks"
+										:placeholder="$lang.columns.weeks"
+										class="inline width-100" type="number"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.days">
+					<el-input v-model.number="formData.configuration.days"
+										class="inline width-100" type="number"
+										:placeholder="$lang.columns.days"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.hours">
+					<el-input v-model.number="formData.configuration.hours"
+										class="inline width-100" type="number"
+										:placeholder="$lang.columns.hours"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.minutes">
+					<el-input v-model.number="formData.configuration.minutes"
+										class="inline width-100" type="number"
+										:placeholder="$lang.columns.minutes"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.seconds">
+					<el-input v-model.number="formData.configuration.seconds"
+										class="inline width-100" type="number"
+										:placeholder="$lang.columns.seconds"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.timezone">
+					<el-input v-model="formData.configuration.timezone"
+										class="inline width-100"
+										:placeholder="$lang.columns.timezone"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.startDate">
+					<el-date-picker
+						v-model="formData.configuration.start_date"
+						type="datetime" size="small" :picker-options="dateOptions"
+						:placeholder="$lang.columns.startDate">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.endDate">
+					<el-date-picker
+						v-model="formData.configuration.end_date" :picker-options="dateOptions"
+						type="datetime" size="small"
+						:placeholder="$lang.columns.endDate">
+					</el-date-picker>
+				</el-form-item>
 			</el-form-item>
 		</div>
-		<div v-if="formData.trigger==='cron'">
+		<div v-if="formData.trigger === 'cron'">
 			<el-form-item :label="$lang.columns.runDate">
-				<el-input v-model="formData.configuration.year"
-									:placeholder="$lang.columns.year"
-									class="inline width-100"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.month"
-									:placeholder="$lang.columns.month"
-									class="inline width-100"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.day"
-									class="inline width-100"
-									:placeholder="$lang.columns.day"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.week"
-									class="inline width-100"
-									:placeholder="$lang.columns.week"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.day_of_week"
-									class="inline width-100"
-									:placeholder="$lang.columns.dayOfWeek"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.hour"
-									class="inline width-100"
-									:placeholder="$lang.columns.hour"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.minute"
-									class="inline width-100"
-									:placeholder="$lang.columns.minute"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.second"
-									class="inline width-100"
-									:placeholder="$lang.columns.second"
-									size="small"></el-input>
-				<el-input v-model="formData.configuration.timezone"
-									class="inline width-100"
-									:placeholder="$lang.columns.timezone"
-									size="small"></el-input>
-				<el-date-picker
-					v-model="formData.configuration.start_date"
-					type="datetime" size="small" :picker-options="dateOptions"
-					:placeholder="$lang.columns.startDate">
-				</el-date-picker>
-				<el-date-picker
-					v-model="formData.configuration.end_date" :picker-options="dateOptions"
-					type="datetime" size="small"
-					:placeholder="$lang.columns.endDate">
-				</el-date-picker>
+				<el-form-item :label="$lang.columns.year">
+					<el-input v-model="formData.configuration.year"
+										:placeholder="$lang.columns.year"
+										class="inline width-100"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.month">
+					<el-input v-model="formData.configuration.month"
+										:placeholder="$lang.columns.month"
+										class="inline width-100"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.day">
+					<el-input v-model="formData.configuration.day"
+										class="inline width-100"
+										:placeholder="$lang.columns.day"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.week">
+					<el-input v-model="formData.configuration.week"
+										class="inline width-100"
+										:placeholder="$lang.columns.week"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.dayOfWeek">
+					<el-input v-model="formData.configuration.day_of_week"
+										class="inline width-100"
+										:placeholder="$lang.columns.dayOfWeek"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.hour">
+					<el-input v-model="formData.configuration.hour"
+										class="inline width-100"
+										:placeholder="$lang.columns.hour"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.minute">
+					<el-input v-model="formData.configuration.minute"
+										class="inline width-100"
+										:placeholder="$lang.columns.minute"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.second">
+					<el-input v-model="formData.configuration.second"
+										class="inline width-100"
+										:placeholder="$lang.columns.second"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.timezone">
+					<el-input v-model="formData.configuration.timezone"
+										class="inline width-100"
+										:placeholder="$lang.columns.timezone"
+										size="small"></el-input>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.startDate">
+					<el-date-picker
+						v-model="formData.configuration.start_date"
+						type="datetime" size="small" :picker-options="dateOptions"
+						:placeholder="$lang.columns.startDate">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item :label="$lang.columns.endDate">
+					<el-date-picker
+						v-model="formData.configuration.end_date" :picker-options="dateOptions"
+						type="datetime" size="small"
+						:placeholder="$lang.columns.endDate">
+					</el-date-picker>
+				</el-form-item>
 			</el-form-item>
 		</div>
 		<div>
@@ -260,8 +298,19 @@
 	}
 </script>
 
-<style scoped>
+<style lang="scss">
 	.el-date-editor.el-input {
 		width: 152px;
+	}
+
+	.el-tag.el-tag--info {
+		color: #35CBAA;
+	}
+
+	.el-select .el-tag__close.el-icon-close {
+		background-color: #EEEEEE;
+		&:hover {
+			background-color: #CCCCCC;
+		}
 	}
 </style>
