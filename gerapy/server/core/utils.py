@@ -430,7 +430,7 @@ def get_job_id(client, task):
     :param task: task object
     :return: job id
     """
-    return '%s-%s-%s' % (client.id, task.project, task.spider)
+    return '%s-%s-%s' % (client.name, task.project, task.spider)
 
 
 def load_dict(x, transformer=None):

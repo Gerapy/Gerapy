@@ -74,7 +74,13 @@ WSGI_APPLICATION = 'gerapy.server.server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DB_PATH = os.path.join(os.getcwd(), 'db.sqlite3')
+DB_SUBDIR = 'dbs'
+DB_DIR = os.path.join(os.getcwd(), DB_SUBDIR)
+
+# Create DB dir if it does not exist
+os.path.exists(DB_DIR) or os.makedirs(DB_DIR)
+
+DB_PATH = os.path.join(DB_DIR, 'db.sqlite3')
 
 DATABASES = {
     'default': {
@@ -123,11 +129,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'core/templates/static'),
 )
-
-SCHEDULER_HEARTBEAT = 5

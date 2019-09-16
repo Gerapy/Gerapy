@@ -4,6 +4,9 @@ from django.db.models import Model, CharField, GenericIPAddressField, IntegerFie
 
 
 class Client(Model):
+    """
+    Scrapyd
+    """
     name = CharField(max_length=255, default=None)
     ip = CharField(max_length=255, blank=True, null=True)
     port = IntegerField(default=6800, blank=True, null=True)
@@ -15,10 +18,17 @@ class Client(Model):
     updated_at = DateTimeField(auto_now=True, blank=True, null=True)
     
     def __str__(self):
+        """
+        to string
+        :return: name
+        """
         return self.name
 
 
 class Project(Model):
+    """
+    Project Object, for configurable and un-configurable
+    """
     name = CharField(max_length=255, default=None)
     description = CharField(max_length=255, null=True, blank=True)
     egg = CharField(max_length=255, null=True, blank=True)
@@ -31,10 +41,17 @@ class Project(Model):
     clients = ManyToManyField(Client, through='Deploy', unique=False)
     
     def __str__(self):
+        """
+        to string
+        :return: name
+        """
         return self.name
 
 
 class Deploy(Model):
+    """
+    Deploy records
+    """
     client = ForeignKey(Client, unique=False, on_delete=DO_NOTHING)
     project = ForeignKey(Project, unique=False, on_delete=DO_NOTHING)
     description = CharField(max_length=255, blank=True, null=True)
@@ -47,6 +64,9 @@ class Deploy(Model):
 
 
 class Monitor(Model):
+    """
+    Monitor configuration
+    """
     name = CharField(max_length=255, default=None)
     description = CharField(max_length=255, null=True, blank=True)
     type = CharField(max_length=255, null=True, blank=True)
@@ -57,6 +77,9 @@ class Monitor(Model):
 
 
 class Task(Model):
+    """
+    Task for scheduler
+    """
     clients = TextField(null=True, blank=True)
     project = CharField(max_length=255, null=True, blank=True)
     spider = CharField(max_length=255, null=True, blank=True)
@@ -70,4 +93,8 @@ class Task(Model):
     updated_at = DateTimeField(auto_now=True, blank=True, null=True)
     
     def __str__(self):
-        return self.name
+        """
+        to string
+        :return: name
+        """
+        return '_'.join([str(self.name), str(self.project), str(self.spider)])
