@@ -64,7 +64,7 @@ def build_egg(project):
         shutil.move(egg, project_path)
         return join(project_path, find_egg(project_path))
     except Exception as e:
-        print(e.args)
+        logger.error('error occurred %s', e.args)
     finally:
         os.chdir(work_path)
 

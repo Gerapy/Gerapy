@@ -13,7 +13,11 @@ import json, os, string
 from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.utils import timezone
+
+from gerapy import get_logger
 from gerapy.settings import PROJECTS_FOLDER
+
+logger = get_logger(__name__)
 
 IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
@@ -89,7 +93,8 @@ def is_valid_name(project_name):
     :return:
     """
     if not re.search(r'^[_a-zA-Z]\w*$', project_name):
-        print('Error: Project Name must begin with a letter and contain only letters, numbers and underscores')
+        logger.error('project name %s must begin with a letter and contain only letters, numbers and underscores',
+                     project_name)
         return False
     return True
 
@@ -157,8 +162,6 @@ def render_template(tpl_file, dst_file, *args, **kwargs):
     template = Template(open(tpl_file, encoding='utf-8').read())
     os.remove(tpl_file)
     result = template.render(vars)
-    # print(result)
-    
     open(dst_file, 'w', encoding='utf-8').write(result)
 
 

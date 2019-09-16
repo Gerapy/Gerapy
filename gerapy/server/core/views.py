@@ -751,7 +751,6 @@ def task_status(request, task_id):
     if request.method == 'GET':
         result = []
         task = Task.objects.get(id=task_id)
-        print('Task', task)
         clients = clients_of_task(task)
         for client in clients:
             job_id = get_job_id(client, task)
@@ -774,7 +773,6 @@ def render_html(request):
     if request.method == 'GET':
         url = request.GET.get('url')
         url = unquote(base64.b64decode(url).decode('utf-8'))
-        print('Decoded', url)
         js = request.GET.get('js', 0)
         script = request.GET.get('script')
         try:
