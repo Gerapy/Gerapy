@@ -38,7 +38,7 @@
 						return false
 					this.onSubmitLoading = true
 					let formData = this.$refs.substance.formData
-					this.$http.post(this.format(this.$store.state.url.task.update, {
+					this.$http.post(this.formatString(this.$store.state.url.task.update, {
 						id: this.routeId
 					}), formData).then(() => {
 						this.$message.success(this.$store.getters.$lang.messages.successSave)
@@ -55,12 +55,3 @@
 		},
 	}
 </script>
-<style>
-	.width-100 {
-		width: 100px;
-	}
-
-	.width-200 {
-		width: 200px;
-	}
-</style>

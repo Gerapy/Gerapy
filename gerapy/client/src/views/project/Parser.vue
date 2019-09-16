@@ -250,7 +250,7 @@
 					postData.body = this.active.request.body
 				}
 				// 模拟请求
-				this.$http.post(this.format(this.$store.state.url.project.parse, {
+				this.$http.post(this.formatString(this.$store.state.url.project.parse, {
 					name: this.projectName,
 				}), postData).then(({data: data}) => {
 					if (data.status === true) {

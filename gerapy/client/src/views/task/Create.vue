@@ -55,12 +55,3 @@
 		},
 	}
 </script>
-<style>
-	.width-100 {
-		width: 100px;
-	}
-
-	.width-200 {
-		width: 200px;
-	}
-</style>

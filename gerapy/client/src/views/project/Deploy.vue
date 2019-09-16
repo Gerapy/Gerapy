@@ -190,7 +190,7 @@
 			},
 			getBuildInfo() {
 				this.loading = true
-				this.$http.get(this.format(this.$store.state.url.project.build, {
+				this.$http.get(this.formatString(this.$store.state.url.project.build, {
 					name: this.projectName
 				})).then(({data: data}) => {
 					this.buildInfo = data
@@ -202,7 +202,7 @@
 			},
 			getClientStatus(id) {
 				this.$set(this.clientsStatus, id, 0)
-				this.$http.get(this.format(this.$store.state.url.client.status, {
+				this.$http.get(this.formatString(this.$store.state.url.client.status, {
 					id: id
 				})).then(({data: {result: data}}) => {
 					this.$set(this.clientsStatus, id, data)
@@ -226,7 +226,7 @@
 			},
 			deploy(id) {
 				if (this.clientsStatus[id]) {
-					this.$http.post(this.format(this.$store.state.url.client.projectDeploy, {
+					this.$http.post(this.formatString(this.$store.state.url.client.projectDeploy, {
 						id: id,
 						name: this.projectName,
 					})).then(() => {
@@ -246,7 +246,7 @@
 			},
 			getProjectVersion(id) {
 				this.loading = true
-				this.$http.get(this.format(this.$store.state.url.client.projectVersion, {
+				this.$http.get(this.formatString(this.$store.state.url.client.projectVersion, {
 					id: id,
 					name: this.projectName,
 				})).then(({data: version}) => {
@@ -283,7 +283,7 @@
 				this.$refs.form.validate((valid) => {
 					if (!valid)
 						return false
-					this.$http.post(this.format(this.$store.state.url.project.build, {
+					this.$http.post(this.formatString(this.$store.state.url.project.build, {
 						name: this.projectName
 					}), {
 						description: this.buildInfo['description'],

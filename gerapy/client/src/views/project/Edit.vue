@@ -154,7 +154,7 @@
 		methods: {
 			getProjectTree(name) {
 				// 获取目录树
-				this.$http.get(this.format(this.$store.state.url.project.tree, {
+				this.$http.get(this.formatString(this.$store.state.url.project.tree, {
 					name: name
 				})).then(({data: tree}) => {
 					this.tree = tree

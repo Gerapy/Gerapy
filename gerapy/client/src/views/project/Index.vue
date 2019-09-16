@@ -147,7 +147,7 @@
 		},
 		methods: {
 			getBuildInfo(name) {
-				this.$http.get(this.format(this.$store.state.url.project.build, {
+				this.$http.get(this.formatString(this.$store.state.url.project.build, {
 					name: name
 				})).then(({data: data}) => {
 					this.$set(this.buildInfos, name, data)
@@ -172,7 +172,7 @@
 			},
 			onDeleteProject(name) {
 				this.loading = true
-				this.$http.post(this.format(this.$store.state.url.project.remove, {
+				this.$http.post(this.formatString(this.$store.state.url.project.remove, {
 					name: name
 				})).then(() => {
 					this.$message.success(this.$store.getters.$lang.messages.successDelete)

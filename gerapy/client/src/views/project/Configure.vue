@@ -200,7 +200,7 @@
 				this.showBrowser = false
 			},
 			getProject() {
-				this.$http.get(this.format(this.$store.state.url.project.configure, {
+				this.$http.get(this.formatString(this.$store.state.url.project.configure, {
 					name: this.projectName
 				})).then(({data: data}) => {
 					this.projectDescription = data.description
@@ -212,7 +212,7 @@
 			},
 			saveProject() {
 				this.savingProject = true
-				this.$http.post(this.format(this.$store.state.url.project.configure, {
+				this.$http.post(this.formatString(this.$store.state.url.project.configure, {
 					name: this.projectName
 				}), {
 					configuration: this.configuration

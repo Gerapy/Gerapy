@@ -139,7 +139,7 @@
 		methods: {
 			//获取所有项目
 			getProjects() {
-				this.$http.get(this.format(this.$store.state.url.client.projects, {
+				this.$http.get(this.formatString(this.$store.state.url.client.projects, {
 					id: this.routeId
 				})).then(({data: data}) => {
 					this.projects = data
@@ -165,7 +165,7 @@
 			// 获取所有爬虫
 			getSpiders() {
 				this.projects.forEach(project => {
-					this.$http.get(this.format(this.$store.state.url.client.listSpiders, {
+					this.$http.get(this.formatString(this.$store.state.url.client.listSpiders, {
 						id: this.routeId,
 						project: project
 					})).then(({data: data}) => {
@@ -179,7 +179,7 @@
 			// 获取所有任务
 			getJobs() {
 				this.projects.forEach(project => {
-					this.$http.get(this.format(this.$store.state.url.client.listJobs, {
+					this.$http.get(this.formatString(this.$store.state.url.client.listJobs, {
 						id: this.routeId,
 						project: project
 					})).then(({data: data}) => {
@@ -198,7 +198,7 @@
 			},
 			// 启动任务
 			onStartSpider(project, spider) {
-				this.$http.get(this.format(this.$store.state.url.client.startSpider, {
+				this.$http.get(this.formatString(this.$store.state.url.client.startSpider, {
 					id: this.routeId,
 					project: project,
 					spider: spider
@@ -222,7 +222,7 @@
 					// 正在加载
 					this.logLoading = true
 					// 请求日志
-					this.$http.get(this.format(this.$store.state.url.client.getLog, {
+					this.$http.get(this.formatString(this.$store.state.url.client.getLog, {
 						id: this.routeId,
 						project: this.jobsInfo[this.logLoadingActive]['project'],
 						spider: this.jobsInfo[this.logLoadingActive]['spider'],
@@ -249,7 +249,7 @@
 				}
 			},
 			onCancelJob(job) {
-				this.$http.get(this.format(this.$store.state.url.client.cancelJob, {
+				this.$http.get(this.formatString(this.$store.state.url.client.cancelJob, {
 					id: this.routeId,
 					project: this.jobsInfo[job]['project'],
 					job: job

@@ -104,7 +104,7 @@
 		methods: {
 			onGetFormData() {
 				this.loadData = true
-				this.$http.get(this.format(this.$store.state.url.client.show, {
+				this.$http.get(this.formatString(this.$store.state.url.client.show, {
 					id: this.routeId
 				})).then(({data: data}) => {
 					this.form = data
@@ -120,7 +120,7 @@
 						return false
 					}
 					this.onSubmitLoading = true
-					this.$http.post(this.format(this.$store.state.url.client.update, {
+					this.$http.post(this.formatString(this.$store.state.url.client.update, {
 							id: this.form.id
 						}), this.form
 					).then(() => {

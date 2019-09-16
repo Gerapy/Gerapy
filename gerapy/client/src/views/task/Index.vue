@@ -105,7 +105,7 @@
 				})
 			},
 			deleteTask(id) {
-				this.$http.post(this.format(this.$store.state.url.task.remove, {
+				this.$http.post(this.formatString(this.$store.state.url.task.remove, {
 					id: id
 				})).then(() => {
 					this.$message.success(this.$store.getters.$lang.messages.successDelete)

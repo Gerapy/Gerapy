@@ -132,7 +132,7 @@
 			},
 			onGetClientStatus(id) {
 				this.$set(this.clientsStatus, id, 0)
-				this.$http.get(this.format(this.$store.state.url.client.status, {
+				this.$http.get(this.formatString(this.$store.state.url.client.status, {
 					id: id
 				})).then(({data: {result: result}}) => {
 					this.$set(this.clientsStatus, id, result)
@@ -152,7 +152,7 @@
 				})
 			},
 			onDeleteClient(id) {
-				this.$http.post(this.format(this.$store.state.url.client.remove, {
+				this.$http.post(this.formatString(this.$store.state.url.client.remove, {
 					id: id
 				})).then(() => {
 					this.$message.success(this.$store.getters.$lang.messages.successDelete)

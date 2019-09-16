@@ -38,10 +38,12 @@
 		</el-form-item>
 		<div v-if="formData.trigger === 'date'">
 			<el-form-item :label="$lang.columns.runDate">
-				<el-date-picker v-model="formData.configuration.run_date"
-												type="datetime" size="small" :picker-options="dateOptions"
+				<el-date-picker v-model="formData.configuration.run_date" class="inline width-200"
+												type="datetime" size="small" :value-format="dateFormat" :picker-options="dateOptions"
 												:placeholder="$lang.descriptions.chooseDateTime">
 				</el-date-picker>
+			</el-form-item>
+			<el-form-item :label="$lang.columns.timezone">
 				<el-input v-model="formData.configuration.timezone"
 									class="inline width-100"
 									:placeholder="$lang.columns.timezone"
@@ -88,7 +90,7 @@
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
-						v-model="formData.configuration.start_date"
+						v-model="formData.configuration.start_date" :format="dateFormat" :value-format="dateFormat"
 						type="datetime" size="small" :picker-options="dateOptions"
 						:placeholder="$lang.columns.startDate">
 					</el-date-picker>
@@ -96,7 +98,7 @@
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
 						v-model="formData.configuration.end_date" :picker-options="dateOptions"
-						type="datetime" size="small"
+						type="datetime" size="small" :format="dateFormat" :value-format="dateFormat"
 						:placeholder="$lang.columns.endDate">
 					</el-date-picker>
 				</el-form-item>
@@ -160,15 +162,15 @@
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
-						v-model="formData.configuration.start_date"
+						v-model="formData.configuration.start_date" :format="dateFormat" :value-format="dateFormat"
 						type="datetime" size="small" :picker-options="dateOptions"
 						:placeholder="$lang.columns.startDate">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
-						v-model="formData.configuration.end_date" :picker-options="dateOptions"
-						type="datetime" size="small"
+						v-model="formData.configuration.end_date" :format="dateFormat" :value-format="dateFormat"
+						type="datetime" size="small" :picker-options="dateOptions"
 						:placeholder="$lang.columns.endDate">
 					</el-date-picker>
 				</el-form-item>
@@ -226,9 +228,11 @@
 				clientOptions: [],
 				dateOptions: {
 					disabledDate(time) {
+						// 设置今天及今天之后的日期
 						return time.getTime() < Date.now() - 8.64e7
 					}
 				},
+				dateFormat: 'yyyy-MM-dd HH:mm:ss',
 				rules: {
 					name: [
 						{
@@ -285,7 +289,7 @@
 			},
 			getTaskData() {
 				if (this.id) {
-					this.$http.get(this.format(this.$store.state.url.task.info, {
+					this.$http.get(this.formatString(this.$store.state.url.task.info, {
 						id: this.id
 					})).then(({data: {data: client}}) => {
 						this.formData = client

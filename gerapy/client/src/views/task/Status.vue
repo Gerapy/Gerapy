@@ -82,7 +82,7 @@
 		},
 		methods: {
 			getJobsData() {
-				this.$http.get(this.format(this.$store.state.url.task.status, {
+				this.$http.get(this.formatString(this.$store.state.url.task.status, {
 					id: this.id
 				})).then(({data: {data: data}}) => {
 					this.jobs = data
@@ -92,7 +92,7 @@
 			},
 			getTaskData() {
 				if (this.id) {
-					this.$http.get(this.format(this.$store.state.url.task.info, {
+					this.$http.get(this.formatString(this.$store.state.url.task.info, {
 						id: this.id
 					})).then(({data: {data: data}}) => {
 						this.task = data
