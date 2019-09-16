@@ -212,12 +212,14 @@ def project_configure(request, project_name):
         project = model_to_dict(project)
         project['configuration'] = json.loads(project['configuration']) if project['configuration'] else None
         return JsonResponse(project)
+    
     # update configuration
     elif request.method == 'POST':
         project = Project.objects.filter(name=project_name)
         data = json.loads(request.body)
-        configuration = json.dumps(data.get('configuration'))
+        configuration = json.dumps(data.get('configuration'), ensure_ascii=False)
         project.update(**{'configuration': configuration})
+        
         # execute generate cmd
         cmd = ' '.join(['gerapy', 'generate', project_name])
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -354,6 +356,7 @@ def project_build(request, project_name):
     # get project folder
     path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
     project_path = join(path, project_name)
+    
     # get build version
     if request.method == 'GET':
         egg = find_egg(project_path)
@@ -377,6 +380,7 @@ def project_build(request, project_name):
         # transfer model to dict then dumps it to json
         data = model_to_dict(model)
         return JsonResponse(data)
+    
     # build operation manually by clicking button
     elif request.method == 'POST':
         data = json.loads(request.body)
@@ -657,7 +661,7 @@ def monitor_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         data = data['form']
-        data['configuration'] = json.dumps(data['configuration'])
+        data['configuration'] = json.dumps(data['configuration'], ensure_ascii=False)
         monitor = Monitor.objects.create(**data)
         return JsonResponse(model_to_dict(monitor))
 
@@ -670,12 +674,12 @@ def task_create(request):
     """
     if request.method == 'POST':
         data = json.loads(request.body)
-        task = Task.objects.create(clients=json.dumps(data.get('clients')),
+        task = Task.objects.create(clients=json.dumps(data.get('clients'), ensure_ascii=False),
                                    project=data.get('project'),
                                    name=data.get('name'),
                                    spider=data.get('spider'),
                                    trigger=data.get('trigger'),
-                                   configuration=json.dumps(data.get('configuration')),
+                                   configuration=json.dumps(data.get('configuration'), ensure_ascii=False),
                                    modified=1)
         return JsonResponse({'result': '1', 'data': model_to_dict(task)})
 
@@ -690,8 +694,8 @@ def task_update(request, task_id):
     if request.method == 'POST':
         task = Task.objects.filter(id=task_id)
         data = json.loads(request.body)
-        data['clients'] = json.dumps(data.get('clients'))
-        data['configuration'] = json.dumps(data.get('configuration'))
+        data['clients'] = json.dumps(data.get('clients'), ensure_ascii=False)
+        data['configuration'] = json.dumps(data.get('configuration'), ensure_ascii=False)
         data['modified'] = 1
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))

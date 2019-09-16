@@ -60,7 +60,7 @@ const router = new Router({
 			component: () => import('./views/task/Index.vue')
 		},
 		{
-			path: '/task/:id/create',
+			path: '/task/create',
 			name: 'taskCreate',
 			component: () => import('./views/task/Create.vue')
 		},

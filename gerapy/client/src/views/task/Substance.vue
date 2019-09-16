@@ -44,10 +44,16 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item :label="$lang.columns.timezone">
-				<el-input v-model="formData.configuration.timezone"
-									class="inline width-100"
-									:placeholder="$lang.columns.timezone"
-									size="small"></el-input>
+				<el-select v-model="formData.configuration.timezone" size="small"
+									 filterable :placeholder="$lang.columns.timezone"
+									 class="inline width-200">
+					<el-option
+						v-for="item in timeZones"
+						:key="item"
+						:label="item"
+						:value="item">
+					</el-option>
+				</el-select>
 			</el-form-item>
 		</div>
 		<div v-if="formData.trigger === 'interval'">
@@ -83,21 +89,28 @@
 										size="small"></el-input>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.timezone">
-					<el-input v-model="formData.configuration.timezone"
-										class="inline width-100"
-										:placeholder="$lang.columns.timezone"
-										size="small"></el-input>
+					<el-select v-model="formData.configuration.timezone"
+										 filterable :placeholder="$lang.columns.timezone"
+										 size="small"
+										 class="inline width-200">
+						<el-option
+							v-for="item in timeZones"
+							:key="item"
+							:label="item"
+							:value="item">
+						</el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
 						v-model="formData.configuration.start_date" :format="dateFormat" :value-format="dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions"
+						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
 						:placeholder="$lang.columns.startDate">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
-						v-model="formData.configuration.end_date" :picker-options="dateOptions"
+						v-model="formData.configuration.end_date" :picker-options="dateOptions" class="inline width-200"
 						type="datetime" size="small" :format="dateFormat" :value-format="dateFormat"
 						:placeholder="$lang.columns.endDate">
 					</el-date-picker>
@@ -155,22 +168,28 @@
 										size="small"></el-input>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.timezone">
-					<el-input v-model="formData.configuration.timezone"
-										class="inline width-100"
-										:placeholder="$lang.columns.timezone"
-										size="small"></el-input>
+					<el-select v-model="formData.configuration.timezone" size="small"
+										 filterable :placeholder="$lang.columns.timezone"
+										 class="inline width-200">
+						<el-option
+							v-for="item in timeZones"
+							:key="item"
+							:label="item"
+							:value="item">
+						</el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
 						v-model="formData.configuration.start_date" :format="dateFormat" :value-format="dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions"
+						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
 						:placeholder="$lang.columns.startDate">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
 						v-model="formData.configuration.end_date" :format="dateFormat" :value-format="dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions"
+						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
 						:placeholder="$lang.columns.endDate">
 					</el-date-picker>
 				</el-form-item>
@@ -189,6 +208,8 @@
 </template>
 
 <script>
+	const {listTimeZones} = require('timezone-support')
+
 	export default {
 		name: 'Substance',
 		props: {
@@ -233,6 +254,7 @@
 					}
 				},
 				dateFormat: 'yyyy-MM-dd HH:mm:ss',
+				timeZones: listTimeZones(),
 				rules: {
 					name: [
 						{
@@ -252,6 +274,13 @@
 						{
 							required: true,
 							message: this.$store.getters.$lang.columns.spider + ' ' + this.$store.getters.$lang.messages.isNull,
+							trigger: 'blur'
+						}
+					],
+					timezone: [
+						{
+							required: true,
+							message: this.$store.getters.$lang.columns.timezone + ' ' + this.$store.getters.$lang.messages.isNull,
 							trigger: 'blur'
 						}
 					]
