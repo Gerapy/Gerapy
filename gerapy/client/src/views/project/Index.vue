@@ -20,7 +20,7 @@
 		<panel-title :title="$lang.objects.project">
 			<el-button @click.stop="onRefresh" size="mini">
 				<i class="fa fa-refresh"></i>
-				刷新
+				{{ $lang.buttons.refresh }}
 			</el-button>
 			<el-button type="primary" size="mini" @click="createProjectDialog=true">
 				<i class="fa fa-plus"></i>
