@@ -761,7 +761,7 @@ def task_status(request, task_id):
                 'next': job.next_run_time,
                 'executions': json.loads(executions)
             })
-        return JsonResponse({'data': result, 'status': '1'})
+        return JsonResponse({'data': result})
 
 
 def render_html(request):

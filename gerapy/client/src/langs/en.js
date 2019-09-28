@@ -156,6 +156,8 @@ export default {
 		chooseDateTime: 'Choose Date Time',
 		executedJobs: 'Executed Jobs',
 		errorJobs: 'Error Jobs',
+		toNextTask: 'To Next Task',
+		successRate: 'Success Rate',
 	},
 	columns: {
 		id: 'ID',
@@ -231,6 +233,10 @@ export default {
 		proxyPool: 'Proxy Pool',
 		cookiesPool: 'Cookies Pool',
 		failTimes: 'Fail Times',
-		timezone: 'Timezone'
+		timezone: 'Timezone',
+		nextTime: 'Next Time',
+		lastTime: 'Last Time',
+		success: 'Success',
+		error: 'Error'
 	},
 }

@@ -156,6 +156,8 @@ export default {
 		chooseDateTime: '选择日期时间',
 		executedJobs: '任务执行成功',
 		errorJobs: '任务执行失败',
+		toNextTask: '距离下次任务进度',
+		successRate: '成功率',
 	},
 	columns: {
 		id: 'ID',
@@ -231,7 +233,11 @@ export default {
 		proxyPool: '代理池',
 		cookiesPool: 'Cookies池',
 		failTimes: '失败次数',
-		timezone: '时区'
+		timezone: '时区',
+		nextTime: '下次执行',
+		lastTime: '上次执行',
+		success: '成功',
+		error: '错误'
 	},
 
 }

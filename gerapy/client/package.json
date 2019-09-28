@@ -11,6 +11,8 @@
     "axios": "^0.19.0",
     "clone": "^2.1.2",
     "core-js": "^2.6.5",
+    "date-format": "^2.1.0",
+    "echarts": "^4.3.0",
     "element-ui": "^2.11.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
@@ -24,6 +26,7 @@
     "vue-axios": "^2.1.4",
     "vue-clipboard2": "^0.3.0",
     "vue-codemirror": "^4.0.6",
+    "vue-echarts": "^4.0.4",
     "vue-router": "^3.1.2",
     "vuex": "^3.1.1",
     "vuex-persist": "^2.0.1"

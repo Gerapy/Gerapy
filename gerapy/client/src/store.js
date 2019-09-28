@@ -17,8 +17,17 @@ export default new Vuex.Store({
 			zh: zh,
 			en: en
 		},
+		color: {
+			primary: '#35CBAA',
+			success: '#35CBAA',
+			warning: '#F6B93D',
+			danger: '#EF6372',
+			error: '#EF6372',
+			info: '#60BCFE'
+		},
 		timeout: null,
 		intervals: [],
+		dateFormat: 'yyyy-MM-dd hh:mm:ss',
 		url: {
 			home: {
 				status: '/api/index/status'
