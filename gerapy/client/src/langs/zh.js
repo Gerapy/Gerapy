@@ -77,6 +77,7 @@ export default {
 	},
 	titles: {
 		createClient: '创建主机',
+		editClient: '编辑主机',
 		deployProject: '部署项目',
 		buildProject: '打包项目',
 		configureProject: '配置项目',

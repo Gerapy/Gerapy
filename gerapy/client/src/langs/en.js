@@ -77,6 +77,7 @@ export default {
 	},
 	titles: {
 		createClient: 'Create Client',
+		editClient: 'Edit Client',
 		deployProject: 'Deploy Project',
 		buildProject: 'Build Project',
 		configureProject: 'Configure Project',

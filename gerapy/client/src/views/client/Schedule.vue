@@ -58,7 +58,8 @@
 									<i v-if="['finished'].includes(job.status)" class="fa fa-check"></i>
                   {{ jobStatusText[job.status] }}
                 </el-button>
-                <el-button type="danger" size="mini" class="pull-right m-r-md" v-if="['pending', 'running'].includes(job.status)" @click.stop="onCancelJob(job.id)">
+                <el-button type="danger" size="mini" class="pull-right m-r-md"
+													 v-if="['pending', 'running'].includes(job.status)" @click.stop="onCancelJob(job.id)">
                   <i class="fa fa-remove"></i>
                   <span v-if="['pending'].includes(job.status)">
                     {{ $lang.buttons.cancel }}
@@ -84,6 +85,8 @@
 	export default {
 		data() {
 			return {
+				// 连续获取错误次数
+				errorCount: 0,
 				// 所有项目
 				projects: [],
 				// 加载projects标志
@@ -147,19 +150,25 @@
 					this.projects.forEach(project => {
 						this.$set(this.spidersLoading, project, true)
 					})
+					this.errorCount = 0
 					// 获取所有爬虫
 					this.getSpiders()
 					// 获取所有任务
 					this.getJobs()
 				}).catch(() => {
 					this.projectsLoading = false
-					// 定时任务
-					this.$store.commit(
-						'setTimeout',
-						setTimeout(() => {
-							this.getProjects()
-						}, 3000)
-					)
+					this.errorCount += 1
+					if (this.errorCount >= 3) {
+						this.$message.error(this.$store.getters.$lang.messages.errorLoad)
+					} else {
+						// 定时任务
+						this.$store.commit(
+							'setTimeout',
+							setTimeout(() => {
+								this.getProjects()
+							}, 3000)
+						)
+					}
 				})
 			},
 			// 获取所有爬虫

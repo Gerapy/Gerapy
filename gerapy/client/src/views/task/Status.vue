@@ -5,24 +5,12 @@
 			<el-col :span="6">
 				<div class="panel">
 					<panel-title :title="$lang.objects.task">
+						<el-button type="primary" size="mini" @click="$router.push({name: 'taskEdit', params: {id: id}})">
+							<i class="fa fa-edit"></i>
+							{{ $lang.buttons.edit }}
+						</el-button>
 					</panel-title>
 					<div class="panel-body" v-if="task">
-						<!--<div class="m-b">-->
-						<!--<el-button type="primary" size="mini">{{ task.trigger }}</el-button>-->
-						<!--<span class="text">{{ task.configuration }}</span>-->
-						<!--</div>-->
-						<!--<div class="m-b">-->
-						<!--<el-button type="primary" size="mini">-->
-						<!--{{ $lang.objects.project }}-->
-						<!--</el-button>-->
-						<!--<span class="text">{{ task.project }}</span>-->
-						<!--</div>-->
-						<!--<div class="m-b">-->
-						<!--<el-button type="primary" size="mini">-->
-						<!--{{ $lang.objects.spider }}-->
-						<!--</el-button>-->
-						<!--<span class="text">{{ task.spider }}</span>-->
-						<!--</div>-->
 						<el-form label-width="80px">
 							<el-form-item :label="$lang.columns.trigger">
 								<el-button size="mini" type="primary">{{ task.trigger }}</el-button>
@@ -114,6 +102,10 @@
 					<el-col :span="24">
 						<div class="panel">
 							<panel-title :title="job.client.name">
+								<el-button type="primary" size="mini" @click="$router.push({name: 'clientSchedule', params: {id: job.client.id}})">
+									<i class="fa fa-sitemap"></i>
+									{{ $lang.buttons.schedule }}
+								</el-button>
 							</panel-title>
 							<div class="panel-body">
 								<el-row>

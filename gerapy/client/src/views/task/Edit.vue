@@ -1,6 +1,6 @@
 <template>
 	<div class="panel">
-		<panel-title :title="$lang.titles.createTask"></panel-title>
+		<panel-title :title="$lang.titles.editTask"></panel-title>
 		<div class="panel-body"
 				 v-loading="loadData"
 				 :element-loading-text="$lang.messages.loading">

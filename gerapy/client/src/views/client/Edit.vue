@@ -1,6 +1,6 @@
 <template>
 	<div class="panel">
-		<panel-title :title="$route.meta.title"></panel-title>
+		<panel-title :title="$lang.titles.editClient"></panel-title>
 		<div class="panel-body"
 				 v-loading="loadData"
 				 :element-loading-text="$lang.messages.loading">
