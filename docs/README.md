@@ -149,3 +149,14 @@ ansible-playbooks -i host site.yml
 **interval: 当你想以固定的时间间隔运行作业时使用(例如： 每隔十分钟运行一次)**
 
 **Crontab：当你想在一天中的特定时间周期性地运行工作时使用 (例如： 每天的9点运行一次)**
+
+
+## 登录功能
+
+使用
+```python
+
+gerapy createsuperuser
+
+```
+创建一个用户即可; 使用该用户登录
