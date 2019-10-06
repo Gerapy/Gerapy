@@ -58,7 +58,11 @@ export default {
 		addTable: 'add table',
 		addCollection: 'add collection',
 		status: 'status',
-		nextTime: 'next time'
+		nextTime: 'next time',
+        password: 'password',
+        logout: 'logout',
+        login: 'login',
+        reset: 'reset'
 	},
 	heads: {
 		home: 'Home',
@@ -147,7 +151,9 @@ export default {
 		buildFirst: 'Please Build Project',
 		loadError: 'Load Error',
 		select: 'Please Select',
-		errorParse: 'Parse Error Occurred'
+		errorParse: 'Parse Error Occurred',
+        pleaseInputUsername: 'Please enter the correct user name',
+        pleaseInputPassword: 'Please enter the correct password'
 	},
 	descriptions: {
 		normalClients: 'Normal Clients',

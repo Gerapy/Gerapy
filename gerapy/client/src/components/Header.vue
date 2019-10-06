@@ -6,15 +6,15 @@
 		<!--placeholder="Search">-->
 		<!--</el-input>-->
 		<!--</div>-->
-		<lang-switch></lang-switch>
+		<user></user>
 	</div>
 </template>
 <script>
-	import LangSwitch from './LangSwitch'
+	import User from './User'
 
 	export default {
 		components: {
-			LangSwitch
+			User
 		}
 	}
 </script>

@@ -19,3 +19,5 @@ $--color-info: #60BCFE !default;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
+
+@import url("//unpkg.com/element-ui@2.0.11/lib/theme-chalk/index.css");

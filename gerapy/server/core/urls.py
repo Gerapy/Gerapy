@@ -1,8 +1,10 @@
 from django.conf.urls import url
+from rest_framework.authtoken import views as auth
+
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^api/user/auth', auth.obtain_auth_token),
     url(r'^api/index/status/$', views.index_status, name='index_status'),
     url(r'^api/client/$', views.client_index, name='client_index'),
     url(r'^api/client/create', views.client_create, name='client_create'),

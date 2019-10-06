@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    /* eslint-disable */
 	import store from '../store'
 
 	export default {
@@ -27,8 +28,8 @@
 <style scoped>
 	#lang {
 		float: right;
-		margin-top: 15px;
-		margin-right: 240px;
+		margin-bottom: 15px;
+		margin-right: 90px;
 		cursor: pointer;
 	}
 

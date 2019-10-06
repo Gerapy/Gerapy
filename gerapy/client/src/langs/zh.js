@@ -58,7 +58,11 @@ export default {
 		addTable: '添加表映射',
 		addCollection: '添加集合映射',
 		status: '状态',
-		nextTime: '下次执行'
+		nextTime: '下次执行',
+		password: '密码',
+        logout: '登出',
+		login: '登录',
+		reset: '重置'
 	},
 	heads: {
 		home: '首页',
@@ -147,7 +151,11 @@ export default {
 		buildFirst: '请先打包项目',
 		loadError: '加载失败',
 		select: '请选择',
-		errorParse: '解析失败'
+		errorParse: '解析失败',
+		pleaseInputUsername: '请输入用户名',
+        pleaseInputPassword: '请输入密码',
+		loginSuccess: '登录成功',
+		loginError: '登录失败'
 	},
 	descriptions: {
 		normalClients: '主机正常运行',
@@ -238,7 +246,7 @@ export default {
 		nextTime: '下次执行',
 		lastTime: '上次执行',
 		success: '成功',
-		error: '错误'
+		error: '错误',
 	},
 
 }

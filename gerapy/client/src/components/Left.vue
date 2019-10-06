@@ -1,7 +1,7 @@
 <template>
 	<div class="left-side">
 		<div class="left-side-inner">
-			<router-link to="/" class="logo block">
+			<router-link to="/home" class="logo block">
 				<img src="../assets/images/logo.png" alt="Gerapy">
 			</router-link>
 			<el-menu

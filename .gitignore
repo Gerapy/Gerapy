@@ -9,5 +9,9 @@
 npm-debug.log
 /test
 /tests
+/gerapy/server/.idea/
+/logs/
+/gerapy/.idea
+/gerapy/logs/
 db.sqlite3
 install.sh

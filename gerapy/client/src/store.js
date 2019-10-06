@@ -17,6 +17,11 @@ export default new Vuex.Store({
 			zh: zh,
 			en: en
 		},
+		loginInfo: {
+			username: null,
+			password: null,
+			token: null
+		},
 		color: {
 			primary: '#35CBAA',
 			success: '#35CBAA',
@@ -29,6 +34,11 @@ export default new Vuex.Store({
 		intervals: [],
 		dateFormat: 'yyyy-MM-dd hh:mm:ss',
 		url: {
+
+			user:{
+				auth: 'api/user/auth'
+			},
+
 			home: {
 				status: '/api/index/status'
 			},
