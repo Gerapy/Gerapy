@@ -17,11 +17,6 @@ export default new Vuex.Store({
 			zh: zh,
 			en: en
 		},
-		loginInfo: {
-			username: null,
-			password: null,
-			token: null
-		},
 		color: {
 			primary: '#35CBAA',
 			success: '#35CBAA',

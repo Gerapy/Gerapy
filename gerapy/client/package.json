@@ -31,7 +31,7 @@
     "vue-echarts": "^4.0.4",
     "vue-router": "^3.1.2",
     "vuex": "^3.1.1",
-    "vuex-persist": "^2.0.1"
+    "vuex-persist": "^2.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",

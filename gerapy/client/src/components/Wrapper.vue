@@ -21,7 +21,7 @@
 		name: 'Wrapper',
 		components: {
 			GHeader,
-			GFooter
+            GFooter
 		}
 	}
 </script>
