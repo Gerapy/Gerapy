@@ -29,6 +29,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     response => {
         if (response.status === 401) {
+            removeToken()
             router.push({path: '/login'});
             console.log("Token Error");
         }else if (response.status === 403) {
