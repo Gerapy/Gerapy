@@ -8,16 +8,20 @@ import './assets/scss/element.scss'
 import './assets/scss/main.scss'
 import store from './store'
 import {mapGetters} from 'vuex'
-import axios from 'axios'
+// import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueClipboard from 'vue-clipboard2'
+import http from './http'
+
+/* eslint-disable */
 
 Vue.use(ElementUI)
-Vue.use(VueAxios, axios)
 Vue.use(VueClipboard)
 Vue.component('v-chart', ECharts)
 
 Vue.config.productionTip = false
+
+Vue.use(VueAxios, http)
 
 Vue.mixin({
 	computed: {

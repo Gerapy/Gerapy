@@ -138,9 +138,7 @@
                             setToken(response.data.token)
                             this.$router.push({path: '/home'})
                             this.loading = false
-                        })
-                            .catch(() => {
-                                this.$message.success(this.$store.getters.$lang.messages.loginError)
+                        }).catch(() => {
                                 this.loading = false
                             })
                     } else {
