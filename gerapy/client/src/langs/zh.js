@@ -60,7 +60,7 @@ export default {
 		status: '状态',
 		nextTime: '下次执行',
 		password: '密码',
-        logout: '登出',
+		logout: '登出',
 		login: '登录',
 		reset: '重置'
 	},
@@ -153,7 +153,7 @@ export default {
 		select: '请选择',
 		errorParse: '解析失败',
 		pleaseInputUsername: '请输入用户名',
-        pleaseInputPassword: '请输入密码',
+		pleaseInputPassword: '请输入密码',
 		loginSuccess: '登录成功',
 		loginError: '登录失败'
 	},

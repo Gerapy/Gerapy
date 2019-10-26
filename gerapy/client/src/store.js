@@ -17,6 +17,7 @@ export default new Vuex.Store({
 			zh: zh,
 			en: en
 		},
+		token: null,
 		color: {
 			primary: '#35CBAA',
 			success: '#35CBAA',
@@ -30,7 +31,7 @@ export default new Vuex.Store({
 		dateFormat: 'yyyy-MM-dd hh:mm:ss',
 		url: {
 
-			user:{
+			user: {
 				auth: 'api/user/auth'
 			},
 
@@ -84,6 +85,12 @@ export default new Vuex.Store({
 	mutations: {
 		setLang(state, lang) {
 			state.lang = lang
+		},
+		setToken(state, token) {
+			state.token = token
+		},
+		clearToken(state, token) {
+			state.token = null
 		},
 		setTimeout: (state, timeout) => {
 			if (state.timeout) {

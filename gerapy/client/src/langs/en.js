@@ -59,10 +59,10 @@ export default {
 		addCollection: 'add collection',
 		status: 'status',
 		nextTime: 'next time',
-        password: 'password',
-        logout: 'logout',
-        login: 'login',
-        reset: 'reset'
+		password: 'password',
+		logout: 'logout',
+		login: 'login',
+		reset: 'reset'
 	},
 	heads: {
 		home: 'Home',
@@ -152,8 +152,10 @@ export default {
 		loadError: 'Load Error',
 		select: 'Please Select',
 		errorParse: 'Parse Error Occurred',
-        pleaseInputUsername: 'Please enter the correct user name',
-        pleaseInputPassword: 'Please enter the correct password'
+		pleaseInputUsername: 'Please enter the correct user name',
+		pleaseInputPassword: 'Please enter the correct password',
+		loginSuccess: 'Login Successfully',
+		loginError: 'Login Failed'
 	},
 	descriptions: {
 		normalClients: 'Normal Clients',

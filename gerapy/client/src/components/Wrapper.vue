@@ -2,7 +2,7 @@
 	<div class="main-content ofh">
 		<g-header></g-header>
 		<div class="wrapper">
-				<div class="pageContent">
+			<div class="pageContent">
 				<el-row>
 					<el-col :span="24">
 						<slot></slot>
@@ -21,7 +21,7 @@
 		name: 'Wrapper',
 		components: {
 			GHeader,
-            GFooter
+			GFooter
 		}
 	}
 </script>

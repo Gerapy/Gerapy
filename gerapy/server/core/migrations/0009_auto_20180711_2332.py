@@ -6,11 +6,10 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('core', '0008_auto_20180703_2305'),
     ]
-
+    
     operations = [
         migrations.RemoveField(
             model_name='task',

@@ -1,46 +1,38 @@
 import axios from 'axios';
-
 import router from './router'
-
-import { getToken, removeToken } from './utils/auth'
-
-/* eslint-disable */
-
-
+import store from './store'
 
 axios.defaults.timeout = 8000;
 
+// 全局设定 Token
 axios.interceptors.request.use(
-    config => {
-        console.log("设置 Header")
-        if (getToken()){
-            config.headers.Authorization = 'Token ' + getToken()
+	config => {
+		let token = store.state.token
+		if (token) {
+			config.headers.Authorization = 'Token ' + token
+		}
 
-        }
+		return config
+	},
 
-        return config
-    },
-
-    error => {
-        return Promise.reject(error)
-    }
+	error => {
+		return Promise.reject(error)
+	}
 )
 
 axios.interceptors.response.use(
-    response => {
-        if (response.status === 401) {
-            removeToken()
-            router.push({path: '/login'});
-            console.log("Token Error");
-        }else if (response.status === 403) {
-            router.push({path: '/home'});
-            console.log("No Permission");
-        }
-        return response;
-    },
-    error => {
-        return Promise.reject(error);
-    }
+	response => {
+		if (response.status === 401) {
+			removeToken()
+			router.push({path: '/login'});
+		} else if (response.status === 403) {
+			router.push({path: '/home'});
+		}
+		return response;
+	},
+	error => {
+		return Promise.reject(error);
+	}
 );
 
 
