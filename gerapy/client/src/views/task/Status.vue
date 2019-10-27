@@ -102,7 +102,8 @@
 					<el-col :span="24">
 						<div class="panel">
 							<panel-title :title="job.client.name">
-								<el-button type="primary" size="mini" @click="$router.push({name: 'clientSchedule', params: {id: job.client.id}})">
+								<el-button type="primary" size="mini"
+													 @click="$router.push({name: 'clientSchedule', params: {id: job.client.id}})">
 									<i class="fa fa-sitemap"></i>
 									{{ $lang.buttons.schedule }}
 								</el-button>
@@ -193,9 +194,12 @@
 		},
 		computed: {},
 		mounted() {
-			setInterval(() => {
-				this.getJobsData()
-			}, 2000)
+			this.$store.commit(
+				'addInterval',
+				setInterval(() => {
+					this.getJobsData()
+				}, 3000)
+			)
 			this.getTaskData()
 		},
 		methods: {
@@ -209,6 +213,7 @@
 				})
 			},
 			getTaskData() {
+				this.$message.info(this.$store.getters.$lang.messages.gettingTaskData)
 				if (this.id) {
 					this.$http.get(this.formatString(this.$store.state.url.task.info, {
 						id: this.id

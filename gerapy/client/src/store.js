@@ -17,7 +17,10 @@ export default new Vuex.Store({
 			zh: zh,
 			en: en
 		},
-		token: null,
+		auth: {
+			user: null,
+			token: null
+		},
 		color: {
 			primary: '#35CBAA',
 			success: '#35CBAA',
@@ -30,11 +33,9 @@ export default new Vuex.Store({
 		intervals: [],
 		dateFormat: 'yyyy-MM-dd hh:mm:ss',
 		url: {
-
 			user: {
 				auth: 'api/user/auth'
 			},
-
 			home: {
 				status: '/api/index/status'
 			},
@@ -86,12 +87,21 @@ export default new Vuex.Store({
 		setLang(state, lang) {
 			state.lang = lang
 		},
+		// auth
 		setToken(state, token) {
-			state.token = token
+			state.auth.token = token
 		},
-		clearToken(state, token) {
-			state.token = null
+		clearToken(state) {
+			state.auth.token = null
 		},
+		// user
+		setUser(state, user) {
+			state.auth.user = user
+		},
+		clearUser(state) {
+			state.auth.user = null
+		},
+		// timeout
 		setTimeout: (state, timeout) => {
 			if (state.timeout) {
 				clearTimeout(state.timeout)
@@ -114,6 +124,12 @@ export default new Vuex.Store({
 	getters: {
 		$lang: state => {
 			return state.i18n[state.lang]
+		},
+		token: state => {
+			return state.auth.token
+		},
+		user: state => {
+			return state.auth.user
 		}
 	},
 	plugins: [vuexPersist.plugin]

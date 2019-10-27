@@ -7,7 +7,6 @@
 </template>
 
 <script>
-    /* eslint-disable */
 	import store from '../store'
 
 	export default {
@@ -19,7 +18,6 @@
 		},
 		methods: {
 			onChangeLang(lang) {
-				console.log('lang', lang)
 				store.commit('setLang', lang)
 			}
 		}
@@ -27,10 +25,11 @@
 </script>
 <style scoped>
 	#lang {
-		float: right;
+		display: inline-block;
 		margin-bottom: 15px;
-		margin-right: 90px;
+		margin-right: 10px;
 		cursor: pointer;
+		font-size: 14px;
 	}
 
 	.active {

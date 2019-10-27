@@ -26,11 +26,10 @@
 		</el-form>
 	</div>
 </template>
-
 <script>
 
 	export default {
-		name: 'Login2',
+		name: 'Login',
 		data() {
 			const validateUsername = (rule, value, callback) => {
 				if (!value || value.length === 0) {
@@ -81,9 +80,10 @@
 						).then(({data: data}) => {
 							let token = data.token
 							this.$store.commit('setToken', token)
+							this.$store.commit('setUser', this.form.username)
 							this.$router.push({path: '/home'})
 							this.loading = false
-						}).catch((error) => {
+						}).catch(() => {
 							this.loading = false
 							this.$message.error(this.$store.getters.$lang.messages.loginError)
 						})

@@ -30,7 +30,7 @@ logger = get_logger(__name__)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def index(request):
     """
     render index page

@@ -1,20 +1,20 @@
 <template>
 	<div class="header-section">
-		<!--<div class="search">-->
-		<!--<el-input-->
-		<!--size="small"-->
-		<!--placeholder="Search">-->
-		<!--</el-input>-->
-		<!--</div>-->
-		<user></user>
+		<div class="pull-right">
+			<lang-switch></lang-switch>
+			<user></user>
+		</div>
+
 	</div>
 </template>
 <script>
 	import User from './User'
+	import LangSwitch from './LangSwitch'
 
 	export default {
 		components: {
-			User
+			User,
+			LangSwitch
 		}
 	}
 </script>

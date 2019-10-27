@@ -1,12 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Layout from './layout/index.vue'
+import Layout from './layout/Index.vue'
 import store from './store'
 
 Vue.use(Router)
-
-
-const whiteList = ['/login']
 
 
 const router = new Router({
@@ -101,8 +98,10 @@ const router = new Router({
 	}
 })
 
+const whiteList = ['/login']
+
 router.beforeEach((to, from, next) => {
-	let token = store.state.token
+	let token = store.getters.token
 	if (token) {
 		if (to.path === '/login') {
 			// 如果登录过，直接跳转到首页

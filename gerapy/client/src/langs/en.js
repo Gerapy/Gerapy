@@ -155,7 +155,8 @@ export default {
 		pleaseInputUsername: 'Please enter the correct user name',
 		pleaseInputPassword: 'Please enter the correct password',
 		loginSuccess: 'Login Successfully',
-		loginError: 'Login Failed'
+		loginError: 'Login Failed',
+		gettingTaskData: 'Getting Data of Tasks'
 	},
 	descriptions: {
 		normalClients: 'Normal Clients',

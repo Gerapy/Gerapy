@@ -59,7 +59,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 ROOT_URLCONF = 'gerapy.server.server.urls'
 
 TEMPLATES = [

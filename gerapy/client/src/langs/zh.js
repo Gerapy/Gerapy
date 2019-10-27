@@ -155,7 +155,8 @@ export default {
 		pleaseInputUsername: '请输入用户名',
 		pleaseInputPassword: '请输入密码',
 		loginSuccess: '登录成功',
-		loginError: '登录失败'
+		loginError: '登录失败',
+		gettingTaskData: '正在获取任务状态'
 	},
 	descriptions: {
 		normalClients: '主机正常运行',
