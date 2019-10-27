@@ -118,6 +118,7 @@ router.beforeEach((to, from, next) => {
 	}
 })
 
+// 每次跳出之后清除定时任务
 router.afterEach(() => {
 	router.app.$store.commit('clearIntervals')
 	router.app.$store.commit('clearTimeout')
