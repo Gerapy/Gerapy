@@ -12,13 +12,12 @@ import VueAxios from 'vue-axios'
 import VueClipboard from 'vue-clipboard2'
 import http from './http'
 
-/* eslint-disable */
-
 Vue.use(ElementUI)
 Vue.use(VueClipboard)
 Vue.component('v-chart', ECharts)
 
 Vue.config.productionTip = false
+Vue.config.devtools = true
 
 Vue.use(VueAxios, http)
 
