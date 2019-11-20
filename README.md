@@ -24,16 +24,26 @@ First use this command to initialize the workspace:
 gerapy init
 ```
 
-Now you will get a folder named `gerapy`.
+Now you will get a folder named `gerapy`. Also you can specify the name of your workspace by this command:
 
-Then cd to this folder, and run this command to initialize the Database:
+```
+gerapy init <workspace>
+```
+
+Then `cd` to this folder, and run this command to initialize the Database:
 
 ```bash
 cd gerapy
 gerapy migrate
 ```
 
-Next you can runserver by this command:
+Next you need to create a superuser by this command:
+
+```
+gerapy createsuperuser
+```
+
+Then you can runserver by this command:
 
 ```bash
 gerapy runserver
@@ -49,8 +59,9 @@ gerapy runserver 0.0.0.0:8888
 
 Then it will run with public host and port 8888.
 
-You can create a configurable project and then configure and generate code automatically.Also you can drag your Scrapy Project to `gerapy/projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this
-project in the web interface.
+You can create a configurable project and then configure and generate code of Scrapy automatically.
+
+Also you can drag your Scrapy Project to `projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this project through the web page.
 
 As for the deploy, you can move to Deploy Page. Firstly you need to build your project and add client in the Client Index Page, then you can deploy the project by clicking button.
 
@@ -109,12 +120,10 @@ Project Configuration:
 
 - [x] Add Visual Configuration of Spider with Previewing Website
 - [x] Add Scrapyd Auth Management
-- [ ] Add Automatic Python & Scrapyd Environment Deployment
-- [ ] Add MongoDB & Redis & MySQL Monitor
+- [x] Add Gerapy Auth Management
 - [x] Add Timed Task Scheduler
+- [ ] Add MongoDB & Redis & MySQL Monitor
 
 ## Communication
 
-If you have any questions or ideas, you can join this QQ Group:
-
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fno6qey8a3j307609k3zs.jpg)
+If you have any questions or ideas, you can add my wechat `CQCcqc`.
