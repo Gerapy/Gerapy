@@ -15,6 +15,7 @@ class ProjectAdmin(admin.ModelAdmin):
 class MonitorAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'project', 'created_at', 'updated_at')
 
+
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Monitor, MonitorAdmin)

@@ -787,6 +787,13 @@ def task_remove(request, task_id):
     """
     if request.method == 'POST':
         try:
+            # delete job from DjangoJob
+            task = Task.objects.get(id=task_id)
+            clients = clients_of_task(task)
+            for client in clients:
+                job_id = get_job_id(client, task)
+                DjangoJob.objects.filter(name=job_id).delete()
+            # delete task
             Task.objects.filter(id=task_id).delete()
             return JsonResponse({'result': '1'})
         except:

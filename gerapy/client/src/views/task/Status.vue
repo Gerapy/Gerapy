@@ -176,119 +176,119 @@
 </template>
 
 <script>
-	import PanelTitle from '../../components/PanelTitle'
-	import 'echarts/lib/chart/pie'
-	import 'echarts/lib/component/tooltip'
+  import PanelTitle from '../../components/PanelTitle'
+  import 'echarts/lib/chart/pie'
+  import 'echarts/lib/component/tooltip'
 
-	const dateFormat = require('date-format')
+  const dateFormat = require('date-format')
 
-	export default {
-		data() {
-			return {
-				id: this.$route.params.id,
-				jobs: [],
-				task: null,
-				loadingJob: false,
-				errorSymbol: 'error',
-			}
-		},
-		computed: {},
-		mounted() {
-			this.$store.commit(
-				'addInterval',
-				setInterval(() => {
-					this.getJobsData()
-				}, 3000)
-			)
-			this.getTaskData()
-		},
-		methods: {
-			getJobsData() {
-				this.$http.get(this.formatString(this.$store.state.url.task.status, {
-					id: this.id
-				})).then(({data: {data: data}}) => {
-					this.jobs = data
-				}).catch(() => {
-					this.$message.error(this.$store.getters.$lang.messages.loadError)
-				})
-			},
-			getTaskData() {
-				this.$message.info(this.$store.getters.$lang.messages.gettingTaskData)
-				if (this.id) {
-					this.$http.get(this.formatString(this.$store.state.url.task.info, {
-						id: this.id
-					})).then(({data: {data: data}}) => {
-						this.task = data
-					}).catch(() => {
-						this.$message.error(this.$store.getters.$lang.messages.loadError)
-					})
-				}
-			},
-			// next run time
-			getNextTunTime(job) {
-				if (!job || !job.next) return null
-				return dateFormat.asString(this.$store.state.dateFormat, new Date(Date.parse(job.next)))
-			},
-			// last turn time
-			getLastRunTime(job) {
-				if (!job || !job.executions || !job.executions.length > 0) return null
-				let lastExecution = job.executions[0]
-				if (!lastExecution || !lastExecution.fields || !lastExecution.fields.run_time) return null
-				let runTime = lastExecution.fields.run_time
-				return dateFormat.asString(this.$store.state.dateFormat, new Date(Date.parse(runTime)))
-			},
-			getRunPercent(job) {
-				if (!job) return 0
-				let lastRunTime = Date.parse(this.getLastRunTime(job))
-				if (!lastRunTime) return 0
-				let nextRunTime = Date.parse(this.getNextTunTime(job))
-				if (!nextRunTime) return 0
-				let nowTime = Date.parse(new Date())
-				let percent = parseInt((nowTime - lastRunTime) * 100 / (nextRunTime - lastRunTime))
-				return percent
-			},
-			getSuccessExecutions(job) {
-				if (!job || !job.executions || !job.executions.length > 0) return []
-				return job.executions.filter(execution => execution.fields.status.toLowerCase().indexOf(this.errorSymbol) === -1)
-			},
-			getErrorExecutions(job) {
-				if (!job || !job.executions || !job.executions.length > 0) return []
-				return job.executions.filter(execution => execution.fields.status.toLowerCase().indexOf(this.errorSymbol) >= 0)
-			},
-			getSuccessRate(job) {
-				if (!job) return 0
-				let successes = this.getSuccessExecutions(job)
-				let errors = this.getErrorExecutions(job)
-				if (successes.length + errors.length === 0) return 0
-				let rate = parseInt(successes.length * 100 / (successes.length + errors.length))
-				return rate
-			},
-			getRunStatusPieData(job) {
-				let successes = this.getSuccessExecutions(job)
-				let errors = this.getErrorExecutions(job)
-				return {
-					color: [this.$store.state.color.primary, this.$store.state.color.error],
-					tooltip: {
-						show: true,
-						formatter: "{a} <br/>{b} : {c} ({d}%)"
-					},
-					series: [
-						{
-							name: this.$lang.descriptions.successRate,
-							type: 'pie',
-							data: [
-								{value: successes.length, name: this.$lang.columns.success},
-								{value: errors.length, name: this.$lang.columns.error},
-							],
-						}
-					]
-				}
-			}
-		},
-		components: {
-			PanelTitle,
-		},
-	}
+  export default {
+    data() {
+      return {
+        id: this.$route.params.id,
+        jobs: [],
+        task: null,
+        loadingJob: false,
+        errorSymbol: 'error',
+      }
+    },
+    computed: {},
+    mounted() {
+      this.$store.commit(
+        'addInterval',
+        setInterval(() => {
+          this.getJobsData()
+        }, 3000)
+      )
+      this.getTaskData()
+    },
+    methods: {
+      getJobsData() {
+        this.$http.get(this.formatString(this.$store.state.url.task.status, {
+          id: this.id
+        })).then(({data: {data: data}}) => {
+          this.jobs = data
+        }).catch(() => {
+          this.$message.error(this.$store.getters.$lang.messages.loadError)
+        })
+      },
+      getTaskData() {
+        this.$message.info(this.$store.getters.$lang.messages.gettingTaskData)
+        if (this.id) {
+          this.$http.get(this.formatString(this.$store.state.url.task.info, {
+            id: this.id
+          })).then(({data: {data: data}}) => {
+            this.task = data
+          }).catch(() => {
+            this.$message.error(this.$store.getters.$lang.messages.loadError)
+          })
+        }
+      },
+      // next run time
+      getNextTunTime(job) {
+        if (!job || !job.next) return null
+        return dateFormat.asString(this.$store.state.dateFormat, new Date(Date.parse(job.next)))
+      },
+      // last turn time
+      getLastRunTime(job) {
+        if (!job || !job.executions || !job.executions.length > 0) return null
+        let lastExecution = job.executions[0]
+        if (!lastExecution || !lastExecution.fields || !lastExecution.fields.run_time) return null
+        let runTime = lastExecution.fields.run_time
+        return dateFormat.asString(this.$store.state.dateFormat, new Date(Date.parse(runTime)))
+      },
+      getRunPercent(job) {
+        if (!job) return 0
+        let lastRunTime = Date.parse(this.getLastRunTime(job))
+        if (!lastRunTime) return 0
+        let nextRunTime = Date.parse(this.getNextTunTime(job))
+        if (!nextRunTime) return 0
+        let nowTime = Date.parse(new Date())
+        let percent = parseInt((nowTime - lastRunTime) * 100 / (nextRunTime - lastRunTime))
+        return percent
+      },
+      getSuccessExecutions(job) {
+        if (!job || !job.executions || !job.executions.length > 0) return []
+        return job.executions.filter(execution => execution.fields.status.toLowerCase().indexOf(this.errorSymbol) === -1)
+      },
+      getErrorExecutions(job) {
+        if (!job || !job.executions || !job.executions.length > 0) return []
+        return job.executions.filter(execution => execution.fields.status.toLowerCase().indexOf(this.errorSymbol) >= 0)
+      },
+      getSuccessRate(job) {
+        if (!job) return 0
+        let successes = this.getSuccessExecutions(job)
+        let errors = this.getErrorExecutions(job)
+        if (successes.length + errors.length === 0) return 0
+        let rate = parseInt(successes.length * 100 / (successes.length + errors.length))
+        return rate
+      },
+      getRunStatusPieData(job) {
+        let successes = this.getSuccessExecutions(job)
+        let errors = this.getErrorExecutions(job)
+        return {
+          color: [this.$store.state.color.primary, this.$store.state.color.error],
+          tooltip: {
+            show: true,
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+          },
+          series: [
+            {
+              name: this.$lang.descriptions.successRate,
+              type: 'pie',
+              data: [
+                {value: successes.length, name: this.$lang.columns.success},
+                {value: errors.length, name: this.$lang.columns.error},
+              ],
+            }
+          ]
+        }
+      }
+    },
+    components: {
+      PanelTitle,
+    },
+  }
 </script>
 
 <style scoped lang="scss">

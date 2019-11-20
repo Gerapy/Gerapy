@@ -19,20 +19,20 @@
 			<el-select v-model="formData.clients" multiple :placeholder="$lang.messages.select"
 								 size="small">
 				<el-option
-					v-for="item in clientOptions"
-					:key="item.value"
-					:label="item.label"
-					:value="item.value">
+						v-for="item in clientOptions"
+						:key="item.value"
+						:label="item.label"
+						:value="item.value">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item :label="$lang.columns.trigger" prop="trigger">
 			<el-select v-model="formData.trigger" :placeholder="$lang.messages.select" size="small">
 				<el-option
-					v-for="item in triggerOptions"
-					:key="item.value"
-					:label="item.label"
-					:value="item.value">
+						v-for="item in triggerOptions"
+						:key="item.value"
+						:label="item.label"
+						:value="item.value">
 				</el-option>
 			</el-select>
 		</el-form-item>
@@ -49,10 +49,10 @@
 									 filterable :placeholder="$lang.columns.timezone"
 									 class="inline width-200">
 					<el-option
-						v-for="item in timeZones"
-						:key="item"
-						:label="item"
-						:value="item">
+							v-for="item in timeZones"
+							:key="item"
+							:label="item"
+							:value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -95,26 +95,26 @@
 										 size="small"
 										 class="inline width-200">
 						<el-option
-							v-for="item in timeZones"
-							:key="item"
-							:label="item"
-							:value="item">
+								v-for="item in timeZones"
+								:key="item"
+								:label="item"
+								:value="item">
 						</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
-						v-model="formData.configuration.start_date" :format="$store.state.dateFormat"
-						:value-format="$store.state.dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
-						:placeholder="$lang.columns.startDate">
+							v-model="formData.configuration.start_date" :format="$store.state.dateFormat"
+							:value-format="$store.state.dateFormat"
+							type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
+							:placeholder="$lang.columns.startDate">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
-						v-model="formData.configuration.end_date" :picker-options="dateOptions" class="inline width-200"
-						type="datetime" size="small" :format="$store.state.dateFormat" :value-format="$store.state.dateFormat"
-						:placeholder="$lang.columns.endDate">
+							v-model="formData.configuration.end_date" :picker-options="dateOptions" class="inline width-200"
+							type="datetime" size="small" :format="$store.state.dateFormat" :value-format="$store.state.dateFormat"
+							:placeholder="$lang.columns.endDate">
 					</el-date-picker>
 				</el-form-item>
 			</el-form-item>
@@ -174,27 +174,27 @@
 										 filterable :placeholder="$lang.columns.timezone"
 										 class="inline width-200">
 						<el-option
-							v-for="item in timeZones"
-							:key="item"
-							:label="item"
-							:value="item">
+								v-for="item in timeZones"
+								:key="item"
+								:label="item"
+								:value="item">
 						</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.startDate">
 					<el-date-picker
-						v-model="formData.configuration.start_date" :format="$store.state.dateFormat"
-						:value-format="$store.state.dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
-						:placeholder="$lang.columns.startDate">
+							v-model="formData.configuration.start_date" :format="$store.state.dateFormat"
+							:value-format="$store.state.dateFormat"
+							type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
+							:placeholder="$lang.columns.startDate">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item :label="$lang.columns.endDate">
 					<el-date-picker
-						v-model="formData.configuration.end_date" :format="$store.state.dateFormat"
-						:value-format="$store.state.dateFormat"
-						type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
-						:placeholder="$lang.columns.endDate">
+							v-model="formData.configuration.end_date" :format="$store.state.dateFormat"
+							:value-format="$store.state.dateFormat"
+							type="datetime" size="small" :picker-options="dateOptions" class="inline width-200"
+							:placeholder="$lang.columns.endDate">
 					</el-date-picker>
 				</el-form-item>
 			</el-form-item>
@@ -212,125 +212,125 @@
 </template>
 
 <script>
-	const {listTimeZones} = require('timezone-support')
-	export default {
-		name: 'Substance',
-		props: {
-			id: {
-				type: String,
-				default: null
-			}
-		},
-		data() {
-			return {
-				formData: {
-					name: null,
-					clients: [],
-					trigger: null,
-					project: null,
-					spider: null,
-					configuration: {
-						run_date: null,
-						weeks: null,
-						days: null,
-						hours: null,
-						minutes: null,
-						seconds: null,
-						month: null,
-						week: null,
-						day: null,
-						hour: null,
-						minute: null,
-						second: null,
-						year: null,
-						day_of_week: null,
-						timezone: null,
-						start_date: null,
-						end_date: null,
-					}
-				},
-				clientOptions: [],
-				dateOptions: {
-					disabledDate(time) {
-						// 设置今天及今天之后的日期
-						return time.getTime() < Date.now() - 8.64e7
-					}
-				},
-				timeZones: listTimeZones(),
-				rules: {
-					name: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						},
-					],
-					project: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.project + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						}
-					],
-					spider: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.spider + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						}
-					],
-					timezone: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.timezone + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						}
-					]
-				},
-				triggerOptions: [{
-					value: 'date',
-					label: 'Date',
-				}, {
-					value: 'interval',
-					label: 'Interval'
-				}, {
-					value: 'cron',
-					label: 'Crontab'
-				}],
-			}
-		},
-		mounted() {
-			this.getClientData()
-			this.getTaskData()
-		},
-		methods: {
-			getClientData() {
-				this.$http.get(this.$store.state.url.client.index
-				).then(({data: clients}) => {
-					clients.forEach((item) => {
-						this.clientOptions.push({
-							value: item.pk,
-							label: item.fields.name
-						})
-					})
-				}).catch(() => {
-					this.clients = []
-					this.$message.error(this.$store.getters.$lang.messages.loadError)
-				})
-			},
-			getTaskData() {
-				if (this.id) {
-					this.$http.get(this.formatString(this.$store.state.url.task.info, {
-						id: this.id
-					})).then(({data: {data: client}}) => {
-						this.formData = client
-					}).catch(() => {
-						this.$message.error(this.$store.getters.$lang.messages.loadError)
-					})
-				}
-			},
-		}
-	}
+  const {listTimeZones} = require('timezone-support')
+  export default {
+    name: 'Substance',
+    props: {
+      id: {
+        type: String,
+        default: null
+      }
+    },
+    data() {
+      return {
+        formData: {
+          name: null,
+          clients: [],
+          trigger: null,
+          project: null,
+          spider: null,
+          configuration: {
+            run_date: null,
+            weeks: null,
+            days: null,
+            hours: null,
+            minutes: null,
+            seconds: null,
+            month: null,
+            week: null,
+            day: null,
+            hour: null,
+            minute: null,
+            second: null,
+            year: null,
+            day_of_week: null,
+            timezone: null,
+            start_date: null,
+            end_date: null,
+          }
+        },
+        clientOptions: [],
+        dateOptions: {
+          disabledDate(time) {
+            // 设置今天及今天之后的日期
+            return time.getTime() < Date.now() - 8.64e7
+          }
+        },
+        timeZones: listTimeZones(),
+        rules: {
+          name: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            },
+          ],
+          project: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.project + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            }
+          ],
+          spider: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.spider + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            }
+          ],
+          timezone: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.timezone + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            }
+          ]
+        },
+        triggerOptions: [{
+          value: 'date',
+          label: 'Date',
+        }, {
+          value: 'interval',
+          label: 'Interval'
+        }, {
+          value: 'cron',
+          label: 'Crontab'
+        }],
+      }
+    },
+    mounted() {
+      this.getClientData()
+      this.getTaskData()
+    },
+    methods: {
+      getClientData() {
+        this.$http.get(this.$store.state.url.client.index
+        ).then(({data: clients}) => {
+          clients.forEach((item) => {
+            this.clientOptions.push({
+              value: item.pk,
+              label: item.fields.name
+            })
+          })
+        }).catch(() => {
+          this.clients = []
+          this.$message.error(this.$store.getters.$lang.messages.loadError)
+        })
+      },
+      getTaskData() {
+        if (this.id) {
+          this.$http.get(this.formatString(this.$store.state.url.task.info, {
+            id: this.id
+          })).then(({data: {data: client}}) => {
+            this.formData = client
+          }).catch(() => {
+            this.$message.error(this.$store.getters.$lang.messages.loadError)
+          })
+        }
+      },
+    }
+  }
 </script>
 
 <style lang="scss">

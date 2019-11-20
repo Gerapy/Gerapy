@@ -15,7 +15,8 @@ LOG_FORMAT = getenv('LOG_FORMAT',
                     '%(levelname)s - %(asctime)s - process: %(process)d - %(filename)s - %(name)s - %(lineno)d - %(module)s - %(message)s')
 LOG_PATH = join(getcwd(), LOG_DIR, time.strftime("%Y%m%d%H%M%S", time.localtime()) + '.log')
 
-# folder
-PROJECTS_FOLDER = getenv('PROJECTS_FOLDER', join(getcwd(), 'projects'))
-
+# projects
+PROJECTS_FOLDER = getenv('PROJECTS_FOLDER', 'projects')
+LOGS_FOLDER = LOG_DIR
+# scheduler
 SCHEDULER_HEARTBEAT = 3
