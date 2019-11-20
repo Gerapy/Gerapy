@@ -49,9 +49,9 @@ Then you can runserver by this command:
 gerapy runserver
 ```
 
-Then you can visit [http://localhost:8000](http://localhost:8000) to enjoy it.
+Then you can visit [http://localhost:8000](http://localhost:8000) to enjoy it. Also you can vist [http://localhost:8000/admin](http://localhost:8000/admin) to get the admin management backend.
 
-Or you can configure host and port like this:
+If you want to run Gerapy in public, just run like this:
 
 ```
 gerapy runserver 0.0.0.0:8888
@@ -59,11 +59,11 @@ gerapy runserver 0.0.0.0:8888
 
 Then it will run with public host and port 8888.
 
-You can create a configurable project and then configure and generate code of Scrapy automatically.
+In Gerapy, You can create a configurable project and then configure and generate code of Scrapy automatically. But this module is unstable, I'm trying to refine it.
 
 Also you can drag your Scrapy Project to `projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this project through the web page.
 
-As for the deploy, you can move to Deploy Page. Firstly you need to build your project and add client in the Client Index Page, then you can deploy the project by clicking button.
+As for deployment, you can move to Deploy Page. Firstly you need to build your project and add client in the Client Index Page, then you can deploy the project just by clicking button.
 
 After the deployment, you can manage the job in Monitor Page.
 
