@@ -1,10 +1,7 @@
 FROM python:3.6
 WORKDIR /app
-RUN pip3 install gerapy \
-    & cd /app \
-    & gerapy init \
-    & cd gerapy \
-    & gerapy migrate \
-    & gerapy initadmin
+COPY run.sh /app/run.sh
+RUN pip install gerapy \
+    && chmod a+x /app.run.sh
 VOLUME /app/gerapy
-CMD ['gerapy', 'runserver']
+CMD /bin/bash /app.run.sh
