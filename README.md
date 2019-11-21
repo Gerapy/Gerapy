@@ -72,15 +72,15 @@ After the deployment, you can manage the job in Monitor Page.
 Just run this command:
 
 ```
-docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 thsheep/gerapy:master
+docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 germey/gerapy
 ```
 
-Then it will run at port 8000.
+Then it will run at port 8000. You can use the temp admin account (username: amdin, password: admin) to login. And please change the password later for safety.
 
-Command:
+Command Usage:
 
 ```
-docker run -d -v <your_workspace>:/app/gerapy -p <public_port>:<container_port> thsheep/gerapy:master
+docker run -d -v <workspace>:/app/gerapy -p <public_port>:<container_port> germey/gerapy
 ```
 
 Please specify your workspace to mount Gerapy workspace by `-v <your_workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
