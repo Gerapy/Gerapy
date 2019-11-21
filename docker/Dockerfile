@@ -1,10 +1,7 @@
-FROM python:latest
-MAINTAINER thsheep
-COPY requirements.txt /tmp/requirements.txt
-COPY run.sh /usr/bin/run.sh
-RUN mkdir /app \
-    && pip3 install -r /tmp/requirements.txt \
-    && chmod a+x /usr/bin/run.sh
+FROM python:3.6
 WORKDIR /app
-VOLUME ["/app/gerapy"]
-ENTRYPOINT /usr/bin/run.sh
+COPY run.sh /app/run.sh
+RUN pip3 install -U gerapy \
+    && chmod a+x /app/run.sh
+VOLUME /app/gerapy
+ENTRYPOINT /app/run.sh

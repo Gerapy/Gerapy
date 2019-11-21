@@ -1,5 +1,6 @@
 from gerapy import version
 from gerapy.cmd.init import init
+from gerapy.cmd.initadmin import initadmin
 from gerapy.cmd.parse import parse
 from gerapy.cmd.generate import generate
 from gerapy.server.core.utils import str2bool, str2str, str2json, str2body
@@ -32,6 +33,9 @@ parser_init.add_argument('folder', default='gerapy', nargs='?', type=str, help='
 # generate
 parser_generate = subparsers.add_parser('generate', help='generate code for project')
 parser_generate.add_argument('project', type=str, help='project to generate')
+
+# init admin
+parser_initadmin = subparsers.add_parser('initadmin', help='create super user of admin')
 
 # parse
 parser_parse = subparsers.add_parser('parse', help='parse project for debugging')
@@ -71,10 +75,13 @@ def cmd():
     if command == 'init':
         init(args.folder)
     # generate code according to configuration
-    elif command == 'generate':
+    if command == 'generate':
         generate(args.project)
     # debug parse for project
-    elif command == 'parse':
+    if command == 'parse':
         parse(args)
+    # init admin
+    if command == 'initadmin':
+        initadmin()
     else:
         manage()

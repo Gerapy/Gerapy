@@ -4,15 +4,14 @@ import logging
 from gerapy import settings
 import sys
 
-version_file = dirname(abspath(__file__)) + '/VERSION'
-
 
 def version():
     """
     get version from version file
     :return:
     """
-    return open(version_file).read().strip()
+    from gerapy import __version__
+    return __version__.version()
 
 
 loggers = {}

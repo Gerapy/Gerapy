@@ -20,3 +20,7 @@ PROJECTS_FOLDER = getenv('PROJECTS_FOLDER', 'projects')
 LOGS_FOLDER = LOG_DIR
 # scheduler
 SCHEDULER_HEARTBEAT = 3
+
+ADMINS = [
+    'admin'
+]
