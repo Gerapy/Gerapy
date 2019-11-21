@@ -59,10 +59,11 @@ class CapitalisedHelpFormatter(argparse.HelpFormatter):
 
 
 parser = argparse.ArgumentParser(description='Gerapy %s - Distributed Crawler Management Framework' % version(),
-                                 formatter_class=CapitalisedHelpFormatter)
+                                 formatter_class=CapitalisedHelpFormatter, add_help=False)
 parser._optionals.title = optional_title
 
 parser.add_argument('-v', '--version', action='version', version=version(), help='Get version of Gerapy')
+parser.add_argument('-h', '--help', action='help', help='Show this help message and exit')
 
 subparsers = parser.add_subparsers(dest='command', title='Available commands', metavar='')
 
