@@ -75,7 +75,7 @@ Just run this command:
 docker run -d -v ~/gerapy:/app/gerapy -p 8000:8000 germey/gerapy
 ```
 
-Then it will run at port 8000. You can use the temp admin account (username: amdin, password: admin) to login. And please change the password later for safety.
+Then it will run at port 8000. You can use the temp admin account (username: admin, password: admin) to login. And please change the password later for safety.
 
 Command Usage:
 
