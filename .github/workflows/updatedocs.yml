@@ -15,7 +15,7 @@ jobs:
     - name: Sync With Docs
       run: |
         cd /tmp
-        git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
+        git clone git@github.com:Gerapy/Docs.git --bare
         cd /tmp/Docs
         ls
         cd /tmp
