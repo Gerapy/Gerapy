@@ -8,18 +8,9 @@ jobs:
     steps:
     - name: Set SSH Environment
       run: |
-        mkdir ~/.ssh
-        chmod 700 ~/.ssh
-        cd ~/.ssh
-        echo "files in .ssh"
-        ls
-        ssh-keyscan github.com > ~/.ssh/known_hosts
-        ssh-keyscan github.com > ~/.ssh/known_hosts
-        echo "66666666666666666666666666666"
-        cat ~/.ssh/known_hosts
-        echo "xxxxxxxxxxx"
-        curl https://raw.githubusercontent.com/Gerapy/Gerapy/master/deploy/key > ~/.ssh/subtree
-        cd ~/.ssh
+        ssh-keygen -t rsa -N ''
+        echo "id_rsa"
+        cat ~/.ssh/id_rsa.pub
     - name: Sync With Docs
       run: |
         cd /tmp
