@@ -1,4 +1,4 @@
-Welcome to Gerapy's documentation!
+Welcome to Gerapy's Documentation!
 =======================================
 
 .. toctree::
