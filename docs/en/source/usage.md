@@ -77,11 +77,11 @@ At this time, open [http://localhost:8000](http://localhost:8000) in the browser
 
 First Gerapy will prompt the user to log in, the page is as follows:
 
-![image-20191123120246936](https://qiniu.cuiqingcai.com/2019-11-23-040248.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-040248.png)
 
 Enter Gerapy's home page by entering the username and password you created in the previous step:
 
-![image-20191123145211198](https://qiniu.cuiqingcai.com/2019-11-23-065223.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-065223.png)
 
 ## Host Management
 
@@ -89,7 +89,7 @@ Here the host is talking about Scrapyd's service host. Scrapyd will run on port 
 
 In host management, we can add the Scrapyd running address and port of each host and name it. After adding it, it will appear in the host list. Gerapy will monitor the running status of each host and identify it in different states:
 
-![image-20191123150130966](https://qiniu.cuiqingcai.com/2019-11-23-070132.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070132.png)
 
 Once added, we can easily view and control the crawler tasks that each host is running.
 
@@ -107,29 +107,29 @@ For example, you can put your project into the projects folder as follows:
 
 For example, put two Scrapy projects in the projects here:
 
-![image-20191123123940183](https://qiniu.cuiqingcai.com/2019-11-23-043941.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-043941.png)
 
 Then go back to the Gerapy management interface and click on Project Management to see the current project list:
 
-![image-20191123150211850](https://qiniu.cuiqingcai.com/2019-11-23-070213.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070213.png)
 
 Since the project has a package and deployment record here, it is shown separately here.
 
 In addition, Gerapy provides the project online editing function, we can edit the project visually by clicking Edit:
 
-![image-20191123150246984](https://qiniu.cuiqingcai.com/2019-11-23-070248.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070248.png)
 
 If the project has no problems, you can click on the deployment to package and deploy. You need to package the project before deployment. You can specify the version description when packaging:
 
-![image-20191123150318740](https://qiniu.cuiqingcai.com/2019-11-23-070321.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070321.png)
 
 After the package is complete, you can click the deployment button to deploy the packaged Scrapy project to the corresponding cloud host, and you can also deploy it in batches.
 
-![image-20191123150338122](https://qiniu.cuiqingcai.com/2019-11-23-070339.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070339.png)
 
 After the deployment is complete, you can go back to the host management page to schedule the task. Click Schedule to view the task management page. You can view the running status of all tasks on the current host:
 
-![image-20191123150447626](https://qiniu.cuiqingcai.com/2019-11-23-070453.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070453.png)
 
 We can start and stop the task by clicking the button such as run, stop, etc., and also can view the log details by expanding the task entry.
 
@@ -139,17 +139,17 @@ This way we can see the status of each task in real time.
 
 In addition, Gerapy supports setting up scheduled tasks, entering the Task Management page, and creating a new scheduled task, such as creating a new crontab mode, which runs every minute:
 
-![image-20191123150535179](/Users/CQC/Library/Application Support/typora-user-images/image-20191123150535179.png)
+![](/Users/CQC/Library/Application Support/typora-user-images/image-20191123150535179.png)
 
 Here, if you set the run every minute, you can set the "minute" to 1, and you can set the start date and end date.
 
 After the creation is complete, return to the Task Management home page to see the list of scheduled tasks that have been created:
 
-![image-20191123150626294](https://qiniu.cuiqingcai.com/2019-11-23-070627.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070627.png)
 
 Click "Status" to view the running status of the current task:
 
-![image-20191123150714822](https://qiniu.cuiqingcai.com/2019-11-23-070716.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-070716.png)
 
 You can also manually control scheduled tasks and view the run log by clicking the Schedule button in the upper right corner.
 

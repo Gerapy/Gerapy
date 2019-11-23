@@ -11,4 +11,3 @@ Welcome to Gerapy's Documentation!
    Contributing<contributing>
    Maintainers<maintainers>
    License<license>
-   

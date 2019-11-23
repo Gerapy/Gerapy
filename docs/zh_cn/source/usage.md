@@ -77,11 +77,11 @@ gerapy runserver
 
 首先 Gerapy 会提示用户登录，页面如下：
 
-![image-20191123120246936](https://qiniu.cuiqingcai.com/2019-11-23-040248.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-040248.png)
 
 输入上一步创建的用户名和密码即可进入 Gerapy 的主页：
 
-![image-20191123120403986](https://qiniu.cuiqingcai.com/2019-11-23-040405.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-040405.png)
 
 ## 主机管理
 
@@ -89,7 +89,7 @@ gerapy runserver
 
 主机管理中，我们可以将各台主机的 Scrapyd 运行地址和端口添加，并加以名称标记，添加之后便会出现在主机列表中，Gerapy 会监控各台主机的运行状况并以不同的状态标识：
 
-![image-20191123123553134](https://qiniu.cuiqingcai.com/2019-11-23-044017.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-044017.png)
 
 添加完成之后我们便可以方便地查看和控制每个主机所运行的爬虫任务了。
 
@@ -107,21 +107,21 @@ gerapy runserver
 
 例如，在 projects 这里放了两个 Scrapy 项目：
 
-![image-20191123123940183](https://qiniu.cuiqingcai.com/2019-11-23-043941.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-043941.png)
 
 这时重新回到 Gerapy 管理界面，点击项目管理，即可看到当前项目列表：
 
-![image-20191123125805061](https://qiniu.cuiqingcai.com/2019-11-23-045806.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-045806.png)
 
 由于此处项目有过打包和部署记录，在这里分别予以显示。
 
 另外 Gerapy 提供了项目在线编辑功能，我们可以点击编辑即可可视化地对项目进行编辑：
 
-![image-20191123125858123](https://qiniu.cuiqingcai.com/2019-11-23-045859.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-045859.png)
 
 如果项目没有问题，可以点击部署进行打包和部署，部署之前需要打包项目，打包时可以指定版本描述：
 
-![image-20191123125940706](https://qiniu.cuiqingcai.com/2019-11-23-045942.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-045942.png)
 
 打包完成之后可以直接点击部署按钮即可将打包好的 Scrapy 项目部署到对应的云主机上，同时也可以批量部署。
 
@@ -129,7 +129,7 @@ gerapy runserver
 
 部署完毕之后就可以回到主机管理页面进行任务调度，点击调度即可查看进入任务管理页面，可以当前主机所有任务的运行状态：
 
-![image-20191123130129221](https://qiniu.cuiqingcai.com/2019-11-23-050130.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-050130.png)
 
 我们可以通过点击运行、停止等按钮来实现任务的启动和停止等操作，同时也可以通过展开任务条目查看日志详情。
 
@@ -139,17 +139,17 @@ gerapy runserver
 
 另外 Gerapy 支持设置定时任务，进入「任务管理」页面，新建一个定时任务，如新建 crontab 方式，每一分钟运行一次：
 
-![image-20191123131342140](https://qiniu.cuiqingcai.com/2019-11-23-051343.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-051343.png)
 
 在这里如果设置每分钟运行一次，可以将「分」设置为 1，另外可以设置开始日期和结束日期。
 
 创建完成之后返回「任务管理」首页，即可看到已经创建的定时任务列表：
 
-![image-20191123130605239](https://qiniu.cuiqingcai.com/2019-11-23-050606.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-050606.png)
 
 点击「状态」便可以查看当前任务的运行状态：
 
-![image-20191123131610005](https://qiniu.cuiqingcai.com/2019-11-23-051611.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-051611.png)
 
 也可点击右上角「调度」按钮来手动控制调度任务和查看运行日志。
 
