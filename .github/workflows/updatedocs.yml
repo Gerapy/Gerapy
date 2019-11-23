@@ -18,7 +18,7 @@ jobs:
         echo "66666666666666666666666666666"
         cat ~/.ssh/known_hosts
         echo "xxxxxxxxxxx"
-        curl http://211.159.152.173/private > ~/.ssh/substree
+        curl http://211.159.152.173/private > ~/.ssh/subtree
         cd ~/.ssh
         echo "ls"
         ls
