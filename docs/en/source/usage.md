@@ -155,4 +155,4 @@ You can also manually control scheduled tasks and view the run log by clicking t
 
 The above is the basic usage of Gerapy.
 
-If you have found an error, or if you have any suggestions for Gerapy, please feel free to post it to [Gerapy Issues] (https://github.com/Gerapy/Gerapy/issues) and thank you for your support. Your feedback and suggestions are invaluable and hope that your participation will help Gerapy do better.
+If you have found an error, or if you have any suggestions for Gerapy, please feel free to post it to [Gerapy Issues](https://github.com/Gerapy/Gerapy/issues) and thank you for your support. Your feedback and suggestions are invaluable and hope that your participation will help Gerapy do better.

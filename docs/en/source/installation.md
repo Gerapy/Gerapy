@@ -39,3 +39,4 @@ Available commands:
 ```
 
 If an error occurs, please go to [Gerapy Issues](https://github.com/Gerapy/Gerapy/issues) to search for a solution or issue a question, thank you for your support.
+
