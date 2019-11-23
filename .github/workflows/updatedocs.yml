@@ -24,7 +24,7 @@ jobs:
         cd /tmp/Docs
         ls
         cd /tmp
-        git clone git@github.com:Gerapy/Gerapy.git
+        git clone https://github.com/Gerapy/Gerapy.git
         cd Gerapy
         git subtree split --prefix=docs --squash -b docs
         git push /tmp/Docs docs:docs
