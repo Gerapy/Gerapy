@@ -1,6 +1,6 @@
 # Introduction
 
-A small partner who has worked as a crawler with Python may have been exposed to [Scrapy](https://github.com/scrapy/scrapy). Scrapy is indeed a very powerful crawler framework. It has high crawling efficiency and good scalability. It is basically a necessary tool for developing crawlers using Python.
+Someone who has worked as a crawler with Python may use [Scrapy](https://github.com/scrapy/scrapy). Scrapy is indeed a very powerful crawler framework. It has high crawling efficiency and good scalability. It is basically a necessary tool for developing crawlers using Python.
 
 ## Scrapy
 

@@ -14,7 +14,7 @@ The gerapy command can be called directly after the installation is complete:
 gerapy
 ```
 
-If a similar output appears, the installation is successful:
+If it prints like this, the installation is successful:
 
 ```
 Usage: gerapy [-v] [-h] ...
