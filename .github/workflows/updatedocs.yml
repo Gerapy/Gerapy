@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Subtree Sync
+      uses: xedi/action-subtree-sync@1.0.0
+      with:
+        # Full name of the subtree repository (e.g. owner/repository)
+        subtree: 'Gerapy/Docs'
+        # Deploy key for the subtree repository
+        subtree_deploy_key: ${{ secrets.DEPLOY_KEY }}
+        # Prefix for the split
+        split_prefix: 'docs'
