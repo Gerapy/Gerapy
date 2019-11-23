@@ -8,7 +8,7 @@ jobs:
     steps:
     - name: Set SSH Environment
       run: |
-        ssh-keygen -f id_rsa -t rsa -N ''
+        ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
         echo "id_rsa"
         cat ~/.ssh/id_rsa.pub
         ssh-keyscan github.com > ~/.ssh/known_hosts
