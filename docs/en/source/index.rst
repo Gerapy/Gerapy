@@ -11,10 +11,4 @@ Welcome to Gerapy's Documentation!
    Contributing<contributing>
    Maintainers<maintainers>
    License<license>
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   
