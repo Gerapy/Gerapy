@@ -23,9 +23,9 @@ jobs:
         cat ~/.ssh/subtree
         echo "ls"
         ls
+        ssh-add -l
         ssh-add ~/.ssh/subtree
-        echo "77777777777"
-        cat ~/.ssh/subtree
+        ssh-add -l
     - name: Sync With Docs
       run: |
         cd /tmp
