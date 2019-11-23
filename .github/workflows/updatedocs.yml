@@ -6,12 +6,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Subtree Sync
-      uses: xedi/action-subtree-sync@1.0.0
-      with:
-        # Full name of the subtree repository (e.g. owner/repository)
-        subtree: 'Gerapy/Docs'
-        # Deploy key for the subtree repository
-        subtree_deploy_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8wnqWGFGCTQJX2SQid0u+LYqVjWqw5B1Upibn2J5W8kC0WqD5Pcd3RcE/92L6PWDsDDnUFbqfHiAWWz1oziNo7yyJfvPNjWN7Q0jmyN/cErKdeWr3QeZYU65v1kr24M0ly8Rpgrm67d91mCF49oSo0w278ELY/1kgUngMlfQ1JDDwYO1bpNhhs82My/e2ejWVQQqLDaG601hTbs0eThcGjBKvdqnQ8M1D3eNV6wSPV0IDvvqZIu5Hii6bfM3e8xQtiYWAsdatDnTvhoFd6swoteqKblhSzGoupRcJL6pcba1A7A5Wu25MBAfZtGwGbnDgPt0lxQCKJMrv3TP15ASz CQC@PRCHAZ13685D.fareast.corp.microsoft.com'
-        # Prefix for the split
-        split_prefix: 'docs'
+    - name: Initlized
+      run: |
+        ssh-keyscan github.com > /root/.ssh/known_hosts
+        cat /root/.ssh/known_hosts
+        echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8wnqWGFGCTQJX2SQid0u+LYqVjWqw5B1Upibn2J5W8kC0WqD5Pcd3RcE/92L6PWDsDDnUFbqfHiAWWz1oziNo7yyJfvPNjWN7Q0jmyN/cErKdeWr3QeZYU65v1kr24M0ly8Rpgrm67d91mCF49oSo0w278ELY/1kgUngMlfQ1JDDwYO1bpNhhs82My/e2ejWVQQqLDaG601hTbs0eThcGjBKvdqnQ8M1D3eNV6wSPV0IDvvqZIu5Hii6bfM3e8xQtiYWAsdatDnTvhoFd6swoteqKblhSzGoupRcJL6pcba1A7A5Wu25MBAfZtGwGbnDgPt0lxQCKJMrv3TP15ASz CQC@PRCHAZ13685D.fareast.corp.microsoft.com" >> /root/.ssh/subtree
+        chmod 0600 /root/.ssh/subtree
+        cat /root/.ssh/subtree
+        cd /tmp
+        git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
+        cd /tmp/Docs
+        ls
+        cd /tmp
+        git clone git@github.com:Gerapy/Gerapy.git
+        cd Gerapy
+        git subtree split --prefix=docs --squash -b docs
+        git push /tmp/Docs docs:docs
+        cd /tmp/Docs
+        git checkout master
+        git reset --hard docs
+        git push origin master
+        
+        
+        
