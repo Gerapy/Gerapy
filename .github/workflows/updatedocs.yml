@@ -7,11 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set SSH Environment
+      env:
+        DEPLOY_DOCS_PRIVATE_KEY: ${{ secrets.DEPLOY_DOCS_PRIVATE_KEY }}
       run: |
         mkdir ~/.ssh
         chmod 700 ~/.ssh
         echo "66666"
-        echo ${{ secrets.DEPLOY_DOCS_PRIVATE_KEY }} > ~/.ssh/subtree
+        echo $DEPLOY_DOCS_PRIVATE_KEY > ~/.ssh/subtree
         echo "555555"
         cat ~/.ssh/subtree
         ssh-keyscan github.com > ~/.ssh/known_hosts
