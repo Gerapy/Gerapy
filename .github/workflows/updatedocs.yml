@@ -8,14 +8,18 @@ jobs:
     steps:
     - name: Set SSH Environment
       run: |
-        ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
-        echo "id_rsa"
-        cat ~/.ssh/id_rsa.pub
+        mkdir ~/.ssh
+        chmod 700 ~/.ssh
+        echo ${DEPLOY_DOCS_PRIVATE_KEY} > ~/.ssh/subtree
         ssh-keyscan github.com > ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/subtree
+        ssh-add ~/.ssh/subtree
+        echo "77777777777"
+        cat ~/.ssh/subtree
     - name: Sync With Docs
       run: |
         cd /tmp
-        git clone git@github.com:Gerapy/Docs.git --bare
+        git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
         cd /tmp/Docs
         ls
         cd /tmp
