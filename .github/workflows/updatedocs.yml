@@ -20,9 +20,9 @@ jobs:
         echo "xxxxxxxxxxx"
         curl https://raw.githubusercontent.com/Gerapy/Gerapy/master/deploy/key > ~/.ssh/subtree
         cd ~/.ssh
+        cat ~/.ssh/subtree
         echo "ls"
         ls
-        chmod 0600 ~/.ssh/subtree
         ssh-add ~/.ssh/subtree
         echo "77777777777"
         cat ~/.ssh/subtree
