@@ -139,7 +139,7 @@ This way we can see the status of each task in real time.
 
 In addition, Gerapy supports setting up scheduled tasks, entering the Task Management page, and creating a new scheduled task, such as creating a new crontab mode, which runs every minute:
 
-![](/Users/CQC/Library/Application Support/typora-user-images/image-20191123150535179.png)
+![](https://qiniu.cuiqingcai.com/2019-11-23-144227.png)
 
 Here, if you set the run every minute, you can set the "minute" to 1, and you can set the start date and end date.
 
