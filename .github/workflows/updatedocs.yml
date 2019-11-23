@@ -9,7 +9,10 @@ jobs:
     - name: Set SSH Environment
       env:
         DEPLOY_DOCS_PRIVATE_KEY: ${{ secrets.DEPLOY_DOCS_PRIVATE_KEY }}
+        HELLO: ${{ secrets.HELLO }}
       run: |
+        echo $HELLO
+        echo $DEPLOY_DOCS_PRIVATE_KEY
         mkdir ~/.ssh
         chmod 700 ~/.ssh
         echo "66666"
