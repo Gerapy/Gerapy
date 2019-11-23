@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-cn" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-cn" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>使用 &mdash; Gerapy 0.9.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="Docker" href="docker.html" />
+    <link rel="prev" title="安装" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gerapy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">使用</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">初始化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">数据库配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">新建用户</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">启动服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">主机管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">项目管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">定时任务</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintainers.html">作者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">协议</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gerapy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>使用</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usage.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="id1">
+<h1>使用<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>本文主要介绍 Gerapy 的基本使用方法，希望能为正在使用 Gerapy 的您提供一些帮助。</p>
+<div class="section" id="id2">
+<h2>初始化<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>首先可以利用 gerapy 命令新建一个项目，命令如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">init</span>
+</pre></div>
+</div>
+<p>这样会在当前目录下生成一个 gerapy 文件夹，这个 gerapy 文件夹就是 Gerapy 的工作目录，进入 gerapy 文件夹会发现两个文件夹：</p>
+<ul class="simple">
+<li><p>projects ，用于存放 Scrapy 的爬虫项目。</p></li>
+<li><p>logs，用于存放 Gerapy 运行日志。</p></li>
+</ul>
+<p>如果想要更换工作目录的名称，可以在命令后加入工作目录的名称，如想创建一个名字为 GerapySpace 的工作目录，可以使用如下命令创建：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">init</span> <span class="n">GerapySpace</span>
+</pre></div>
+</div>
+<p>其内部结构是一样的。</p>
+</div>
+<div class="section" id="id3">
+<h2>数据库配置<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>Gerapy 利用数据库来存放各项项目配置、定时任务等内容，因此第二步需要初始化数据库。</p>
+<p>首先进入工作目录，例如工作目录名叫做 gerapy，则执行如下命令：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">gerapy</span>
+</pre></div>
+</div>
+<p>这时先对数据库进行初始化，执行如下命令：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">migrate</span>
+</pre></div>
+</div>
+<p>这样即会生成一个 SQLite 数据库，数据库中会用于保存各个主机配置信息、部署版本、定时任务等。</p>
+<p>这时候可以发现工作目录下又多了一个文件夹：</p>
+<ul class="simple">
+<li><p>dbs，用于存放 Gerapy 运行时所需的数据库。</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>新建用户<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>Gerapy 默认开启了登录验证，因此需要在启动服务前设置一个管理员用户，</p>
+<p>为了方便，可以直接使用初始化管理员的命令快速创建一个 admin 管理员，密码同样为 admin，命令如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">initadmin</span>
+</pre></div>
+</div>
+<p>如果不想直接创建 admin 用户，也可以手动创建管理员用户，命令如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">createsuperuser</span>
+</pre></div>
+</div>
+<p>这时 Gerapy 会提示我们输入用户名、邮箱、密码等内容，稍后便可以使用此用户登录 Gerapy。</p>
+</div>
+<div class="section" id="id5">
+<h2>启动服务<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>接下来启动 Gerapy 服务，命令如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">runserver</span>
+</pre></div>
+</div>
+<p>这样即可在默认 8000 端口上开启 Gerapy 服务。</p>
+<p>这时在浏览器打开 <a class="reference external" href="http://localhost:8000">http://localhost:8000</a> 即可进入 Gerapy。</p>
+<p>首先 Gerapy 会提示用户登录，页面如下：</p>
+<p><img alt="image-20191123120246936" src="https://qiniu.cuiqingcai.com/2019-11-23-040248.png" /></p>
+<p>输入上一步创建的用户名和密码即可进入 Gerapy 的主页：</p>
+<p><img alt="image-20191123120403986" src="https://qiniu.cuiqingcai.com/2019-11-23-040405.png" /></p>
+</div>
+<div class="section" id="id6">
+<h2>主机管理<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>这里主机所说的就是 Scrapyd 的服务主机，Scrapyd 启动后默认会运行在 6800 端口，提供部署、运行等一系列 HTTP 服务，配置 Scrapyd 可以参考 <a class="reference external" href="https://scrapyd.readthedocs.io/">Scrapyd Document</a>，确保其服务可以对外正常访问。</p>
+<p>主机管理中，我们可以将各台主机的 Scrapyd 运行地址和端口添加，并加以名称标记，添加之后便会出现在主机列表中，Gerapy 会监控各台主机的运行状况并以不同的状态标识：</p>
+<p><img alt="image-20191123123553134" src="https://qiniu.cuiqingcai.com/2019-11-23-044017.png" /></p>
+<p>添加完成之后我们便可以方便地查看和控制每个主机所运行的爬虫任务了。</p>
+</div>
+<div class="section" id="id7">
+<h2>项目管理<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>另外上文提到了 Gerapy 的工作目录下会出现一个空的 projects 文件夹，这就是存放 Scrapy 目录的文件夹。</p>
+<p>如果我们想要部署某个 Scrapy 项目，只需要将该项目文件放到 projects 文件夹下即可。</p>
+<p>例如，可以通过如下方式将项目放入 projects 文件夹：</p>
+<ul class="simple">
+<li><p>直接将本地 Scrapy 项目移动或复制到 projects 文件夹。</p></li>
+<li><p>克隆或下载远程项目，如 Git Clone，将项目下载到 projects 文件夹。</p></li>
+<li><p>通过软连接（Linux、Mac 下使用 ln 命令，Windows 使用 mklink 命令）将项目链接到 projects 文件夹。</p></li>
+</ul>
+<p>例如，在 projects 这里放了两个 Scrapy 项目：</p>
+<p><img alt="image-20191123123940183" src="https://qiniu.cuiqingcai.com/2019-11-23-043941.png" /></p>
+<p>这时重新回到 Gerapy 管理界面，点击项目管理，即可看到当前项目列表：</p>
+<p><img alt="image-20191123125805061" src="https://qiniu.cuiqingcai.com/2019-11-23-045806.png" /></p>
+<p>由于此处项目有过打包和部署记录，在这里分别予以显示。</p>
+<p>另外 Gerapy 提供了项目在线编辑功能，我们可以点击编辑即可可视化地对项目进行编辑：</p>
+<p><img alt="image-20191123125858123" src="https://qiniu.cuiqingcai.com/2019-11-23-045859.png" /></p>
+<p>如果项目没有问题，可以点击部署进行打包和部署，部署之前需要打包项目，打包时可以指定版本描述：</p>
+<p><img alt="image-20191123125940706" src="https://qiniu.cuiqingcai.com/2019-11-23-045942.png" /></p>
+<p>打包完成之后可以直接点击部署按钮即可将打包好的 Scrapy 项目部署到对应的云主机上，同时也可以批量部署。</p>
+<p><img alt="https://qiniu.cuiqingcai.com/2019-11-23-050019.png" src="https://qiniu.cuiqingcai.com/2019-11-23-050019.png" /></p>
+<p>部署完毕之后就可以回到主机管理页面进行任务调度，点击调度即可查看进入任务管理页面，可以当前主机所有任务的运行状态：</p>
+<p><img alt="image-20191123130129221" src="https://qiniu.cuiqingcai.com/2019-11-23-050130.png" /></p>
+<p>我们可以通过点击运行、停止等按钮来实现任务的启动和停止等操作，同时也可以通过展开任务条目查看日志详情。</p>
+<p>这样我们就可以实时查看到各个任务运行状态了。</p>
+</div>
+<div class="section" id="id8">
+<h2>定时任务<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<p>另外 Gerapy 支持设置定时任务，进入「任务管理」页面，新建一个定时任务，如新建 crontab 方式，每一分钟运行一次：</p>
+<p><img alt="image-20191123131342140" src="https://qiniu.cuiqingcai.com/2019-11-23-051343.png" /></p>
+<p>在这里如果设置每分钟运行一次，可以将「分」设置为 1，另外可以设置开始日期和结束日期。</p>
+<p>创建完成之后返回「任务管理」首页，即可看到已经创建的定时任务列表：</p>
+<p><img alt="image-20191123130605239" src="https://qiniu.cuiqingcai.com/2019-11-23-050606.png" /></p>
+<p>点击「状态」便可以查看当前任务的运行状态：</p>
+<p><img alt="image-20191123131610005" src="https://qiniu.cuiqingcai.com/2019-11-23-051611.png" /></p>
+<p>也可点击右上角「调度」按钮来手动控制调度任务和查看运行日志。</p>
+<p>以上便是 Gerapy 的基本用法介绍。</p>
+<p>如果您有发现错误，或者您对 Gerapy 有任何建议，欢迎到 <a class="reference external" href="https://github.com/Gerapy/Gerapy/issues">Gerapy Issues</a> 发表，非常感谢您的支持。您的反馈和建议非常宝贵，希望您的参与能帮助 Gerapy 做得更好。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="docker.html" class="btn btn-neutral float-right" title="Docker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="安装" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Germey
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-cn" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-cn" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>贡献 &mdash; Gerapy 0.9.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="作者" href="maintainers.html" />
+    <link rel="prev" title="Docker" href="docker.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gerapy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">贡献</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">环境准备</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">克隆项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">安装依赖</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">运行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">代码说明</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">代码发布</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="maintainers.html">作者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">协议</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gerapy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>贡献</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/contributing.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="id1">
+<h1>贡献<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>如果您有意向对 Gerapy 二次开发或为 Gerapy 贡献一份力量，本文档详细说明了 Gerapy 开发者的环境配置和开发流程。</p>
+<div class="section" id="id2">
+<h2>环境准备<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>开发 Gerapy 需要 Python3 环境和 Node.js 环境，推荐版本为 Python 3.6 + 及 Node.js 10.x +，请安装好并确保能使用 python3、pip3、node、npm 命令。</p>
+</div>
+<div class="section" id="id3">
+<h2>克隆项目<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>首先将 Gerapy 克隆到本地：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Gerapy</span><span class="o">/</span><span class="n">Gerapy</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>克隆完成之后，本地会生成一个 Gerapy 文件夹。</p>
+</div>
+<div class="section" id="id4">
+<h2>安装依赖<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>进入 Gerapy 文件夹，安装开发需要的依赖库：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>随后本地安装 Gerapy：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> 
+</pre></div>
+</div>
+<p>这样安装的就是开发版本的 Gerapy，如果之前安装过 Gerapy，本次安装会将之前的版本替换。</p>
+<p>安装完成之后便可以使用 gerapy 命令。</p>
+<p>然后安装前端依赖，前端代码在 gerapy/client 文件夹，基于 Vue.js 开发。</p>
+<p>进入目录，然后安装依赖。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">gerapy</span><span class="o">/</span><span class="n">client</span>
+<span class="n">npm</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>这样会在 gerapy/client 下生成一个 node_modules 文件夹。</p>
+</div>
+<div class="section" id="id5">
+<h2>运行<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>后端使用 gerapy 命令按照 Gerapy 的使用说明正常启动，注意运行时需要在 5000 端口上启动，而非 8000。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">runserver</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">5000</span>
+</pre></div>
+</div>
+<p>前端在 gerapy/client 文件夹，执行：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">serve</span>
+</pre></div>
+</div>
+<p>即可在 8080 端口运行，其后端 API 会转发到 5000 端口，即刚才所启动的 Gerapy Server。</p>
+<p>打开 <a class="reference external" href="http://localhost:8080">http://localhost:8080</a> 即可进入 Gerapy 的开发模式。</p>
+</div>
+<div class="section" id="id6">
+<h2>代码说明<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>后端基于 Django 开发，使用的数据库为 SQLite，其主要逻辑在 gerapy/server 文件夹。</p>
+<p>前端基于 Vue.js 开发，其主要逻辑在 gerapy/client 文件夹。</p>
+</div>
+<div class="section" id="id7">
+<h2>代码发布<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<p>前端修改完成之后，如果要正式发布，可以直接执行：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>
+</pre></div>
+</div>
+<p>其 build 结果会进入后端的 gerapy/server/core/templates 文件夹。</p>
+<p>后端代码的发布可以直接执行：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">upload</span>
+</pre></div>
+</div>
+<p>其会自动上传到 PyPi，并在 GitHub 上打上对应的 Tag，当然前提是你要有 PyPi 和 GitHub 的权限。</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="maintainers.html" class="btn btn-neutral float-right" title="作者" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="docker.html" class="btn btn-neutral float-left" title="Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Germey
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

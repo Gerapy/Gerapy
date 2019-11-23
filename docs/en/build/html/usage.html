@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage &mdash; Gerapy 0.9.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Docker" href="docker.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Gerapy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">介绍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">安装</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">使用</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initialization">Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-configuration">Database Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#new-user">New User</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#startup-service">Startup service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#host-management">Host Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-management">Project management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#timing-tasks">Timing tasks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html">Docker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintainers.html">作者</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">协议</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Gerapy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usage.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>This article focuses on the basic use of Gerapy and hopes to provide some help for you who are using Gerapy.</p>
+<div class="section" id="initialization">
+<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<p>First you can create a new project with the gerapy command. The command is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">init</span>
+</pre></div>
+</div>
+<p>This will generate a gerapy folder in the current directory. This gerapy folder is the working directory of Gerapy. When you enter the gerapy folder, you will find two folders:</p>
+<ul class="simple">
+<li><p>projects , which are used to store Scrapy crawler projects.</p></li>
+<li><p>logs, used to store the Gerapy run log.</p></li>
+</ul>
+<p>If you want to change the name of the working directory, you can add the name of the working directory after the command. If you want to create a working directory named GerapySpace, you can create it with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">init</span> <span class="n">GerapySpace</span>
+</pre></div>
+</div>
+<p>Its internal structure is the same.</p>
+</div>
+<div class="section" id="database-configuration">
+<h2>Database Configuration<a class="headerlink" href="#database-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Gerapy uses the database to store various project configurations, timing tasks, etc., so the second step is to initialize the database.</p>
+<p>First enter the working directory, for example, the working directory name is gerapy, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">gerapy</span>
+</pre></div>
+</div>
+<p>At this point, first initialize the database, execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">migrate</span>
+</pre></div>
+</div>
+<p>This will generate a SQLite database, which will be used to save each host configuration information, deployment version, timing tasks, and so on.</p>
+<p>At this time, you can find another folder in the working directory:</p>
+<ul class="simple">
+<li><p>dbs, which is used to store the database required by the Gerapy runtime.</p></li>
+</ul>
+</div>
+<div class="section" id="new-user">
+<h2>New User<a class="headerlink" href="#new-user" title="Permalink to this headline">¶</a></h2>
+<p>Gerapy has login authentication turned on by default, so you need to set up an admin user before starting the service.</p>
+<p>For convenience, you can quickly create an admin administrator by directly using the command of the initial administrator. The password is also admin. The command is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">initadmin</span>
+</pre></div>
+</div>
+<p>If you do not want to create the admin user directly, you can also manually create an administrator user with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">createsuperuser</span>
+</pre></div>
+</div>
+<p>At this point Gerapy will prompt us to enter the username, email, password, etc., and then log in to Gerapy with this user.</p>
+</div>
+<div class="section" id="startup-service">
+<h2>Startup service<a class="headerlink" href="#startup-service" title="Permalink to this headline">¶</a></h2>
+<p>Next start the Gerapy service, the command is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gerapy</span> <span class="n">runserver</span>
+</pre></div>
+</div>
+<p>This will open the Gerapy service on the default 8000 port.</p>
+<p>At this time, open <a class="reference external" href="http://localhost:8000">http://localhost:8000</a> in the browser to enter Gerapy.</p>
+<p>First Gerapy will prompt the user to log in, the page is as follows:</p>
+<p><img alt="image-20191123120246936" src="https://qiniu.cuiqingcai.com/2019-11-23-040248.png" /></p>
+<p>Enter Gerapy’s home page by entering the username and password you created in the previous step:</p>
+<p><img alt="image-20191123145211198" src="https://qiniu.cuiqingcai.com/2019-11-23-065223.png" /></p>
+</div>
+<div class="section" id="host-management">
+<h2>Host Management<a class="headerlink" href="#host-management" title="Permalink to this headline">¶</a></h2>
+<p>Here the host is talking about Scrapyd’s service host. Scrapyd will run on port 6800 by default. It provides a series of HTTP services such as deployment and operation. For Scrapyd, you can refer to <a class="reference external" href="https://scrapyd.readthedocs.io/">Scrapyd Document</a> to ensure that their services can be accessed externally.</p>
+<p>In host management, we can add the Scrapyd running address and port of each host and name it. After adding it, it will appear in the host list. Gerapy will monitor the running status of each host and identify it in different states:</p>
+<p><img alt="image-20191123150130966" src="https://qiniu.cuiqingcai.com/2019-11-23-070132.png" /></p>
+<p>Once added, we can easily view and control the crawler tasks that each host is running.</p>
+</div>
+<div class="section" id="project-management">
+<h2>Project management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h2>
+<p>Also mentioned above is an empty projects folder in Gerapy’s working directory, which is the folder where the Scrapy directory is stored.</p>
+<p>If we want to deploy a Scrapy project, just put the project file in the projects folder.</p>
+<p>For example, you can put your project into the projects folder as follows:</p>
+<ul class="simple">
+<li><p>Move or copy the local Scrapy project directly to the projects folder.</p></li>
+<li><p>Clone or download a remote project, such as Git Clone, and download the project to the projects folder.</p></li>
+<li><p>Link the project to the projects folder via a soft connection (using the ln command under Linux, Mac, using the mklink command).</p></li>
+</ul>
+<p>For example, put two Scrapy projects in the projects here:</p>
+<p><img alt="image-20191123123940183" src="https://qiniu.cuiqingcai.com/2019-11-23-043941.png" /></p>
+<p>Then go back to the Gerapy management interface and click on Project Management to see the current project list:</p>
+<p><img alt="image-20191123150211850" src="https://qiniu.cuiqingcai.com/2019-11-23-070213.png" /></p>
+<p>Since the project has a package and deployment record here, it is shown separately here.</p>
+<p>In addition, Gerapy provides the project online editing function, we can edit the project visually by clicking Edit:</p>
+<p><img alt="image-20191123150246984" src="https://qiniu.cuiqingcai.com/2019-11-23-070248.png" /></p>
+<p>If the project has no problems, you can click on the deployment to package and deploy. You need to package the project before deployment. You can specify the version description when packaging:</p>
+<p><img alt="image-20191123150318740" src="https://qiniu.cuiqingcai.com/2019-11-23-070321.png" /></p>
+<p>After the package is complete, you can click the deployment button to deploy the packaged Scrapy project to the corresponding cloud host, and you can also deploy it in batches.</p>
+<p><img alt="image-20191123150338122" src="https://qiniu.cuiqingcai.com/2019-11-23-070339.png" /></p>
+<p>After the deployment is complete, you can go back to the host management page to schedule the task. Click Schedule to view the task management page. You can view the running status of all tasks on the current host:</p>
+<p><img alt="image-20191123150447626" src="https://qiniu.cuiqingcai.com/2019-11-23-070453.png" /></p>
+<p>We can start and stop the task by clicking the button such as run, stop, etc., and also can view the log details by expanding the task entry.</p>
+<p>This way we can see the status of each task in real time.</p>
+</div>
+<div class="section" id="timing-tasks">
+<h2>Timing tasks<a class="headerlink" href="#timing-tasks" title="Permalink to this headline">¶</a></h2>
+<p>In addition, Gerapy supports setting up scheduled tasks, entering the Task Management page, and creating a new scheduled task, such as creating a new crontab mode, which runs every minute:</p>
+<p>![image-20191123150535179](/Users/CQC/Library/Application Support/typora-user-images/image-20191123150535179.png)</p>
+<p>Here, if you set the run every minute, you can set the “minute” to 1, and you can set the start date and end date.</p>
+<p>After the creation is complete, return to the Task Management home page to see the list of scheduled tasks that have been created:</p>
+<p><img alt="image-20191123150626294" src="https://qiniu.cuiqingcai.com/2019-11-23-070627.png" /></p>
+<p>Click “Status” to view the running status of the current task:</p>
+<p><img alt="image-20191123150714822" src="https://qiniu.cuiqingcai.com/2019-11-23-070716.png" /></p>
+<p>You can also manually control scheduled tasks and view the run log by clicking the Schedule button in the upper right corner.</p>
+<p>The above is the basic usage of Gerapy.</p>
+<p>If you have found an error, or if you have any suggestions for Gerapy, please feel free to post it to [Gerapy Issues] (https://github.com/Gerapy/Gerapy/issues) and thank you for your support. Your feedback and suggestions are invaluable and hope that your participation will help Gerapy do better.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="docker.html" class="btn btn-neutral float-right" title="Docker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Germey
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
