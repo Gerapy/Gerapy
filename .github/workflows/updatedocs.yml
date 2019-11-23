@@ -20,12 +20,6 @@ jobs:
         echo "xxxxxxxxxxx"
         curl https://raw.githubusercontent.com/Gerapy/Gerapy/master/deploy/key > ~/.ssh/subtree
         cd ~/.ssh
-        cat ~/.ssh/subtree
-        echo "ls"
-        ls
-        ssh-add -l
-        ssh-add ~/.ssh/subtree
-        ssh-add -l
     - name: Sync With Docs
       run: |
         cd /tmp
