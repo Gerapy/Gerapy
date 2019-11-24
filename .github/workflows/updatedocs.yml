@@ -9,17 +9,15 @@ jobs:
     - name: Set SSH Environment
       env:
         DOCS_DEPLOY_KEY: ${{ secrets.DOCS_DEPLOY_KEY }}
-        HELLO: ${{ secrets.HELLO }}
       run: |
         mkdir -p ~/.ssh/
-        echo "66666"
         echo "$DOCS_DEPLOY_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com > ~/.ssh/known_hosts
         chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
         git config --global user.email "cqc@cuiqingcai.com"
         git config --global user.name "Germey"
-    - name: Sync With Docs
+    - name: Sync Docs in Gerapy.
       run: |
         cd /tmp
         git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
