@@ -22,7 +22,6 @@ jobs:
         chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
         echo "8888"
         cat ~/.ssh/subtree
-        ssh-add ~/.ssh/subtree
         echo "77777777777"
         cat ~/.ssh/subtree
     - name: Sync With Docs
