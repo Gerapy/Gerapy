@@ -18,6 +18,8 @@ jobs:
         git config --global user.email "cqc@cuiqingcai.com"
         git config --global user.name "Germey"
     - name: Sync Docs in Gerapy.
+      env: 
+        Gerapy: "Gerapy"
       run: |
         cd /tmp
         git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
@@ -27,6 +29,7 @@ jobs:
         git clone https://github.com/Gerapy/Gerapy.git
         cd Gerapy
         git subtree split --prefix=docs --squash -b docs
+        git checkout docs
         git push /tmp/Docs docs:docs
         cd /tmp/Docs
         git checkout master
