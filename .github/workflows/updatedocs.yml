@@ -8,22 +8,17 @@ jobs:
     steps:
     - name: Set SSH Environment
       env:
-        DEPLOY_DOCS_PRIVATE_KEY: ${{ secrets.DEPLOY_DOCS_PRIVATE_KEY }}
+        DOCS_DEPLOY_KEY: ${{ secrets.DOCS_DEPLOY_KEY }}
         HELLO: ${{ secrets.HELLO }}
       run: |
-        echo $HELLO
-        echo $DEPLOY_DOCS_PRIVATE_KEY
-        mkdir ~/.ssh
+        mkdir -p ~/.ssh/
         echo "66666"
-        echo $DEPLOY_DOCS_PRIVATE_KEY > ~/.ssh/subtree
-        echo "555555"
-        cat ~/.ssh/subtree
+        echo "$DOCS_DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan github.com > ~/.ssh/known_hosts
         chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
-        echo "8888"
-        cat ~/.ssh/subtree
-        echo "77777777777"
-        cat ~/.ssh/subtree
+        git config --global user.email "cqc@cuiqingcai.com"
+        git config --global user.name "Germey"
     - name: Sync With Docs
       run: |
         cd /tmp
