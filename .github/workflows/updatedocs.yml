@@ -14,14 +14,14 @@ jobs:
         echo $HELLO
         echo $DEPLOY_DOCS_PRIVATE_KEY
         mkdir ~/.ssh
-        chmod 700 ~/.ssh
         echo "66666"
         echo $DEPLOY_DOCS_PRIVATE_KEY > ~/.ssh/subtree
         echo "555555"
         cat ~/.ssh/subtree
         ssh-keyscan github.com > ~/.ssh/known_hosts
-        cat ~/.ssh/cat ~/.ssh/subtree
-        chmod 600 ~/.ssh/subtree
+        chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+        echo "8888"
+        cat ~/.ssh/subtree
         ssh-add ~/.ssh/subtree
         echo "77777777777"
         cat ~/.ssh/subtree
