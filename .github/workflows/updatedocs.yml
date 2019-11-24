@@ -31,10 +31,14 @@ jobs:
         git subtree split --prefix=docs --squash -b docs
         git checkout docs
         git push /tmp/Docs docs:docs
+        pwd
         cd /tmp/Docs
-        git checkout master
+        echo "files"
+        ls
+        git checkout -b master
         git reset --hard docs
-        git push origin master
+        ls
+        git push origin master --force
         
         
         
