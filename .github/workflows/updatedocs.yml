@@ -1,7 +1,10 @@
 name: Sync Docs
-on: [push]
+on: 
+  push:
+    branches: 
+    - master
 jobs:
-  prepare:
+  sync:
     runs-on: ubuntu-latest
     steps:
     - name: Set SSH Environment
@@ -15,10 +18,6 @@ jobs:
         chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
         git config --global user.email "cqc@cuiqingcai.com"
         git config --global user.name "Germey"
-  sync:
-    runs-on: ubuntu-latest
-    needs: prepare
-    steps:
     - name: Sync Docs of Gerapy
       run: |
         cd /tmp
