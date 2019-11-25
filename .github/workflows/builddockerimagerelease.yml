@@ -22,14 +22,12 @@ jobs:
         npm run build
     - name: Build and Push the Docker Image
       run: |
-        echo "ref"
-        echo $GITHUB_REF
-        echo $ref
-        tag=$GITHUB_REF
-        echo $tag
-        docker pull germey/docker:$tag || true
-        docker build -t germey/gerapy:$tag ./docker/
+        tag=${GITHUB_REF:11}
+        docker build -t germey/gerapy:$tag -f ./docker/Dockerfile .
         docker push germey/gerapy:$tag
-        docker pull germey/docker:latest || true
-        docker tag germey/gerapy:$tag germey/gerapy:latest
-        docker push germey/gerapy:latest
+        regex='^([0-9]+\.){0,2}(\*|[0-9]+)$'
+        if [[ $tag =~ $regex ]]; then
+          echo "Build Stable Version '$tag'"
+          docker tag germey/gerapy:$tag germey/gerapy:latest
+          docker push germey/gerapy:latest
+        fi
