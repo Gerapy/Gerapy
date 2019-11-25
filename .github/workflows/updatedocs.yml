@@ -1,0 +1,34 @@
+name: Sync Docs
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set SSH Environment
+      env:
+        DOCS_DEPLOY_KEY: ${{ secrets.DOCS_DEPLOY_KEY }}
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$DOCS_DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com > ~/.ssh/known_hosts
+        chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+        git config --global user.email "cqc@cuiqingcai.com"
+        git config --global user.name "Germey"
+    - name: Sync Docs of Gerapy
+      run: |
+        cd /tmp
+        git clone git@github.com:Gerapy/Docs.git docs
+        cd docs
+        git branch -D docs || true
+        git push origin --delete docs || true
+        git clone https://github.com/Gerapy/Gerapy.git gerapy
+        cd gerapy
+        git subtree split --prefix=docs --squash -b docs
+        git checkout docs
+        git push /tmp/docs docs:docs
+        cd /tmp/docs
+        git checkout docs
+        git checkout -b master || git checkout master || true
+        git reset --hard docs
+        git push origin master --force
