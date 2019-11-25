@@ -17,30 +17,19 @@ jobs:
         chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
         git config --global user.email "cqc@cuiqingcai.com"
         git config --global user.name "Germey"
-    - name: Sync Docs in Gerapy.
-      env: 
-        Gerapy: "Gerapy"
+    - name: Sync Docs of Gerapy
       run: |
         cd /tmp
         git clone git@github.com:Gerapy/Docs.git docs
-        cd /tmp/docs
-        ls
-        cd ..
         git clone https://github.com/Gerapy/Gerapy.git gerapy
         cd gerapy
         git subtree split --prefix=docs --squash -b docs
         git checkout docs
         git push /tmp/docs docs:docs
-        echo "999999"
-        pwd
         cd /tmp/docs
-        echo "files"
-        ls
         git checkout docs
-        # git reset --hard docs
         git checkout -b master
         git reset --hard docs
-        ls
         git push origin master --force
         
         
