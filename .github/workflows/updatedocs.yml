@@ -21,10 +21,6 @@ jobs:
       run: |
         cd /tmp
         git clone git@github.com:Gerapy/Docs.git docs
-        cd docs
-        git branch -D docs
-        git push origin --delete docs
-        cd /tmp
         git clone https://github.com/Gerapy/Gerapy.git gerapy
         cd gerapy
         git subtree split --prefix=docs --squash -b docs
