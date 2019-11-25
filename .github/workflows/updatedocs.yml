@@ -22,23 +22,24 @@ jobs:
         Gerapy: "Gerapy"
       run: |
         cd /tmp
-        git clone git@github.com:Gerapy/Docs.git /tmp/Docs --bare
-        cd /tmp/Docs
+        git clone git@github.com:Gerapy/Docs.git docs
+        cd /tmp/docs
         ls
-        cd /tmp
-        git clone https://github.com/Gerapy/Gerapy.git
-        cd Gerapy
+        cd ..
+        git clone https://github.com/Gerapy/Gerapy.git gerapy
+        cd gerapy
         git subtree split --prefix=docs --squash -b docs
         git checkout docs
-        git push /tmp/Docs docs:docs
+        git push /tmp/docs docs:docs
+        echo "999999"
         pwd
-        cd /tmp/Docs
+        cd /tmp/docs
         echo "files"
         ls
-        git checkout -b master
-        git reset --hard docs
+        git checkout docs
+        # git reset --hard docs
         ls
-        git push origin master --force
+        git push origin docs --force
         
         
         
