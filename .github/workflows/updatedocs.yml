@@ -1,7 +1,5 @@
 name: Sync Docs
-
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,6 +32,3 @@ jobs:
         git checkout -b master || git checkout master || true
         git reset --hard docs
         git push origin master --force
-        
-        
-        
