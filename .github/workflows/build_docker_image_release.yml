@@ -2,7 +2,7 @@ name: build docker image release
 on:
   push:
     tags:
-    - 'v*.*.*'
+      - 'v*.*.*'
 jobs:
   build:
     runs-on: ubuntu-latest
