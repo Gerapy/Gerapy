@@ -1,5 +1,8 @@
-name: Gerapy Test
-on: [push]
+name: Test Gerapy
+on: 
+  push:
+    branches: 
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
