@@ -1,4 +1,4 @@
-name: Docker Image Master
+name: Build Docker Image Master
 on:
   push:
     branches: 
@@ -30,9 +30,5 @@ jobs:
       run: |
         docker pull germey/docker:master
         docker build -t germey/docker:master ./docker/
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Push the Docker Image
-        run: docker push germey/docker:master
+    - name: Push the Docker Image
+      run: docker push germey/docker:master
