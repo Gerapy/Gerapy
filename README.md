@@ -126,8 +126,8 @@ Project Configuration:
 - [x] Add Scrapyd Auth Management
 - [x] Add Gerapy Auth Management
 - [x] Add Timed Task Scheduler
-- [] Add Visual Configuration of Scrapy
-- [] Add Intelligent Analysis of Web Page
+- [ ] Add Visual Configuration of Scrapy
+- [ ] Add Intelligent Analysis of Web Page
 
 ## Communication
 
