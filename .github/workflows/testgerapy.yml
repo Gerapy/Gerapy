@@ -1,7 +1,10 @@
-name: Python package
-on: [push]
+name: Test Gerapy
+on: 
+  push:
+    branches: 
+    - master
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
