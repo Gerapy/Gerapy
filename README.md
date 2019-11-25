@@ -1,5 +1,11 @@
 # Gerapy
 
+![Read the Docs](https://img.shields.io/readthedocs/gerapy)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gerapy)
+[![GitHub stars](https://img.shields.io/github/stars/Gerapy/Gerapy)](https://github.com/Gerapy/Gerapy/stargazers)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/gerapy)
+![PyPI - License](https://img.shields.io/pypi/l/gerapy)
+
 Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
 ## Documentation
