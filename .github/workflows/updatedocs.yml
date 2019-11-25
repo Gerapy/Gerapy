@@ -21,6 +21,9 @@ jobs:
       run: |
         cd /tmp
         git clone git@github.com:Gerapy/Docs.git docs
+        cd docs
+        git branch -D docs || true
+        git push origin --delete docs || true
         git clone https://github.com/Gerapy/Gerapy.git gerapy
         cd gerapy
         git subtree split --prefix=docs --squash -b docs
@@ -28,7 +31,7 @@ jobs:
         git push /tmp/docs docs:docs
         cd /tmp/docs
         git checkout docs
-        git checkout -b master
+        git checkout -b master || git checkout master || true
         git reset --hard docs
         git push origin master --force
         
