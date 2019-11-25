@@ -1,7 +1,7 @@
-name: Python package
+name: Gerapy Test
 on: [push]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 3
