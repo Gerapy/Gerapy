@@ -1,13 +1,16 @@
-name: Docker Image Dev
+name: Docker Image Master
 on:
   push:
     branches: 
       - master
+    paths:
+      - .github/workflows/*
+      - gerapy/*
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout source
+    - name: Checkout Source
       uses: actions/checkout@v1
     - name: Docker Login
       run: docker login -u germey -p {{ secrets.DOCKER_HUB_PASSOWRD }}
