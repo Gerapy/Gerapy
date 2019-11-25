@@ -2,9 +2,13 @@
 
 Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
+## Documentation
+
+Documentation is available online at [https://docs.gerapy.com/](https://docs.gerapy.com/) and [https://github.com/Gerapy/Docs](https://github.com/Gerapy/Docs).
+
 ## Support
 
-Gerapy is developed over Python 3.x. Python 2.x will be supported later.
+Gerapy is developed based on Python 3.x. Python 2.x may be supported later.
 
 ## Usage
 
@@ -54,12 +58,12 @@ Then you can visit [http://localhost:8000](http://localhost:8000) to enjoy it. A
 If you want to run Gerapy in public, just run like this:
 
 ```
-gerapy runserver 0.0.0.0:8888
+gerapy runserver 0.0.0.0:8000
 ```
 
-Then it will run with public host and port 8888.
+Then it will run with public host and port 8000.
 
-In Gerapy, You can create a configurable project and then configure and generate code of Scrapy automatically. But this module is unstable, I'm trying to refine it.
+In Gerapy, You can create a configurable project and then configure and generate code of Scrapy automatically. But this module is unstable, we're trying to refine it.
 
 Also you can drag your Scrapy Project to `projects` folder. Then refresh web, it will appear in the Project Index Page and comes to un-configurable, but you can edit this project through the web page.
 
@@ -83,7 +87,7 @@ Command Usage:
 docker run -d -v <workspace>:/app/gerapy -p <public_port>:<container_port> germey/gerapy
 ```
 
-Please specify your workspace to mount Gerapy workspace by `-v <your_workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
+Please specify your workspace to mount Gerapy workspace by `-v <workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
 
 If you run Gerapy by Docker, you can visit Gerapy website such as [http://localhost:8000](http://localhost:8000) and enjoy it, no need to do other initialzation things.
 
@@ -122,8 +126,9 @@ Project Configuration:
 - [x] Add Scrapyd Auth Management
 - [x] Add Gerapy Auth Management
 - [x] Add Timed Task Scheduler
-- [ ] Add MongoDB & Redis & MySQL Monitor
+- [] Add Visual Configuration of Scrapy
+- [] Add Intelligent Analysis of Web Page
 
 ## Communication
 
-If you have any questions or ideas, you can add my wechat `CQCcqc`.
+If you have any questions or ideas, you can send [Issues](https://github.com/Gerapy/Gerapy/issues) or [Pull Requests](https://github.com/Gerapy/Gerapy/pulls), your suggestions are really import for us, thanks for your contirbution.
