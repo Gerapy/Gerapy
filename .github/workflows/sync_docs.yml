@@ -1,4 +1,4 @@
-name: Sync Docs
+name: sync docs
 on: 
   push:
     branches: 
