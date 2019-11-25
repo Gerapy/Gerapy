@@ -2,10 +2,10 @@ name: Build Docker Image Master
 on:
   push:
     branches: 
-      - master
+    - master
     paths:
-      - .github/workflows/*
-      - gerapy/*
+    - .github/workflows/**
+    - gerapy/**
 jobs:
   build:
     runs-on: ubuntu-latest
