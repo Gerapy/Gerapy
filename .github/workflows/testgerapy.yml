@@ -2,7 +2,7 @@ name: Test Gerapy
 on: 
   push:
     branches: 
-      - master
+    - master
 jobs:
   test:
     runs-on: ubuntu-latest
