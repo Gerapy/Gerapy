@@ -1,10 +1,10 @@
 # Docker
 
-Gerapy also provides a Docker image that can be used to quickly launch the Gerapy service using Docker.
+Gerapy also provides a Docker Image that can be used to quickly launch the Gerapy service.
 
 ## Run
 
-First you need to select a directory as the Gerapy working directory, such as ~/gerapy or others. Here is the ~/gerapy directory. The Gerapy startup command is as follows:
+First you need to select a directory as the Gerapy working directory, such as ~/gerapy or others. For example, we use the  ~/gerapy directory. The Gerapy startup command is as follows:
 
 ```
 docker run -d --name gerapy -v ~/gerapy:/app/gerapy -p 8000:8000 germey/gerapy
