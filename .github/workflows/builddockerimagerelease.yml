@@ -1,6 +1,6 @@
 name: Build Docker Image Release
 on:
-  push:
+  create:
     tags:
     - "v*"
 jobs:
