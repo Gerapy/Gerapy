@@ -28,7 +28,8 @@ jobs:
         npm run build
     - name: Build the Docker Image
       run: |
-        docker pull germey/docker:master || true
-        docker build -t germey/gerapy:master ./docker/
+        echo "pwd"
+        pwd
+        docker build -t germey/gerapy:master -f ./docker/Dockerfile .
     - name: Push the Docker Image
       run: docker push germey/gerapy:master
