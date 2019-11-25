@@ -42,7 +42,7 @@ except FileNotFoundError:
 about = {}
 if not VERSION:
     with open(os.path.join(here, FOLDER, '__version__.py')) as f:
-        exec (f.read(), about)
+        exec(f.read(), about)
 else:
     about['__version__'] = VERSION
 
@@ -60,8 +60,6 @@ def package_files(directories):
 
 
 class UploadCommand(Command):
-    """Support setup.py upload."""
-    
     description = 'Build and publish the package.'
     user_options = []
     
@@ -96,7 +94,6 @@ class UploadCommand(Command):
         sys.exit()
 
 
-# Where the magic happens:
 setup(
     name=NAME,
     version=about['__version__'],
@@ -115,13 +112,10 @@ setup(
         'console_scripts': ['gerapy = gerapy.cmd:cmd']
     },
     classifiers=[
-        # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
