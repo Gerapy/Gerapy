@@ -2,7 +2,7 @@ name: Build Docker Image Release
 on:
   push:
     tags:
-    - '*'
+    - 'v*.*.*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,8 +23,9 @@ jobs:
     - name: Build and Push the Docker Image
       run: |
         echo "ref"
+        echo $GITHUB_REF
         echo $ref
-        tag=${ref:1}
+        tag=$GITHUB_REF
         echo $tag
         docker pull germey/docker:$tag || true
         docker build -t germey/gerapy:$tag ./docker/
@@ -32,5 +33,3 @@ jobs:
         docker pull germey/docker:latest || true
         docker tag germey/gerapy:$tag germey/gerapy:latest
         docker push germey/gerapy:latest
-      env:
-        ref: ${{ github.ref }}
