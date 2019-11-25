@@ -1,8 +1,8 @@
 name: Build Docker Image Release
 on:
-  create:
+  push:
     tags:
-    - v*
+    - '*'
 jobs:
   build:
     runs-on: ubuntu-latest
