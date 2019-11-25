@@ -38,8 +38,10 @@ jobs:
         ls
         git checkout docs
         # git reset --hard docs
+        git checkout -b master
+        git reset --hard docs
         ls
-        git push origin docs --force
+        git push origin master --force
         
         
         
