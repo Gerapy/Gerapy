@@ -2,7 +2,7 @@ name: Build Docker Image Release
 on:
   create:
     tags:
-    - "v*"
+    - v*
 jobs:
   build:
     runs-on: ubuntu-latest
