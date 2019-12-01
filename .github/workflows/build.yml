@@ -8,8 +8,6 @@ jobs:
   test-on-linux:
     runs-on: 
     - ubuntu-latest
-    - macOS-10.14
-    - windows-2019
     strategy:
       max-parallel: 3
       matrix:
