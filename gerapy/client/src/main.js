@@ -14,6 +14,7 @@ import http from './http'
 
 Vue.use(ElementUI)
 Vue.use(VueClipboard)
+
 Vue.component('v-chart', ECharts)
 
 Vue.config.productionTip = false
@@ -21,21 +22,22 @@ Vue.config.productionTip = false
 Vue.use(VueAxios, http)
 
 Vue.mixin({
-	computed: {
-		// register global language configuration
-		...mapGetters(['$lang'])
-	},
-	methods: {
-		// register global methods
-		formatString: require('string-format-obj'),
-		basename: require('path').basename,
-		join: require('path').join
-	}
+  computed: {
+    // register global language configuration
+    ...mapGetters(['$lang'])
+  },
+  methods: {
+    // register global methods
+    formatString: require('string-format-obj'),
+    basename: require('path').basename,
+    join: require('path').join
+  }
 })
 
+
 new Vue({
-	router,
-	store,
-	render:
-		h => h(App),
+  router,
+  store,
+  render:
+    h => h(App),
 }).$mount('#app')

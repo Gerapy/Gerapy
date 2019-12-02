@@ -217,7 +217,7 @@
     name: 'Substance',
     props: {
       id: {
-        type: Number,
+        type: String,
         default: null
       }
     },
@@ -258,7 +258,9 @@
           shortcuts: [{
             text: this.$store.getters.$lang.titles.laterAtOnce,
             onClick(picker) {
-              picker.$emit('pick', new Date() + 5 * 1000)
+              const date = new Date()
+              date.setTime(date.getTime() + 5 * 1000)
+              picker.$emit('pick', date)
             }
           }, {
             text: this.$store.getters.$lang.titles.later1Min,
@@ -387,6 +389,19 @@
 		background-color: #EEEEEE;
 		&:hover {
 			background-color: #CCCCCC;
+		}
+	}
+
+	.el-picker-panel {
+		.el-picker-panel__footer {
+			.el-button.el-picker-panel__link-btn.el-button--text.el-button--mini {
+				display: none;
+			}
+		}
+		.el-picker-panel__sidebar {
+			.el-picker-panel__shortcut {
+				font-size: 12px;
+			}
 		}
 	}
 </style>
