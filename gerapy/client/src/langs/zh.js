@@ -34,6 +34,7 @@ export default {
     return: '返回',
     run: '运行',
     finished: '完成',
+    finish: '完成',
     pending: '等待',
     running: '运行中',
     stop: '停止',
@@ -62,7 +63,8 @@ export default {
     password: '密码',
     logout: '登出',
     login: '登录',
-    reset: '重置'
+    reset: '重置',
+    clone: '克隆'
   },
   heads: {
     home: '首页',
@@ -139,6 +141,7 @@ export default {
     successBuild: '打包成功',
     successDeploy: '部署成功',
     successCopy: '复制成功',
+    successClone: '克隆成功',
     errorAdd: '添加失败',
     errorSave: '保存失败',
     errorDelete: '删除失败',
@@ -150,6 +153,7 @@ export default {
     errorLoad: '加载失败',
     errorFormat: '格式有误',
     errorCopy: '复制失败',
+    errorClone: '克隆失败',
     processGenerate: '正在生成代码',
     confirm: '确定要执行此操作?',
     reGenerate: '重新生成代码会清除之前的打包，确定要重新生成吗？',
@@ -163,7 +167,11 @@ export default {
     loginSuccess: '登录成功',
     loginError: '登录失败',
     gettingTaskData: '正在获取任务状态',
-    noTask: '没有任务可以执行'
+    noTask: '没有任务可以执行',
+    createConfigurableProject: '创建一个可配置化爬虫项目',
+    supportZip: '只支持 zip 格式文件上传',
+    dragOrSelect: '拖拽或选择文件',
+    cloning: '克隆中...'
   },
   descriptions: {
     normalClients: '主机正常运行',
@@ -255,6 +263,10 @@ export default {
     lastTime: '上次执行',
     success: '成功',
     error: '错误',
+    create: '创建',
+    upload: '上传',
+    clone: '克隆',
+    address: '地址'
   },
 
 }

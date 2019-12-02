@@ -24,7 +24,7 @@
 						</el-form-item>
 						<el-form-item :label="$lang.columns.auth" prop="auth">
 							<el-switch
-								v-model="form.auth">
+									v-model="form.auth">
 							</el-switch>
 						</el-form-item>
 						<el-form-item :label="$lang.columns.username" prop="username" v-if="form.auth">
@@ -54,73 +54,76 @@
 	</div>
 </template>
 <script>
-	import PanelTitle from '../../components/PanelTitle'
-	import {ip, port} from '../../utils/regex'
+  import PanelTitle from '../../components/PanelTitle'
+  import {ip, port} from '../../utils/regex'
 
-	export default {
-		data() {
-			return {
-				form: {
-					name: '',
-					ip: '',
-					port: '',
-					description: '',
-					auth: false,
-					username: '',
-					password: ''
-				},
-				loadData: false,
-				onSubmitLoading: false,
-				rules: {
-					name: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						},
-					],
-					ip: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.ip + ' ' + this.$store.getters.$lang.messages.isNull,
-							trigger: 'blur'
-						}
-					],
-					port: [
-						{
-							required: true,
-							message: this.$store.getters.$lang.columns.port + ' ' + this.$store.getters.$lang.messages.isNull
-							, trigger: 'blur'
-						},
-						{
-							pattern: port,
-							message: this.$store.getters.$lang.columns.port + ' ' + this.$store.getters.$lang.messages.notValid,
-							trigger: 'blur'
-						}
-						,
-					]
-				}
-			}
-		},
-		methods: {
-			onSubmitForm() {
-				this.$refs.form.validate((valid) => {
-					if (!valid)
-						return false
-					this.onSubmitLoading = true
-					this.$http.post(this.$store.state.url.client.create,
-						this.form
-					).then(() => {
-						this.$message.success(this.$store.getters.$lang.messages.successSave)
-						this.onSubmitLoading = false
-					}).catch(() => {
-						this.onSubmitLoading = false
-					})
-				})
-			}
-		},
-		components: {
-			PanelTitle
-		}
-	}
+  export default {
+    data() {
+      return {
+        form: {
+          name: '',
+          ip: '',
+          port: '',
+          description: '',
+          auth: false,
+          username: '',
+          password: ''
+        },
+        loadData: false,
+        onSubmitLoading: false,
+        rules: {
+          name: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.name + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            },
+          ],
+          ip: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.ip + ' ' + this.$store.getters.$lang.messages.isNull,
+              trigger: 'blur'
+            }
+          ],
+          port: [
+            {
+              required: true,
+              message: this.$store.getters.$lang.columns.port + ' ' + this.$store.getters.$lang.messages.isNull
+              , trigger: 'blur'
+            },
+            {
+              pattern: port,
+              message: this.$store.getters.$lang.columns.port + ' ' + this.$store.getters.$lang.messages.notValid,
+              trigger: 'blur'
+            }
+            ,
+          ]
+        }
+      }
+    },
+    methods: {
+      onSubmitForm() {
+        this.$refs.form.validate((valid) => {
+          if (!valid)
+            return false
+          this.onSubmitLoading = true
+          this.$http.post(this.$store.state.url.client.create,
+            this.form
+          ).then(() => {
+            this.$message.success(this.$store.getters.$lang.messages.successSave)
+            this.onSubmitLoading = false
+            this.$router.push({
+              name: 'clientIndex'
+            })
+          }).catch(() => {
+            this.onSubmitLoading = false
+          })
+        })
+      }
+    },
+    components: {
+      PanelTitle
+    }
+  }
 </script>

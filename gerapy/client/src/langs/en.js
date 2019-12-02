@@ -34,6 +34,7 @@ export default {
     return: 'return',
     run: 'run',
     finished: 'finished',
+    finish: 'finish',
     pending: 'pending',
     running: 'running',
     stop: 'stop',
@@ -62,7 +63,8 @@ export default {
     password: 'password',
     logout: 'logout',
     login: 'login',
-    reset: 'reset'
+    reset: 'reset',
+    clone: 'clone'
   },
   heads: {
     home: 'Home',
@@ -113,7 +115,7 @@ export default {
     later1Min: '1 Minute Later',
     later5Min: '5 Minute Later',
     later10Min: '10 Minute Later',
-    laterHalfHour: 'Half an Hour Later',
+    laterHalfHour: 'Half Hour Later',
     later1Hour: '1 Hour Later',
   },
   menus: {
@@ -139,6 +141,7 @@ export default {
     successBuild: 'Build Successfully',
     successDeploy: 'Deploy Successfully',
     successCopy: 'Copy Successfully',
+    successClone: 'Clone Successfully',
     errorAdd: 'Failed to Add',
     errorSave: 'Failed to Save',
     errorDelete: 'Failed to Delete',
@@ -150,6 +153,7 @@ export default {
     errorLoad: 'Failed to Load',
     errorFormat: 'Error Format',
     errorCopy: 'Failed to Copy',
+    errorClone: 'Failed to Clone',
     processGenerate: 'Generating Project',
     confirm: 'Are You Sure?',
     reGenerate: 'ReGenerate Will Remove All Built Packages, Are You Sure to ReGenerate?',
@@ -163,7 +167,11 @@ export default {
     loginSuccess: 'Login Successfully',
     loginError: 'Login Failed',
     gettingTaskData: 'Getting Data of Tasks',
-    noTask: 'No Task to Schedule'
+    noTask: 'No Task to Schedule',
+    createConfigurableProject: 'This will create a configurable project',
+    supportZip: 'Only support *.zip file',
+    dragOrSelect: 'Drag or Select file',
+    cloning: 'Cloning...'
   },
   descriptions: {
     normalClients: 'Normal Clients',
@@ -254,6 +262,10 @@ export default {
     nextTime: 'Next Time',
     lastTime: 'Last Time',
     success: 'Success',
-    error: 'Error'
+    error: 'Error',
+    create: 'Create',
+    upload: 'Upload',
+    clone: 'Clone',
+    address: 'Address'
   },
 }

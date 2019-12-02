@@ -1,3 +1,4 @@
+from pathlib import Path
 from urllib.parse import unquote
 import base64
 import json, os, requests, time, pytz, pymongo
@@ -21,6 +22,8 @@ from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
     clients_of_task, get_job_id
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
+from django.core.files.storage import FileSystemStorage
+import zipfile
 
 logger = get_logger(__name__)
 
@@ -291,6 +294,50 @@ def project_create(request):
         path = join(os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER)), data['name'])
         os.mkdir(path)
         return JsonResponse(model_to_dict(project))
+
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def project_upload(request):
+    """
+    upload project
+    :param request: request object
+    :return: json
+    """
+    if request.method == 'POST':
+        file = request.FILES['file']
+        file_name = file.name
+        fs = FileSystemStorage(PROJECTS_FOLDER)
+        zip_file_name = fs.save(file_name, file)
+        logger.debug('zip file name %s', zip_file_name)
+        # extract zip file
+        with zipfile.ZipFile(join(PROJECTS_FOLDER, zip_file_name), 'r') as zip_ref:
+            zip_ref.extractall(PROJECTS_FOLDER)
+        logger.debug('extracted files to %s', PROJECTS_FOLDER)
+        return JsonResponse({'status': True})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def project_clone(request):
+    """
+    clone project from github
+    :param request: request object
+    :return: json
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        address = data.get('address')
+        if not address.startswith('http'):
+            return JsonResponse({'status': False})
+        address = address + '.git' if not address.endswith('.git') else address
+        cmd = 'git clone {address} {target}'.format(address=address, target=join(PROJECTS_FOLDER, Path(address).stem))
+        logger.debug('clone cmd %s', cmd)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
+        logger.debug('clone run result %s', stdout)
+        if stderr: logger.error(stderr)
+        return JsonResponse({'status': True}) if not stderr else JsonResponse({'status': False})
 
 
 @api_view(['POST'])
