@@ -55,9 +55,9 @@ npm install
 
 此处建议在 PyCharm IDE 中设置参数配置，同时还方便 Debug。
 
-* 脚本路径：gerapy/gerapy/cmd/\_\_init\_\_.py，即命令的入口文件。
-* 运行参数：runserver 0.0.0.0:5000，注意这里需要在 5000 端口上运行，前端会转发请求到 5000 端口。
-* 环境变量：PYTHONUNBUFFERED=1;APP_DEBUG=true，其中 APP_DEBUG 是设置调试模式，会打印更多的调试日志。
+* 脚本路径：`gerapy/gerapy/cmd/__init__.py`，即命令的入口文件。
+* 运行参数：`runserver 0.0.0.0:5000`，注意这里需要在 5000 端口上运行，前端会转发请求到 5000 端口。
+* 环境变量：`PYTHONUNBUFFERED=1;APP_DEBUG=true`，其中 APP_DEBUG 是设置调试模式，会打印更多的调试日志。
 * 工作路径：gerapy init 命令生成的工作路径。
 
 如图所示：
