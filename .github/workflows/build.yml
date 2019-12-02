@@ -5,8 +5,9 @@ on:
     - master
     - dev
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  test-on-linux:
+    runs-on: 
+    - ubuntu-latest
     strategy:
       max-parallel: 3
       matrix:
@@ -20,7 +21,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -U gerapy
+        pip install .
     - name: Run Gerapy
       run: |
         gerapy -v
@@ -28,4 +29,3 @@ jobs:
         cd gerapy
         gerapy migrate
         gerapy initadmin
-        
