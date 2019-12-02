@@ -47,13 +47,28 @@ npm install
 
 ## 运行
 
-后端使用 gerapy 命令按照 Gerapy 的使用说明正常启动，注意运行时需要在 5000 端口上启动，而非 8000。
+此处分为前后端分别介绍，两部分需要同时启动才能正常配合工作。
 
-```
-gerapy runserver 0.0.0.0:5000
-```
+### 后端
 
-前端在 gerapy/client 文件夹，执行：
+对于后端，由于 gerapy 命令需要安装 Gerapy 安装包才可使用。但开发时如果改动之后每次手动安装必然是非常繁琐的。
+
+此处建议在 PyCharm IDE 中设置参数配置，同时还方便 Debug。
+
+* 脚本路径：gerapy/gerapy/cmd/\_\_init\_\_.py，即命令的入口文件。
+* 运行参数：runserver 0.0.0.0:5000，注意这里需要在 5000 端口上运行，前端会转发请求到 5000 端口。
+* 环境变量：PYTHONUNBUFFERED=1;APP_DEBUG=true，其中 APP_DEBUG 是设置调试模式，会打印更多的调试日志。
+* 工作路径：gerapy init 命令生成的工作路径。
+
+如图所示：
+
+![](https://qiniu.cuiqingcai.com/2019-12-02-110658.png)
+
+这样启动之后，Gerapy Server 会在 5000 端口上运行，同时控制台也会打印出调试信息。
+
+### 前端
+
+对于前端，在 gerapy/client 文件夹，执行：
 
 ```
 npm run serve
@@ -61,7 +76,7 @@ npm run serve
 
 即可在 8080 端口运行，其后端 API 会转发到 5000 端口，即刚才所启动的 Gerapy Server。
 
-打开 [http://localhost:8080](http://localhost:8080) 即可进入 Gerapy 的开发模式。
+打开 [http://localhost:8080](http://localhost:8080) 即可进入 Gerapy 的前端页面。
 
 ## 代码说明
 
