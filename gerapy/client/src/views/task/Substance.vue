@@ -217,7 +217,7 @@
     name: 'Substance',
     props: {
       id: {
-        type: String,
+        type: Number,
         default: null
       }
     },
@@ -254,7 +254,48 @@
           disabledDate(time) {
             // 设置今天及今天之后的日期
             return time.getTime() < Date.now() - 8.64e7
-          }
+          },
+          shortcuts: [{
+            text: this.$store.getters.$lang.titles.laterAtOnce,
+            onClick(picker) {
+              picker.$emit('pick', new Date() + 5 * 1000)
+            }
+          }, {
+            text: this.$store.getters.$lang.titles.later1Min,
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 60 * 1000)
+              picker.$emit('pick', date)
+            }
+          }, {
+            text: this.$store.getters.$lang.titles.later5Min,
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 5 * 60 * 1000)
+              picker.$emit('pick', date)
+            }
+          }, {
+            text: this.$store.getters.$lang.titles.later10Min,
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 10 * 60 * 1000)
+              picker.$emit('pick', date)
+            }
+          }, {
+            text: this.$store.getters.$lang.titles.laterHalfHour,
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 30 * 60 * 1000)
+              picker.$emit('pick', date)
+            }
+          }, {
+            text: this.$store.getters.$lang.titles.later1Hour,
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() + 60 * 60 * 1000)
+              picker.$emit('pick', date)
+            }
+          }]
         },
         timeZones: listTimeZones(),
         rules: {

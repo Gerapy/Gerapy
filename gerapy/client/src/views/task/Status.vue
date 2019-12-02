@@ -98,6 +98,25 @@
 				</div>
 			</el-col>
 			<el-col :span="18" v-loading="loadingJob">
+				<el-row v-if="jobs.length === 0">
+					<el-col :span="24">
+						<!--<el-alert-->
+						<!--:title="$lang.messages.noTask"-->
+						<!--type="info"-->
+						<!--:closable="false">-->
+						<!--</el-alert>-->
+						<div class="panel">
+							<panel-title :title="$lang.objects.task">
+							</panel-title>
+							<div class="panel-body">
+								<el-form>
+									<el-form-item :label="$lang.messages.noTask">
+									</el-form-item>
+								</el-form>
+							</div>
+						</div>
+					</el-col>
+				</el-row>
 				<el-row v-for="job in jobs">
 					<el-col :span="24">
 						<div class="panel">
@@ -155,21 +174,12 @@
 													getErrorExecutions(job).length }}</h1>
 											</el-form-item>
 										</el-form>
-
 									</el-col>
 								</el-row>
 							</div>
 						</div>
 					</el-col>
 				</el-row>
-			</el-col>
-			<el-col :span="24">
-
-			</el-col>
-		</el-row>
-		<el-row :gutter="20">
-			<el-col :span="8" v-for="job in jobs">
-
 			</el-col>
 		</el-row>
 	</div>
@@ -190,6 +200,7 @@
         task: null,
         loadingJob: false,
         errorSymbol: 'error',
+        openDate: dateFormat.asString(this.$store.state.dateFormat, new Date())
       }
     },
     computed: {},
@@ -240,7 +251,8 @@
       getRunPercent(job) {
         if (!job) return 0
         let lastRunTime = Date.parse(this.getLastRunTime(job))
-        if (!lastRunTime) return 0
+        if (!lastRunTime || isNaN(lastRunTime))
+          lastRunTime = Date.parse(this.openDate)
         let nextRunTime = Date.parse(this.getNextTunTime(job))
         if (!nextRunTime) return 0
         let nowTime = Date.parse(new Date())

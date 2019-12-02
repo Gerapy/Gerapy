@@ -99,7 +99,7 @@ class SchedulerManager(Thread):
             task.save()
         
         logger.debug('successfully synced task with jobs')
-        if force: logger.info('successfully synced task with jobs')
+        if force: logger.info('successfully synced task with jobs with force')
     
     def _remove_deprecated_jobs(self, task, force=False):
         """

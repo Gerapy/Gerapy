@@ -841,6 +841,10 @@ def task_status(request, task_id):
         clients = clients_of_task(task)
         for client in clients:
             job_id = get_job_id(client, task)
+            jobs = DjangoJob.objects.filter(name=job_id)
+            logger.debug('jobs from djangojob %s', jobs)
+            # if job does not exist, for date mode exceed time
+            if not jobs: continue
             job = DjangoJob.objects.get(name=job_id)
             executions = serialize('json', DjangoJobExecution.objects.filter(job=job))
             result.append({

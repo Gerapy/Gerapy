@@ -143,3 +143,7 @@ def cmd():
         initadmin()
     else:
         manage()
+
+# for console debugger
+if __name__ == '__main__':
+    cmd()
