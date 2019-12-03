@@ -17,7 +17,7 @@
 				</el-tab-pane>
 				<el-tab-pane :label="$lang.columns.upload" name="upload">
 					<el-upload
-							class="upload-demo"
+							class="upload"
 							drag
 							accept=".zip"
 							:action="$store.state.url.project.upload">
@@ -274,6 +274,15 @@
 				padding-bottom: 0;
 				padding-left: 40px;
 				padding-right: 40px;
+			}
+		}
+		.upload {
+			width: 100%;
+			.el-upload {
+				width: 100%;
+				.el-upload-dragger {
+					width: 100%;
+				}
 			}
 		}
 	}
