@@ -83,6 +83,22 @@ Enter Gerapy's home page by entering the username and password you created in th
 
 ![](https://qiniu.cuiqingcai.com/2019-11-23-065223.png)
 
+If you want Gerapy run in public, you can specify host and port like this:
+
+```
+gerapy runserver 0.0.0.0:8000
+```
+
+Then Gerapy can be accessed through 8000 port from public.
+
+If you want Gerapy run in daemon, you can just run like this:
+
+```
+gerapy runserver 0.0.0.0:8000 > /dev/null 2>&1 &
+```
+
+Then Gerapy will run in daemon and in public.
+
 ## Host Management
 
 Here the host is talking about Scrapyd's service host. Scrapyd will run on port 6800 by default. It provides a series of HTTP services such as deployment and operation. For Scrapyd, you can refer to [Scrapyd Document](https://scrapyd.readthedocs.io/ ) to ensure that their services can be accessed externally.

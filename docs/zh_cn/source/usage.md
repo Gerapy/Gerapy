@@ -83,6 +83,22 @@ gerapy runserver
 
 ![](https://qiniu.cuiqingcai.com/2019-11-23-040405.png)
 
+如果你想让 Gerapy 可以被外部访问，可以指定运行的地址和端口，命令如下：
+
+```
+gerapy runserver 0.0.0.0:8000
+```
+
+这样 Gerapy 就可以从外部通过 8000 端口访问到了。
+
+如果你想让 Gerapy 以守护态运行，即后台运行，可以使用如下命令：
+
+```
+gerapy runserver 0.0.0.0:8000 > /dev/null 2>&1 &
+```
+
+这样 Gerapy 就可以在后台运行了。
+
 ## 主机管理
 
 这里主机所说的就是 Scrapyd 的服务主机，Scrapyd 启动后默认会运行在 6800 端口，提供部署、运行等一系列 HTTP 服务，配置 Scrapyd 可以参考 [Scrapyd Document](https://scrapyd.readthedocs.io/)，确保其服务可以对外正常访问。
