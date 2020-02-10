@@ -1,6 +1,5 @@
 from os import getenv, getcwd
 from os.path import join
-import datetime
 import time
 
 APP_DEBUG = getenv('APP_DEBUG', False)

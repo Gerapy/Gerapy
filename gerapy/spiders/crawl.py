@@ -4,9 +4,10 @@ from scrapy.spiders import CrawlSpider as BaseSpider, signals
 from scrapy_splash import SplashRequest
 from scrapy import Request
 from gerapy.server.core.utils import str2list, str2dict, str2body
+from scrapy.spiders.crawl import Rule as BaseRule
 
 
-class Rule(object):
+class Rule(BaseRule):
     def __init__(self, link_extractor, method='GET', data=None, params=None, headers=None,
                  callback=None, cb_kwargs=None, follow=None, priority=0, dont_filter=False,
                  meta=None, proxy=None, render=False, dont_redirect=None, dont_retry=None,
