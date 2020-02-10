@@ -1,6 +1,6 @@
 apscheduler==3.5.1
 cryptography==2.8
-django==1.11.26
+django==1.11.27
 django-cors-headers==3.2.0
 django-apscheduler==0.3.0
 furl==2.1.0
