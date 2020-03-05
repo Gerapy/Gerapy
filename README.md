@@ -2,7 +2,7 @@
 
 ![Build](https://github.com/Gerapy/Gerapy/workflows/build/badge.svg)
 ![Read the Docs](https://img.shields.io/readthedocs/gerapy)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gerapy)
+![PyPI - Python Version](https://img.shields.io/badge/python-3.6%2B-blue)
 [![GitHub stars](https://img.shields.io/github/stars/Gerapy/Gerapy)](https://github.com/Gerapy/Gerapy/stargazers)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/gerapy)
 ![Docker Pulls](https://img.shields.io/docker/pulls/germey/gerapy)
