@@ -9,7 +9,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/gerapy)
 
 
-> 注：从现在开始 Gerapy 2.x 之后，其定位发生改变，不再支持 Scrapyd，转而支持 Docker、Kubernetes 的部署，另外开发还会迁移到 Scrapy 可视化配置和智能解析方面，敬请期待。
+> 注：从 Gerapy 2.x 开始，其定位发生改变，不再支持 Scrapyd，转而支持 Docker、Kubernetes 的部署，另外开发还会迁移到 Scrapy 可视化配置和智能解析方面，敬请期待。
 
 Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
