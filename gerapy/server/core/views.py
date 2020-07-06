@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from urllib.parse import unquote
 import base64
@@ -251,6 +252,8 @@ def project_configure(request, project_name):
         configuration = json.dumps(data.get('configuration'), ensure_ascii=False)
         project.update(**{'configuration': configuration})
         
+        # for safe protection
+        project_name = re.sub('[\!\@\#\$\;\&\*\~\"\'\{\}\]\[\-\+\%\^]+', '', project_name)
         # execute generate cmd
         cmd = ' '.join(['gerapy', 'generate', project_name])
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -634,17 +637,15 @@ def job_list(request, client_id, project_name):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         scrapyd = get_scrapyd(client)
-        try:
-            result = scrapyd.list_jobs(project_name)
-            jobs = []
-            statuses = ['pending', 'running', 'finished']
-            for status in statuses:
-                for job in result.get(status):
-                    job['status'] = status
-                    jobs.append(job)
-            return JsonResponse(jobs)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'}, status=500)
+        result = scrapyd.list_jobs(project_name)
+        jobs = []
+        statuses = ['pending', 'running', 'finished']
+        for status in statuses:
+            for job in result.get(status):
+                job['status'] = status
+                jobs.append(job)
+        return JsonResponse(jobs)
+    
 
 
 @api_view(['GET'])
@@ -663,21 +664,18 @@ def job_log(request, client_id, project_name, spider_name, job_id):
         client = Client.objects.get(id=client_id)
         # get log url
         url = log_url(client.ip, client.port, project_name, spider_name, job_id)
-        try:
-            # get last 1000 bytes of log
-            response = requests.get(url, timeout=5, headers={
-                'Range': 'bytes=-1000'
-            }, auth=(client.username, client.password) if client.auth else None)
-            # Get encoding
-            encoding = response.apparent_encoding
-            # log not found
-            if response.status_code == 404:
-                return JsonResponse({'message': 'Log Not Found'}, status=404)
-            # bytes to string
-            text = response.content.decode(encoding, errors='replace')
-            return HttpResponse(text)
-        except requests.ConnectionError:
-            return JsonResponse({'message': 'Load Log Error'}, status=500)
+        # get last 1000 bytes of log
+        response = requests.get(url, timeout=5, headers={
+            'Range': 'bytes=-1000'
+        }, auth=(client.username, client.password) if client.auth else None)
+        # Get encoding
+        encoding = response.apparent_encoding
+        # log not found
+        if response.status_code == 404:
+            return JsonResponse({'message': 'Log Not Found'}, status=404)
+        # bytes to string
+        text = response.content.decode(encoding, errors='replace')
+        return HttpResponse(text)
 
 
 @api_view(['GET'])
@@ -693,12 +691,9 @@ def job_cancel(request, client_id, project_name, job_id):
     """
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        try:
-            scrapyd = get_scrapyd(client)
-            result = scrapyd.cancel(project_name, job_id)
-            return JsonResponse(result)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'})
+        scrapyd = get_scrapyd(client)
+        result = scrapyd.cancel(project_name, job_id)
+        return JsonResponse(result)
 
 
 @api_view(['GET'])
@@ -706,12 +701,9 @@ def job_cancel(request, client_id, project_name, job_id):
 def del_version(request, client_id, project, version):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        try:
-            scrapyd = get_scrapyd(client)
-            result = scrapyd.delete_version(project=project, version=version)
-            return JsonResponse(result)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'})
+        scrapyd = get_scrapyd(client)
+        result = scrapyd.delete_version(project=project, version=version)
+        return JsonResponse(result)
 
 
 @api_view(['GET'])
@@ -719,12 +711,9 @@ def del_version(request, client_id, project, version):
 def del_project(request, client_id, project):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
-        try:
-            scrapyd = get_scrapyd(client)
-            result = scrapyd.delete_project(project=project)
-            return JsonResponse(result)
-        except ConnectionError:
-            return JsonResponse({'message': 'Connect Error'})
+        scrapyd = get_scrapyd(client)
+        result = scrapyd.delete_project(project=project)
+        return JsonResponse(result)
 
 
 @api_view(['POST'])
@@ -829,18 +818,16 @@ def task_remove(request, task_id):
     :return:
     """
     if request.method == 'POST':
-        try:
-            # delete job from DjangoJob
-            task = Task.objects.get(id=task_id)
-            clients = clients_of_task(task)
-            for client in clients:
-                job_id = get_job_id(client, task)
-                DjangoJob.objects.filter(name=job_id).delete()
-            # delete task
-            Task.objects.filter(id=task_id).delete()
-            return JsonResponse({'result': '1'})
-        except:
-            return JsonResponse({'result': '0'})
+        # delete job from DjangoJob
+        task = Task.objects.get(id=task_id)
+        clients = clients_of_task(task)
+        for client in clients:
+            job_id = get_job_id(client, task)
+            DjangoJob.objects.filter(name=job_id).delete()
+        # delete task
+        Task.objects.filter(id=task_id).delete()
+        return JsonResponse({'result': '1'})
+    
 
 
 @api_view(['GET'])
@@ -915,10 +902,7 @@ def render_html(request):
         url = unquote(base64.b64decode(url).decode('utf-8'))
         js = request.GET.get('js', 0)
         script = request.GET.get('script')
-        try:
-            response = requests.get(url, timeout=5)
-            response.encoding = response.apparent_encoding
-            html = process_html(response.text)
-            return HttpResponse(html)
-        except Exception as e:
-            return JsonResponse({'message': e.args}, status=500)
+        response = requests.get(url, timeout=5)
+        response.encoding = response.apparent_encoding
+        html = process_html(response.text)
+        return HttpResponse(html)
