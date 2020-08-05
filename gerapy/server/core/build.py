@@ -88,8 +88,11 @@ def create_default_setup_py(path, **kwargs):
     :param kwargs:
     :return:
     """
-    with open(join(path, 'setup.py'), 'w', encoding='utf-8') as f:
-        file = _SETUP_PY_TEMPLATE % kwargs
-        f.write(file)
-        f.close()
-        logger.debug('successfully created setup.py file at %s', path)
+    if os.path.exists(path):
+        logger.debug('setup.py file already exists at %s', path)
+    else:
+        with open(join(path, 'setup.py'), 'w', encoding='utf-8') as f:
+            file = _SETUP_PY_TEMPLATE % kwargs
+            f.write(file)
+            f.close()
+            logger.debug('successfully created setup.py file at %s', path)
