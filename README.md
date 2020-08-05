@@ -2,12 +2,11 @@
 
 ![Build](https://github.com/Gerapy/Gerapy/workflows/build/badge.svg)
 ![Read the Docs](https://img.shields.io/readthedocs/gerapy)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gerapy)
+![PyPI - Python Version](https://img.shields.io/badge/python-3.6%2B-blue)
 [![GitHub stars](https://img.shields.io/github/stars/Gerapy/Gerapy)](https://github.com/Gerapy/Gerapy/stargazers)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/gerapy)
 ![Docker Pulls](https://img.shields.io/docker/pulls/germey/gerapy)
 ![PyPI - License](https://img.shields.io/pypi/l/gerapy)
-
 
 Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js.
 
@@ -99,35 +98,6 @@ docker run -d -v <workspace>:/app/gerapy -p <public_port>:<container_port> germe
 Please specify your workspace to mount Gerapy workspace by `-v <workspace>:/app/gerapy` and specify server port by `-p <public_port>:<container_port>`.
 
 If you run Gerapy by Docker, you can visit Gerapy website such as [http://localhost:8000](http://localhost:8000) and enjoy it, no need to do other initialzation things.
-
-## Preview
-
-Client Management:
-
-![](https://ws4.sinaimg.cn/large/006tKfTcly1fkbdxmxtg8j31kw0smak0.jpg)
-
-Spider Monitor:
-
-![](https://ws4.sinaimg.cn/large/006tKfTcly1fkbe2idj4tj31kw0skqfp.jpg)
-
-Project Management:
-
-![](https://ws2.sinaimg.cn/large/006tKfTcly1fkbebgjxguj31kw0l4jyp.jpg)
-
-Project Edit:
-
-![](https://ws1.sinaimg.cn/large/006tKfTcly1fkbe00vpakj31kw0qx7ez.jpg)
-
-Project Deploy:
-
-![](https://ws4.sinaimg.cn/large/006tKfTcly1fkbe3w2jrij31kw0shtgr.jpg)
-
-Project Configuration:
-
-![](https://ws2.sinaimg.cn/large/006tKfTcly1fkbe5aqerdj31kw0xggu0.jpg)
-![](https://ws1.sinaimg.cn/large/0069RVTdgy1fv87ktrbocj30zx0nswfh.jpg)
-![](https://ws1.sinaimg.cn/large/0069RVTdgy1fv87l6w3rrj310g0o1mxx.jpg)
-![](https://ws4.sinaimg.cn/large/0069RVTdgy1fv87leaxgqj310f0pcwhg.jpg)
 
 ## TodoList
 
