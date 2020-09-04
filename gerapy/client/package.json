@@ -18,7 +18,7 @@
     "jquery": "^3.5.0",
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "path": "^0.12.7",
     "sass-loader": "^8.0.0",
     "string-format-obj": "^1.1.1",
