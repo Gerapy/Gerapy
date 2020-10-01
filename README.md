@@ -111,3 +111,5 @@ If you run Gerapy by Docker, you can visit Gerapy website such as [http://localh
 ## Communication
 
 If you have any questions or ideas, you can send [Issues](https://github.com/Gerapy/Gerapy/issues) or [Pull Requests](https://github.com/Gerapy/Gerapy/pulls), your suggestions are really import for us, thanks for your contirbution.
+
+##thank you
