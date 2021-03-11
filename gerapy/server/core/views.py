@@ -355,6 +355,9 @@ def project_remove(request, project_name):
     if request.method == 'POST':
         # delete deployments
         project = Project.objects.get(name=project_name)
+        # 删除在scrapyd中的项目
+        client = Deploy.objects.filter(project=project).get().client
+        get_scrapyd(client).delete_project(project_name)
         Deploy.objects.filter(project=project).delete()
         # delete project
         result = Project.objects.filter(name=project_name).delete()
