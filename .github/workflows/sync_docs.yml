@@ -2,7 +2,7 @@ name: sync docs
 on: 
   push:
     branches: 
-    - master
+    - release
 jobs:
   sync:
     runs-on: ubuntu-latest
