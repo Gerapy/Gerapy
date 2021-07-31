@@ -1,8 +1,10 @@
 html {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   background-color: #eff0f4;
 }
@@ -15,23 +17,28 @@ pre {
   word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-.fl, .pull-left {
+.fl,
+.pull-left {
   float: left;
 }
 
-.fr, .pull-right {
+.fr,
+.pull-right {
   float: right;
 }
 
-.align-center, .text-center {
+.align-center,
+.text-center {
   text-align: center;
 }
 
-.align-left, .text-left {
+.align-left,
+.text-left {
   text-align: left;
 }
 
-.align-right, .text-right {
+.align-right,
+.text-right {
   text-align: right;
 }
 

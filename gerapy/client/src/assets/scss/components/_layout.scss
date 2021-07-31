@@ -1,5 +1,5 @@
 .body-warp {
-  animation: fadeIn .5s ease;
+  animation: fadeIn 0.5s ease;
 }
 
 .left-side {
@@ -17,7 +17,8 @@
   }
   .menu-box {
     background-color: #424f63;
-    .menu-list, .el-submenu__title {
+    .menu-list,
+    .el-submenu__title {
       height: 45px;
       line-height: 45px;
       color: #fff;
@@ -29,7 +30,8 @@
       .text {
         margin-left: 10px;
       }
-      &.is-active, &:hover {
+      &.is-active,
+      &:hover {
         background-color: #353f4f !important;
         color: #65cea7;
       }
@@ -118,7 +120,7 @@
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     border-color: #65cea7;
     border-style: solid solid none;
     border-width: 4px 0 0;
@@ -151,7 +153,7 @@
   .footer {
     background: #fff;
     padding: 15px;
-    color: #7A7676;
+    color: #7a7676;
     font-size: 12px;
     position: absolute;
     bottom: 0;
@@ -189,4 +191,3 @@
     }
   }
 }
-

@@ -10,7 +10,8 @@
 a {
   font-weight: 300;
   text-decoration: none;
-  &:active, &:hover {
+  &:active,
+  &:hover {
     outline: 0;
   }
 }
@@ -30,12 +31,16 @@ img {
   }
 }
 
-ol, ul, li {
+ol,
+ul,
+li {
   list-style-type: none;
   list-style: none;
 }
 
-input, textarea, button {
+input,
+textarea,
+button {
   border: 0;
   border-radius: 0;
   appearance: none;

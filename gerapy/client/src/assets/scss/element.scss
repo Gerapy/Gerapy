@@ -1,6 +1,6 @@
 /* theme color */
-$--color-white: #FFFFFF !default;
-$--color-primary: #35CBAA !default;
+$--color-white: #ffffff !default;
+$--color-primary: #35cbaa !default;
 $--color-primary-light-1: mix($--color-white, $--color-primary, 10%) !default;
 $--color-primary-light-2: mix($--color-white, $--color-primary, 20%) !default;
 $--color-primary-light-3: mix($--color-white, $--color-primary, 30%) !default;
@@ -10,12 +10,12 @@ $--color-primary-light-6: mix($--color-white, $--color-primary, 60%) !default;
 $--color-primary-light-7: mix($--color-white, $--color-primary, 70%) !default;
 $--color-primary-light-8: mix($--color-white, $--color-primary, 80%) !default;
 $--color-primary-light-9: mix($--color-white, $--color-primary, 90%) !default;
-$--color-success: #35CBAA !default;
-$--color-warning: #F6B93D !default;
-$--color-danger: #EF6372 !default;
-$--color-info: #60BCFE !default;
+$--color-success: #35cbaa !default;
+$--color-warning: #f6b93d !default;
+$--color-danger: #ef6372 !default;
+$--color-info: #60bcfe !default;
 
 /* icon font path, required */
-$--font-path: '~element-ui/lib/theme-chalk/fonts';
+$--font-path: "~element-ui/lib/theme-chalk/fonts";
 
 @import "~element-ui/packages/theme-chalk/src/index";

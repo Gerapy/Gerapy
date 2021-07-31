@@ -3,7 +3,6 @@ import os
 from twisted.internet import reactor
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
-from scrapy.settings.deprecated import check_deprecated_settings
 from scrapy.http import Request
 from scrapy.item import BaseItem
 from scrapy.utils.spider import iterate_spider_output
@@ -21,7 +20,7 @@ class SpiderParser():
     requests = []
     response = None
     default_callback = 'parse'
-    
+
     def __init__(self, settings, spider, args):
         """
         init parser
@@ -34,7 +33,7 @@ class SpiderParser():
         self.crawler_process = CrawlerRunner(settings)
         self.spider_loader = self.crawler_process.spider_loader
         self.spidercls = self.spider_loader.load(self.spider)
-    
+
     def get_callback(self, request):
         """
         get callback from obj or rules
@@ -51,7 +50,7 @@ class SpiderParser():
                 if rule.link_extractor.matches(request.url):
                     return rule.callback
         return self.default_callback
-    
+
     def run_callback(self, response, cb):
         """
         run callback and get items and requests
@@ -66,7 +65,7 @@ class SpiderParser():
             elif isinstance(x, Request):
                 requests.append(x)
         return items, requests
-    
+
     def prepare_request(self, spider, request, args):
         """
         get request
@@ -75,7 +74,7 @@ class SpiderParser():
         :param args:
         :return:
         """
-        
+
         def callback(response):
             """
             this callback wraps truly request's callback to get follows
@@ -84,33 +83,33 @@ class SpiderParser():
             """
             # if no callback, use default parse callback of CrawlSpider
             cb = self.args.callback or self.default_callback
-            
+
             # change un-callable callback to callable callback
             if not callable(cb):
                 cb_method = getattr(spider, cb, None)
                 if callable(cb_method):
                     cb = cb_method
-                    
+
             # run truly callback to get items and requests, then to this method
             items, requests = self.run_callback(response, cb)
-            
+
             # process request callback
             for request in requests:
                 request.callback = self.get_callback(request)
                 request.meta['callback'] = request.callback
-            
+
             # process items and requests and response
             self.items += list(map(lambda item: process_item(item), items))
             self.requests += list(map(lambda request: process_request(request), requests))
             self.response = process_response(response)
-        
+
         # update meta
         if args.meta:
             request.meta.update(args.meta)
-        
+
         # update method
         request.method = args.method if args.method else request.method
-        
+
         # update request body for post or other methods
         if request.method.lower() != 'get':
             # to be detailed, temp defined
@@ -118,31 +117,34 @@ class SpiderParser():
                 request = request.replace(body=json.dumps(args.body))
             else:
                 request = request.replace(body=args.body)
-                
+
         # update headers
         request.headers = args.headers if args.headers else request.headers
-        
+
         # update cookies
         request.cookies = args.cookies if args.cookies else request.cookies
-        
+
         # update dont_filter
-        request.dont_filter = args.filter if hasattr(args, 'filter') else request.dont_filter
-        
+        request.dont_filter = args.filter if hasattr(
+            args, 'filter') else request.dont_filter
+
         # update priority
-        request.priority = int(args.priority) if hasattr(args, 'priority') else request.priority
-        
+        request.priority = int(args.priority) if hasattr(
+            args, 'priority') else request.priority
+
         # update callback
         request.callback = callback
-        
+
         return request
-    
+
     def run(self):
         """
         run main
         :return:
         """
         request = Request(self.args.url, callback=None)
-        start_requests = lambda spider: [self.prepare_request(spider, request, self.args)]
+        def start_requests(spider): return [
+            self.prepare_request(spider, request, self.args)]
         self.spidercls.start_requests = start_requests
         self.crawler_process.crawl(self.spidercls)
         if not len(self.crawler_process.crawlers) > 0:
@@ -172,7 +174,6 @@ def get_follow_requests_and_items(project_path, spider_name, args):
     try:
         os.chdir(project_path)
         settings = get_project_settings()
-        check_deprecated_settings(settings)
         sp = SpiderParser(settings, spider_name, args)
         results = sp.run()
         return results
@@ -193,7 +194,6 @@ def get_start_requests(project_path, spider_name):
         os.chdir(project_path)
         # load settings
         settings = get_project_settings()
-        check_deprecated_settings(settings)
         runner = CrawlerRunner(settings=settings)
         # add crawler
         spider_cls = runner.spider_loader.load(spider_name)

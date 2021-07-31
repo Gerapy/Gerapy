@@ -1,15 +1,38 @@
 @function line($style) {
-  @if $style != '' {
-    @return '-';
+  @if $style != "" {
+    @return "-";
   } @else {
-    @return '';
+    @return "";
   }
 }
 
-$map: (none: 0, auto: auto, ii: initial, ih: inherit, xxs: 2px, xs: 5px, sm: 10px, '': 15px, md: 20px, lg: 30px, xl: 40px, xxl: 50px,
-        n-xxs: -2px, n-xs: -5px, n-sm: -10px, n: -15px, n-md: -20px, n-lg: -30px, n-xl: -40px, n-xxl: -50px);
+$map: (
+  none: 0,
+  auto: auto,
+  ii: initial,
+  ih: inherit,
+  xxs: 2px,
+  xs: 5px,
+  sm: 10px,
+  "": 15px,
+  md: 20px,
+  lg: 30px,
+  xl: 40px,
+  xxl: 50px,
+  n-xxs: -2px,
+  n-xs: -5px,
+  n-sm: -10px,
+  n: -15px,
+  n-md: -20px,
+  n-lg: -30px,
+  n-xl: -40px,
+  n-xxl: -50px,
+);
 
-$names: (m: margin, p: padding);
+$names: (
+  m: margin,
+  p: padding,
+);
 @each $n-key, $n-value in $names {
   @each $style, $spacing in $map {
     $line: line($style);
@@ -34,7 +57,12 @@ $names: (m: margin, p: padding);
     }
   }
 
-  $directions: (t: top, b: bottom, l: left, r:right);
+  $directions: (
+    t: top,
+    b: bottom,
+    l: left,
+    r: right,
+  );
   @each $d-key, $d-value in $directions {
     @each $style, $spacing in $map {
       $line: line($style);
@@ -45,7 +73,12 @@ $names: (m: margin, p: padding);
   }
 }
 
-$directions: (t: top, b: bottom, l: left, r:right);
+$directions: (
+  t: top,
+  b: bottom,
+  l: left,
+  r: right,
+);
 @each $d-key, $d-value in $directions {
   @each $style, $spacing in $map {
     $line: line($style);
