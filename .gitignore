@@ -16,4 +16,5 @@ npm-debug.log
 gerapy/server/logs/
 db.sqlite3
 install.sh
+*.pyc
 .venv
