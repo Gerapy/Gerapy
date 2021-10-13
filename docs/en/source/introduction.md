@@ -25,7 +25,7 @@ The crawler deployment is still a hassle because we need to upload the crawler c
 So we have solved the deployment problem. In the end, what if we want to see the running status of Scrapy on the server in real time? As I said earlier, of course, I am requesting Scrapyd's API. If we want to use Python programs to control it? We also use the requests library to request these APIs again and again? This is too much trouble, so in order to solve this need, [Scrapyd-API](https://github.com/djm/python-scrapyd-api) has appeared again, with it we can use only simple Python code It is possible to monitor and run the Scrapy project:
 
 ```python
-From scrapyd_api import ScrapydAPI
+from scrapyd_api import ScrapydAPI
 Scrapyd = ScrapydAPI('http://88.888.88.88:6800')
 Scrapyd.list_jobs('project_name')
 ```
