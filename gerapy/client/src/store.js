@@ -34,7 +34,8 @@ export default new Vuex.Store({
     },
     timeout: null,
     intervals: [],
-    dateFormat: "yyyy-MM-dd HH:mm:ss",
+    dateFormat: "yyyy-MM-dd hh:mm:ss",
+    dateFormat24: "yyyy-MM-dd HH:mm:ss",
     url: {
       user: {
         auth: "api/user/auth",

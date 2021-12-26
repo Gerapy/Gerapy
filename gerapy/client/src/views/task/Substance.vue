@@ -66,7 +66,7 @@
           class="inline width-200"
           type="datetime"
           size="small"
-          :value-format="$store.state.dateFormat"
+          :value-format="$store.state.dateFormat24"
           :picker-options="dateOptions"
           :placeholder="$lang.descriptions.chooseDateTime"
         >
@@ -157,8 +157,8 @@
         <el-form-item :label="$lang.columns.startDate">
           <el-date-picker
             v-model="formData.configuration.start_date"
-            :format="$store.state.dateFormat"
-            :value-format="$store.state.dateFormat"
+            :format="$store.state.dateFormat24"
+            :value-format="$store.state.dateFormat24"
             type="datetime"
             size="small"
             :picker-options="dateOptions"
@@ -174,8 +174,8 @@
             class="inline width-200"
             type="datetime"
             size="small"
-            :format="$store.state.dateFormat"
-            :value-format="$store.state.dateFormat"
+            :format="$store.state.dateFormat24"
+            :value-format="$store.state.dateFormat24"
             :placeholder="$lang.columns.endDate"
           >
           </el-date-picker>
@@ -268,8 +268,8 @@
         <el-form-item :label="$lang.columns.startDate">
           <el-date-picker
             v-model="formData.configuration.start_date"
-            :format="$store.state.dateFormat"
-            :value-format="$store.state.dateFormat"
+            :format="$store.state.dateFormat24"
+            :value-format="$store.state.dateFormat24"
             type="datetime"
             size="small"
             :picker-options="dateOptions"
@@ -281,8 +281,8 @@
         <el-form-item :label="$lang.columns.endDate">
           <el-date-picker
             v-model="formData.configuration.end_date"
-            :format="$store.state.dateFormat"
-            :value-format="$store.state.dateFormat"
+            :format="$store.state.dateFormat24"
+            :value-format="$store.state.dateFormat24"
             type="datetime"
             size="small"
             :picker-options="dateOptions"
