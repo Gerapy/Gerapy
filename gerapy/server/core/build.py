@@ -3,13 +3,13 @@ import os
 import glob
 import tempfile
 import shutil
+import errno
 
 from gerapy import get_logger
 from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.core.config import config
 from os.path import join
 from subprocess import check_call
-from scrapy.utils.python import retry_on_eintr
 
 logger = get_logger(__name__)
 
@@ -36,6 +36,15 @@ setup(
 )'''
 
 
+def retry_on_eintr(function, *args, **kw):
+    """Run a function and retry it while getting EINTR errors"""
+    while True:
+        try:
+            return function(*args, **kw)
+        except IOError as e:
+            if e.errno != errno.EINTR:
+                raise
+
 # build Egg
 def build_egg(project):
     '''
@@ -50,7 +59,8 @@ def build_egg(project):
         os.chdir(project_path)
         settings = config(project_path, 'settings', 'default')
         setup_file_path = join(project_path, 'setup.py')
-        create_default_setup_py(setup_file_path, settings=settings, project=project)
+        create_default_setup_py(
+            setup_file_path, settings=settings, project=project)
         d = tempfile.mkdtemp(prefix='gerapy-')
         o = open(os.path.join(d, 'stdout'), 'wb')
         e = open(os.path.join(d, 'stderr'), 'wb')
