@@ -2,7 +2,12 @@ import re
 from pathlib import Path
 from urllib.parse import unquote
 import base64
-import json, os, requests, time, pytz, pymongo
+import json
+import os
+import requests
+import time
+import pytz
+import pymongo
 from shutil import rmtree
 from requests.exceptions import ConnectionError
 from os.path import join, exists
@@ -173,7 +178,8 @@ def spider_list(request, client_id, project_name):
         client = Client.objects.get(id=client_id)
         scrapyd = get_scrapyd(client)
         spiders = scrapyd.list_spiders(project_name)
-        spiders = [{'name': spider, 'id': index + 1} for index, spider in enumerate(spiders)]
+        spiders = [{'name': spider, 'id': index + 1}
+                   for index, spider in enumerate(spiders)]
         return JsonResponse(spiders)
 
 
@@ -242,23 +248,25 @@ def project_configure(request, project_name):
     if request.method == 'GET':
         project = Project.objects.get(name=project_name)
         project = model_to_dict(project)
-        project['configuration'] = json.loads(project['configuration']) if project['configuration'] else None
+        project['configuration'] = json.loads(
+            project['configuration']) if project['configuration'] else None
         return JsonResponse(project)
-    
+
     # update configuration
     elif request.method == 'POST':
         project = Project.objects.filter(name=project_name)
         data = json.loads(request.body)
-        configuration = json.dumps(data.get('configuration'), ensure_ascii=False)
+        configuration = json.dumps(
+            data.get('configuration'), ensure_ascii=False)
         project.update(**{'configuration': configuration})
-        
         # for safe protection
-        project_name = re.sub('[\!\@\#\$\;\&\*\~\"\'\{\}\]\[\-\+\%\^]+', '', project_name)
+        project_name = re.sub(
+            '[\s\!\@\#\$\;\&\*\~\"\'\{\}\]\[\-\+\%\^]+', '', project_name)
         # execute generate cmd
-        cmd = ' '.join(['gerapy', 'generate', project_name])
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        cmd = ['gerapy', 'generate', project_name]
+        p = Popen(cmd, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
-        
+
         if not stderr:
             return JsonResponse({'status': '1'})
         else:
@@ -294,7 +302,8 @@ def project_create(request):
         data['configurable'] = 1
         project, result = Project.objects.update_or_create(**data)
         # generate a single project folder
-        path = join(os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER)), data['name'])
+        path = join(os.path.abspath(
+            join(os.getcwd(), PROJECTS_FOLDER)), data['name'])
         os.mkdir(path)
         return JsonResponse(model_to_dict(project))
 
@@ -334,12 +343,13 @@ def project_clone(request):
         if not address.startswith('http'):
             return JsonResponse({'status': False})
         address = address + '.git' if not address.endswith('.git') else address
-        cmd = 'git clone {address} {target}'.format(address=address, target=join(PROJECTS_FOLDER, Path(address).stem))
+        cmd = ['git', 'clone', 'address', join(PROJECTS_FOLDER, Path(address).stem)]
         logger.debug('clone cmd %s', cmd)
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        p = Popen(cmd, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
         logger.debug('clone run result %s', stdout)
-        if stderr: logger.error(stderr)
+        if stderr:
+            logger.error(stderr)
         return JsonResponse({'status': True}) if not stderr else JsonResponse({'status': False})
 
 
@@ -393,10 +403,12 @@ def project_version(request, client_id, project_name):
                 return JsonResponse({'message': 'Connect Error'}, status=500)
             if len(versions) > 0:
                 version = versions[-1]
-                deployed_at = timezone.datetime.fromtimestamp(int(version), tz=pytz.timezone(TIME_ZONE))
+                deployed_at = timezone.datetime.fromtimestamp(
+                    int(version), tz=pytz.timezone(TIME_ZONE))
             else:
                 deployed_at = None
-            deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at)
+            deploy, result = Deploy.objects.update_or_create(
+                client=client, project=project, deployed_at=deployed_at)
         # return deploy json info
         return JsonResponse(model_to_dict(deploy))
 
@@ -446,7 +458,7 @@ def project_build(request, project_name):
     # get project folder
     path = os.path.abspath(join(os.getcwd(), PROJECTS_FOLDER))
     project_path = join(path, project_name)
-    
+
     # get build version
     if request.method == 'GET':
         egg = find_egg(project_path)
@@ -470,7 +482,7 @@ def project_build(request, project_name):
         # transfer model to dict then dumps it to json
         data = model_to_dict(model)
         return JsonResponse(data)
-    
+
     # build operation manually by clicking button
     elif request.method == 'POST':
         data = json.loads(request.body)
@@ -483,7 +495,8 @@ def project_build(request, project_name):
         built_at = timezone.now()
         # if project does not exists in db, create it
         if not Project.objects.filter(name=project_name):
-            Project(name=project_name, description=description, built_at=built_at, egg=egg).save()
+            Project(name=project_name, description=description,
+                    built_at=built_at, egg=egg).save()
             model = Project.objects.get(name=project_name)
         # if project exists, update egg, description, built_at info
         else:
@@ -526,17 +539,16 @@ def project_parse(request, project_name):
         body = data.get('body', '')
         if args.get('method').lower() != 'get':
             args['body'] = "'" + json.dumps(body, ensure_ascii=False) + "'"
-        
-        args_cmd = ' '.join(
-            ['--{arg} {value}'.format(arg=arg, value=value) for arg, value in args.items()])
-        logger.debug('args cmd %s', args_cmd)
-        cmd = 'gerapy parse {args_cmd} {project_path} {spider_name}'.format(
-            args_cmd=args_cmd,
-            project_path=project_path,
-            spider_name=spider_name
-        )
+
+        args_array = []
+        for arg, value in args.items():
+            args_array.append(f'--{arg}')
+            args_array.append(f'{value}')
+        cmd = ['gerapy', 'parse'] + args_array + [project_path] + [spider_name]
+        print('cmd', cmd)
         logger.debug('parse cmd %s', cmd)
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p = Popen(cmd, shell=False, stdin=PIPE,
+                         stdout=PIPE, stderr=PIPE, close_fds=True)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
         logger.debug('stdout %s, stderr %s', stdout, stderr)
         if not stderr:
@@ -645,7 +657,6 @@ def job_list(request, client_id, project_name):
                 job['status'] = status
                 jobs.append(job)
         return JsonResponse(jobs)
-    
 
 
 @api_view(['GET'])
@@ -663,7 +674,8 @@ def job_log(request, client_id, project_name, spider_name, job_id):
     if request.method == 'GET':
         client = Client.objects.get(id=client_id)
         # get log url
-        url = log_url(client.ip, client.port, project_name, spider_name, job_id)
+        url = log_url(client.ip, client.port,
+                      project_name, spider_name, job_id)
         # get last 1000 bytes of log
         response = requests.get(url, timeout=5, headers={
             'Range': 'bytes=-1000'
@@ -765,7 +777,8 @@ def monitor_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         data = data['form']
-        data['configuration'] = json.dumps(data['configuration'], ensure_ascii=False)
+        data['configuration'] = json.dumps(
+            data['configuration'], ensure_ascii=False)
         monitor = Monitor.objects.create(**data)
         return JsonResponse(model_to_dict(monitor))
 
@@ -785,7 +798,8 @@ def task_create(request):
                                    name=data.get('name'),
                                    spider=data.get('spider'),
                                    trigger=data.get('trigger'),
-                                   configuration=json.dumps(data.get('configuration'), ensure_ascii=False),
+                                   configuration=json.dumps(
+                                       data.get('configuration'), ensure_ascii=False),
                                    modified=1)
         return JsonResponse({'result': '1', 'data': model_to_dict(task)})
 
@@ -803,7 +817,8 @@ def task_update(request, task_id):
         task = Task.objects.filter(id=task_id)
         data = json.loads(request.body)
         data['clients'] = json.dumps(data.get('clients'), ensure_ascii=False)
-        data['configuration'] = json.dumps(data.get('configuration'), ensure_ascii=False)
+        data['configuration'] = json.dumps(
+            data.get('configuration'), ensure_ascii=False)
         data['modified'] = 1
         task.update(**data)
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
@@ -823,11 +838,10 @@ def task_remove(request, task_id):
         clients = clients_of_task(task)
         for client in clients:
             job_id = get_job_id(client, task)
-            DjangoJob.objects.filter(name=job_id).delete()
+            DjangoJob.objects.filter(id=job_id).delete()
         # delete task
         Task.objects.filter(id=task_id).delete()
         return JsonResponse({'result': '1'})
-    
 
 
 @api_view(['GET'])
@@ -875,12 +889,14 @@ def task_status(request, task_id):
         clients = clients_of_task(task)
         for client in clients:
             job_id = get_job_id(client, task)
-            jobs = DjangoJob.objects.filter(name=job_id)
+            jobs = DjangoJob.objects.filter(id=job_id)
             logger.debug('jobs from djangojob %s', jobs)
             # if job does not exist, for date mode exceed time
-            if not jobs: continue
-            job = DjangoJob.objects.get(name=job_id)
-            executions = serialize('json', DjangoJobExecution.objects.filter(job=job))
+            if not jobs:
+                continue
+            job = DjangoJob.objects.get(id=job_id)
+            executions = serialize(
+                'json', DjangoJobExecution.objects.filter(job=job))
             result.append({
                 'client': model_to_dict(client),
                 'next': job.next_run_time,
