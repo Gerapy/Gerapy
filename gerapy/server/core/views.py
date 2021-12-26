@@ -26,7 +26,7 @@ from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
-    clients_of_task, get_job_id
+    clients_of_task, get_job_id, log_exception
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
 from django.core.files.storage import FileSystemStorage
 import zipfile
@@ -34,6 +34,7 @@ import zipfile
 logger = get_logger(__name__)
 
 
+@log_exception()
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def index(request):
@@ -45,6 +46,7 @@ def index(request):
     return render(request, 'index.html')
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def index_status(request):
@@ -76,6 +78,7 @@ def index_status(request):
         return JsonResponse(data)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def client_index(request):
@@ -87,6 +90,7 @@ def client_index(request):
     return HttpResponse(serialize('json', Client.objects.order_by('-id')))
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def client_info(request, client_id):
@@ -100,6 +104,7 @@ def client_info(request, client_id):
         return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def client_status(request, client_id):
@@ -116,6 +121,7 @@ def client_status(request, client_id):
         return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def client_update(request, client_id):
@@ -132,6 +138,7 @@ def client_update(request, client_id):
         return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def client_create(request):
@@ -146,6 +153,7 @@ def client_create(request):
         return JsonResponse(model_to_dict(client))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def client_remove(request, client_id):
@@ -164,6 +172,7 @@ def client_remove(request, client_id):
         return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def spider_list(request, client_id, project_name):
@@ -183,6 +192,7 @@ def spider_list(request, client_id, project_name):
         return JsonResponse(spiders)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def spider_start(request, client_id, project_name, spider_name):
@@ -201,6 +211,7 @@ def spider_start(request, client_id, project_name, spider_name):
         return JsonResponse({'job': job})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def project_list(request, client_id):
@@ -217,6 +228,7 @@ def project_list(request, client_id):
         return JsonResponse(projects)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def project_index(request):
@@ -235,6 +247,7 @@ def project_index(request):
         return JsonResponse(project_list)
 
 
+@log_exception()
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def project_configure(request, project_name):
@@ -273,6 +286,7 @@ def project_configure(request, project_name):
             return JsonResponse({'status': '0', 'message': stderr})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def project_tree(request, project_name):
@@ -289,6 +303,7 @@ def project_tree(request, project_name):
         return JsonResponse(tree)
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_create(request):
@@ -308,6 +323,7 @@ def project_create(request):
         return JsonResponse(model_to_dict(project))
 
 
+@log_exception()
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def project_upload(request):
@@ -329,6 +345,7 @@ def project_upload(request):
         return JsonResponse({'status': True})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_clone(request):
@@ -343,7 +360,7 @@ def project_clone(request):
         if not address.startswith('http'):
             return JsonResponse({'status': False})
         address = address + '.git' if not address.endswith('.git') else address
-        cmd = ['git', 'clone', 'address', join(PROJECTS_FOLDER, Path(address).stem)]
+        cmd = ['git', 'clone', address, join(PROJECTS_FOLDER, Path(address).stem)]
         logger.debug('clone cmd %s', cmd)
         p = Popen(cmd, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bytes2str(p.stdout.read()), bytes2str(p.stderr.read())
@@ -353,6 +370,7 @@ def project_clone(request):
         return JsonResponse({'status': True}) if not stderr else JsonResponse({'status': False})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_remove(request, project_name):
@@ -377,6 +395,7 @@ def project_remove(request, project_name):
         return JsonResponse({'result': result})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def project_version(request, client_id, project_name):
@@ -400,6 +419,7 @@ def project_version(request, client_id, project_name):
             try:
                 versions = scrapyd.list_versions(project_name)
             except ConnectionError:
+                logger.exception('cannot connect to scrapyd', exc_info=True)
                 return JsonResponse({'message': 'Connect Error'}, status=500)
             if len(versions) > 0:
                 version = versions[-1]
@@ -413,6 +433,7 @@ def project_version(request, client_id, project_name):
         return JsonResponse(model_to_dict(deploy))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_deploy(request, client_id, project_name):
@@ -446,6 +467,7 @@ def project_deploy(request, client_id, project_name):
         return JsonResponse(model_to_dict(deploy))
 
 
+@log_exception()
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def project_build(request, project_name):
@@ -510,6 +532,7 @@ def project_build(request, project_name):
         return JsonResponse(data)
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_parse(request, project_name):
@@ -545,7 +568,6 @@ def project_parse(request, project_name):
             args_array.append(f'--{arg}')
             args_array.append(f'{value}')
         cmd = ['gerapy', 'parse'] + args_array + [project_path] + [spider_name]
-        print('cmd', cmd)
         logger.debug('parse cmd %s', cmd)
         p = Popen(cmd, shell=False, stdin=PIPE,
                          stdout=PIPE, stderr=PIPE, close_fds=True)
@@ -557,6 +579,7 @@ def project_parse(request, project_name):
             return JsonResponse({'status': False, 'message': stderr})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_file_read(request):
@@ -573,6 +596,7 @@ def project_file_read(request):
             return HttpResponse(f.read().decode('utf-8'))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_file_update(request):
@@ -590,6 +614,7 @@ def project_file_update(request):
             return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_file_create(request):
@@ -605,6 +630,7 @@ def project_file_create(request):
         return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_file_delete(request):
@@ -620,6 +646,7 @@ def project_file_delete(request):
         return JsonResponse({'result': result})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def project_file_rename(request):
@@ -636,6 +663,7 @@ def project_file_rename(request):
         return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def job_list(request, client_id, project_name):
@@ -659,6 +687,7 @@ def job_list(request, client_id, project_name):
         return JsonResponse(jobs)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def job_log(request, client_id, project_name, spider_name, job_id):
@@ -690,6 +719,7 @@ def job_log(request, client_id, project_name, spider_name, job_id):
         return HttpResponse(text)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def job_cancel(request, client_id, project_name, job_id):
@@ -708,6 +738,7 @@ def job_cancel(request, client_id, project_name, job_id):
         return JsonResponse(result)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def del_version(request, client_id, project, version):
@@ -718,6 +749,7 @@ def del_version(request, client_id, project, version):
         return JsonResponse(result)
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def del_project(request, client_id, project):
@@ -728,6 +760,7 @@ def del_project(request, client_id, project):
         return JsonResponse(result)
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monitor_db_list(request):
@@ -746,6 +779,7 @@ def monitor_db_list(request):
             return JsonResponse(dbs)
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monitor_collection_list(request):
@@ -766,6 +800,7 @@ def monitor_collection_list(request):
             return JsonResponse(collections)
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def monitor_create(request):
@@ -783,6 +818,7 @@ def monitor_create(request):
         return JsonResponse(model_to_dict(monitor))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def task_create(request):
@@ -804,6 +840,7 @@ def task_create(request):
         return JsonResponse({'result': '1', 'data': model_to_dict(task)})
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def task_update(request, task_id):
@@ -824,6 +861,7 @@ def task_update(request, task_id):
         return JsonResponse(model_to_dict(Task.objects.get(id=task_id)))
 
 
+@log_exception()
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def task_remove(request, task_id):
@@ -844,6 +882,7 @@ def task_remove(request, task_id):
         return JsonResponse({'result': '1'})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def task_info(request, task_id):
@@ -861,6 +900,7 @@ def task_info(request, task_id):
         return JsonResponse({'data': data})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def task_index(request):
@@ -874,6 +914,7 @@ def task_index(request):
         return JsonResponse({'result': '1', 'data': tasks})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def task_status(request, task_id):
@@ -905,6 +946,7 @@ def task_status(request, task_id):
         return JsonResponse({'data': result})
 
 
+@log_exception()
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def render_html(request):

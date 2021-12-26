@@ -532,3 +532,16 @@ def str2str(v):
     if v.lower() in ('none', 'null', 'undefined', 'nil', 'false'):
         return None
     return str(v)
+
+
+def log_exception(exception=Exception, logger=logger):
+    def deco(func):
+        def wrapper(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+            except exception as err:
+                logger.exception(err, exc_info=True)
+            else:
+                return result
+        return wrapper
+    return deco
