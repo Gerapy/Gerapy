@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="panel" v-if="projectsLoading">
+      <div class="panel-body" v-loading="projectsLoading">
+        <el-table empty-text=""></el-table>
+      </div>
+    </div>
     <div class="panel" v-for="project in projects" :key="project">
       <panel-title :title="project"> </panel-title>
       <div class="panel-body" v-loading="projectsLoading">
@@ -178,6 +183,7 @@ export default {
   methods: {
     //获取所有项目
     getProjects() {
+      this.projectsLoading = true;
       this.$http
         .get(
           this.formatString(this.$store.state.url.client.projects, {
@@ -186,6 +192,9 @@ export default {
         )
         .then(({ data: data }) => {
           this.projects = data;
+          if (this.projects && this.projects.length === 0) {
+            this.$message.info(this.$store.getters.$lang.messages.noProjects);
+          }
           this.projectsLoading = false;
           this.projects.forEach((project) => {
             this.$set(this.spidersLoading, project, true);
@@ -207,7 +216,7 @@ export default {
               "setTimeout",
               setTimeout(() => {
                 this.getProjects();
-              }, 3000)
+              }, 500)
             );
           }
         });
