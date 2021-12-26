@@ -25,7 +25,7 @@ from gerapy.cmd.init import PROJECTS_FOLDER
 from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
-from gerapy.server.core.utils import IGNORES, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
+from gerapy.server.core.utils import IGNORES, is_in_curdir, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
     clients_of_task, get_job_id, log_exception
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
 from django.core.files.storage import FileSystemStorage
@@ -591,6 +591,8 @@ def project_file_read(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
+        if not is_in_curdir(path):
+            return JsonResponse({'result': '0'})
         # binary file
         with open(path, 'rb') as f:
             return HttpResponse(f.read().decode('utf-8'))
@@ -609,6 +611,8 @@ def project_file_update(request):
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
         code = data['code']
+        if not is_in_curdir(path):
+            return JsonResponse({'result': '0'})
         with open(path, 'w', encoding='utf-8') as f:
             f.write(code)
             return JsonResponse({'result': '1'})
@@ -626,6 +630,8 @@ def project_file_create(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['name'])
+        if not is_in_curdir(path):
+            return JsonResponse({'result': '0'})
         open(path, 'w', encoding='utf-8').close()
         return JsonResponse({'result': '1'})
 
@@ -642,6 +648,8 @@ def project_file_delete(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         path = join(data['path'], data['label'])
+        if not is_in_curdir(path):
+            return JsonResponse({'result': '0'})
         result = os.remove(path)
         return JsonResponse({'result': result})
 
@@ -659,6 +667,8 @@ def project_file_rename(request):
         data = json.loads(request.body)
         pre = join(data['path'], data['pre'])
         new = join(data['path'], data['new'])
+        if not is_in_curdir(pre) or not is_in_curdir(new):
+            return JsonResponse({'result': '0'})
         os.rename(pre, new)
         return JsonResponse({'result': '1'})
 

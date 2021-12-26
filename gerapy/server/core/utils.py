@@ -535,6 +535,9 @@ def str2str(v):
 
 
 def log_exception(exception=Exception, logger=logger):
+    """
+    used for log exceptions
+    """
     def deco(func):
         def wrapper(*args, **kwargs):
             try:
@@ -545,3 +548,15 @@ def log_exception(exception=Exception, logger=logger):
                 return result
         return wrapper
     return deco
+
+
+def is_in_curdir(filepath):
+    """
+    return if a filepath in cur directory
+    """
+    execute_path = os.getcwd()
+    print('ecec', execute_path, filepath)
+    result = os.path.realpath(filepath).startswith(
+        os.path.realpath(execute_path))
+    print('result', result)
+    return result
