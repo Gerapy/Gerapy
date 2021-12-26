@@ -126,6 +126,7 @@ export default {
   messages: {
     loading: 'Loading...',
     noData: 'No Data',
+    noProjects: 'No Projects',
     enter: 'Please Enter',
     isNull: 'Should Not Be Null',
     notValid: 'Is Not Valid',

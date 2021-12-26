@@ -126,6 +126,7 @@ export default {
   messages: {
     loading: '加载中...',
     noData: '暂无数据',
+    noProjects: '没有部署项目',
     enter: '请添加',
     isNull: '不能为空',
     notValid: '不合法',
@@ -167,7 +168,7 @@ export default {
     loginSuccess: '登录成功',
     loginError: '登录失败',
     gettingTaskData: '正在获取任务状态',
-    noTask: '没有任务可以执行',
+    noTask: '没有后续任务可以执行',
     createConfigurableProject: '创建一个可配置化爬虫项目',
     supportZip: '只支持 zip 格式文件上传',
     dragOrSelect: '拖拽或选择文件',
