@@ -20,15 +20,15 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   (response) => {
-    if (response.status === 401) {
-      store.commit("clearToken");
-      router.push({ path: "/login" });
-    } else if (response.status === 403) {
-      router.push({ path: "/home" });
-    }
     return response;
   },
   (error) => {
+    if (error.response.status === 401) {
+      store.commit("clearToken");
+      router.push({ path: "/login" });
+    } else if (error.response.status === 403) {
+      router.push({ path: "/home" });
+    }
     return Promise.reject(error);
   }
 );
