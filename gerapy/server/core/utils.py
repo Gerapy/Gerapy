@@ -9,17 +9,18 @@ from jinja2 import Template
 from scrapyd_api import ScrapydAPI
 from bs4 import BeautifulSoup
 import traceback
-import json, os, string
+import json
+import os
+import string
 from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
 from django.utils import timezone
-
 from gerapy import get_logger
 from gerapy.settings import PROJECTS_FOLDER
 
-logger = get_logger(__name__)
 
-IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/', '*.egg', '*.egg-info/', '*.egg-info', 'build/']
+IGNORES = ['.git/', '*.pyc', '.DS_Store', '.idea/',
+           '*.egg', '*.egg-info/', '*.egg-info', 'build/']
 
 TEMPLATES_DIR = join(dirname(dirname(dirname(abspath(__file__)))), 'templates')
 
@@ -92,6 +93,7 @@ def is_valid_name(project_name):
     :param project_name:
     :return:
     """
+    logger = get_logger(__name__)
     if not re.search(r'^[_a-zA-Z]\w*$', project_name):
         logger.error('project name %s must begin with a letter and contain only letters, numbers and underscores',
                      project_name)
@@ -111,11 +113,11 @@ def copy_tree(src, dst):
     ignored_names = ignore(src, names)
     if not os.path.exists(dst):
         os.makedirs(dst)
-    
+
     for name in names:
         if name in ignored_names:
             continue
-        
+
         src_name = os.path.join(src, name)
         dst_name = os.path.join(dst, name)
         if os.path.isdir(src_name):
@@ -230,7 +232,8 @@ def process_html(html, base_url):
     """
     dom = BeautifulSoup(html, 'lxml')
     dom.find('head').insert(0, BeautifulSoup(NO_REFERRER, 'lxml'))
-    dom.find('head').insert(0, BeautifulSoup(BASE.format(href=base_url), 'lxml'))
+    dom.find('head').insert(0, BeautifulSoup(
+        BASE.format(href=base_url), 'lxml'))
     html = str(dom)
     # html = unescape(html)
     return html
@@ -248,7 +251,8 @@ def get_output_error(project_name, spider_name):
     try:
         os.chdir(project_path)
         cmd = ' '.join(['scrapy', 'crawl', spider_name])
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE,
+                  stderr=STDOUT, close_fds=True)
         output = p.stdout.read()
         if isinstance(output, bytes):
             output = output.decode('utf-8')
@@ -268,7 +272,8 @@ def get_items_configuration(configuration):
     spiders = configuration.get('spiders')
     for spider in spiders:
         # MongoDB
-        mongodb_collection_map = spider.get('storage').get('mongodb').get('collections')
+        mongodb_collection_map = spider.get(
+            'storage').get('mongodb').get('collections')
         for mongodb_collection_map_item in mongodb_collection_map:
             collection = mongodb_collection_map_item.get('collection')
             item_name = mongodb_collection_map_item.get('item')
@@ -276,10 +281,11 @@ def get_items_configuration(configuration):
                 if item.get('name') == item_name:
                     allowed_spiders = item.get('mongodb_spiders', set())
                     allowed_spiders.add(spider.get('name'))
-                    mongodb_collections = item.get('mongodb_collections', set())
+                    mongodb_collections = item.get(
+                        'mongodb_collections', set())
                     mongodb_collections.add(collection)
                     item['mongodb_spiders'], item['mongodb_collections'] = allowed_spiders, mongodb_collections
-        
+
         # MySQL
         mysql_table_map = spider.get('storage').get('mysql').get('tables')
         for mysql_table_map_item in mysql_table_map:
@@ -293,7 +299,8 @@ def get_items_configuration(configuration):
                     mysql_tables.add(collection)
                     item['mysql_spiders'], item['mysql_tables'] = allowed_spiders, mysql_tables
     # transfer attr
-    attrs = ['mongodb_spiders', 'mongodb_collections', 'mysql_spiders', 'mysql_tables']
+    attrs = ['mongodb_spiders', 'mongodb_collections',
+             'mysql_spiders', 'mysql_tables']
     for item in items:
         for attr in attrs:
             if item.get(attr):
@@ -308,7 +315,7 @@ def process_custom_settings(spider):
     :return:
     """
     custom_settings = spider.get('custom_settings')
-    
+
     def add_dict_to_custom_settings(custom_settings, keys):
         """
         if config doesn't exist, add default value
@@ -326,17 +333,19 @@ def process_custom_settings(spider):
                     'value': '{}'
                 })
         return custom_settings
-    
+
     keys = ['DOWNLOADER_MIDDLEWARES', 'SPIDER_MIDDLEWARES', 'ITEM_PIPELINES']
     custom_settings = add_dict_to_custom_settings(custom_settings, keys)
     for item in custom_settings:
-        
+
         if item['key'] == 'DOWNLOADER_MIDDLEWARES':
             item_data = json.loads(item['value'])
-            if spider.get('cookies', {}).get('enable', {}): item_data[
-                'gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
-            if spider.get('proxy', {}).get('enable', {}): item_data[
-                'gerapy.downloadermiddlewares.proxy.ProxyMiddleware'] = 555
+            if spider.get('cookies', {}).get('enable', {}):
+                item_data[
+                    'gerapy.downloadermiddlewares.cookies.CookiesMiddleware'] = 554
+            if spider.get('proxy', {}).get('enable', {}):
+                item_data[
+                    'gerapy.downloadermiddlewares.proxy.ProxyMiddleware'] = 555
             item_data['gerapy.downloadermiddlewares.pyppeteer.PyppeteerMiddleware'] = 601
             item_data['scrapy_splash.SplashCookiesMiddleware'] = 723
             item_data['scrapy_splash.SplashMiddleware'] = 725
@@ -348,10 +357,12 @@ def process_custom_settings(spider):
             item['value'] = json.dumps(item_data)
         if item['key'] == 'ITEM_PIPELINES':
             item_data = json.loads(item['value'])
-            if spider.get('storage', {}).get('mysql', {}).get('enable', {}): item_data[
-                'gerapy.pipelines.MySQLPipeline'] = 300
-            if spider.get('storage', {}).get('mongodb', {}).get('enable', {}): item_data[
-                'gerapy.pipelines.MongoDBPipeline'] = 301
+            if spider.get('storage', {}).get('mysql', {}).get('enable', {}):
+                item_data[
+                    'gerapy.pipelines.MySQLPipeline'] = 300
+            if spider.get('storage', {}).get('mongodb', {}).get('enable', {}):
+                item_data[
+                    'gerapy.pipelines.MongoDBPipeline'] = 301
             item['value'] = json.dumps(item_data)
     return spider
 
@@ -372,7 +383,8 @@ def generate_project(project_name):
         rmtree(project_dir)
     # generate project
     copy_tree(join(TEMPLATES_DIR, 'project'), project_dir)
-    move(join(PROJECTS_FOLDER, project_name, 'module'), join(project_dir, project_name))
+    move(join(PROJECTS_FOLDER, project_name, 'module'),
+         join(project_dir, project_name))
     for paths in TEMPLATES_TO_RENDER:
         path = join(*paths)
         tplfile = join(project_dir,
@@ -388,10 +400,13 @@ def generate_project(project_name):
     for spider in spiders:
         spider = process_custom_settings(spider)
         source_tpl_file = join(TEMPLATES_DIR, 'spiders', 'crawl.tmpl')
-        new_tpl_file = join(PROJECTS_FOLDER, project_name, project_name, 'spiders', 'crawl.tmpl')
-        spider_file = "%s.py" % join(PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
+        new_tpl_file = join(PROJECTS_FOLDER, project_name,
+                            project_name, 'spiders', 'crawl.tmpl')
+        spider_file = "%s.py" % join(
+            PROJECTS_FOLDER, project_name, project_name, 'spiders', spider.get('name'))
         copy(source_tpl_file, new_tpl_file)
-        render_template(new_tpl_file, spider_file, spider=spider, project_name=project_name)
+        render_template(new_tpl_file, spider_file,
+                        spider=spider, project_name=project_name)
     # save generated_at attr
     model = Project.objects.get(name=project_name)
     model.generated_at = timezone.now()
@@ -447,7 +462,7 @@ def load_dict(x, transformer=None):
     try:
         data = json.loads(x)
         if not transformer:
-            transformer = lambda x: x
+            def transformer(x): return x
         data = {k: transformer(v) for k, v in data.items()}
         return data
     except:
@@ -465,7 +480,7 @@ def str2list(x, transformer=None):
     try:
         data = json.loads(x)
         if not transformer:
-            transformer = lambda x: x
+            def transformer(x): return x
         data = list(map(lambda x: transformer(x), data))
         return data
     except:
@@ -534,10 +549,13 @@ def str2str(v):
     return str(v)
 
 
-def log_exception(exception=Exception, logger=logger):
+def log_exception(exception=Exception, logger=None):
     """
     used for log exceptions
     """
+    if not logger:
+        logger = get_logger(__name__)
+
     def deco(func):
         def wrapper(*args, **kwargs):
             try:
