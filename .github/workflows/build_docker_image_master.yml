@@ -21,8 +21,9 @@ jobs:
     - name: Build Frontend Source
       run: |
         cd gerapy/client
-        npm install
-        npm run build
+        npm install -g yarn
+        yarn 
+        yarn build
     - name: Build the Docker Image
       run: |
         docker build -t germey/gerapy:master -f ./docker/Dockerfile .

@@ -18,7 +18,6 @@
     "jquery": "^3.5.0",
     "js-base64": "^2.5.1",
     "js-cookie": "^2.2.1",
-    "node-sass": "^7.0.0",
     "path": "^0.12.7",
     "sass-loader": "^8.0.0",
     "string-format-obj": "^1.1.1",
@@ -40,6 +39,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "sass": "^1.49.7",
     "vue-cli-plugin-element-ui": "^1.1.4",
     "vue-template-compiler": "^2.6.10"
   },
