@@ -251,7 +251,7 @@ def get_output_error(project_name, spider_name):
     try:
         os.chdir(project_path)
         cmd = ' '.join(['scrapy', 'crawl', spider_name])
-        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE,
+        p = Popen(cmd, shell=False, stdin=PIPE, stdout=PIPE,
                   stderr=STDOUT, close_fds=True)
         output = p.stdout.read()
         if isinstance(output, bytes):
