@@ -38,6 +38,8 @@ jobs:
     - name: Install Gerapy
       run: pip install dist/gerapy-*.whl
     - name: Run Gerapy
+      env:
+        PATH: "/root/.local/bin:$PATH"
       run: |
         gerapy -v
         gerapy init
