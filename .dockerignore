@@ -1,0 +1,6 @@
+*
+!docker
+!gerapy
+!poetry.lock
+!pyproject.toml
+!README.md
