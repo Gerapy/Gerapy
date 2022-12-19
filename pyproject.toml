@@ -4,6 +4,21 @@ version = "0.9.10"
 description = "Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js."
 authors = ["Germey <cqc@cuiqingcai.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/Gerapy/Gerapy"
+include = [
+    "LICENSE"
+]
+classifiers = [
+    # Trove classifiers - https://packaging.python.org/specifications/core-metadata/#metadata-classifier
+    # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: Implementation :: CPython',
+    'Programming Language :: Python :: Implementation :: PyPy'
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
