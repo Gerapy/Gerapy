@@ -41,7 +41,7 @@ RUN \
 RUN \
     set -eux; \
     runscript="/usr/local/bin/gerapy-runner"; \
-    echo "#!/bin/sh" > $runscript; \
+    echo "#!/bin/sh -ex" > $runscript; \
     echo >> $runscript; \
     echo "find \"$GERAPY_HOME_DIR\" \! -user \"$GERAPY_USER\" -exec chown $GERAPY_USER:$GERAPY_GROUP '{}' +" >> $runscript; \
     cmd="gosu $GERAPY_USER:$GERAPY_GROUP gerapy"; \
