@@ -3,9 +3,9 @@ version: "3.9"
 services:
 
   gerapy:
-    image: gerapy
+    image: germey/gerapy
     build: .
-    container_name: germey/gerapy
+    container_name: gerapy
     restart: always
     volumes:
       - gerapy:/home/gerapy
