@@ -1,5 +1,4 @@
 *
-!docker
 !gerapy
 !poetry.lock
 !pyproject.toml
