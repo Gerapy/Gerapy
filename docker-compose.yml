@@ -5,7 +5,7 @@ services:
   gerapy:
     image: gerapy
     build: .
-    container_name: gerapy
+    container_name: germey/gerapy
     restart: always
     volumes:
       - gerapy:/home/gerapy
