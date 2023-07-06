@@ -26,6 +26,6 @@ jobs:
         yarn build
     - name: Build the Docker Image
       run: |
-        docker build -t germey/gerapy:master -f ./docker/Dockerfile .
+        docker build -t germey/gerapy:master .
     - name: Push the Docker Image
       run: docker push germey/gerapy:master
