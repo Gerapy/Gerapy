@@ -64,7 +64,7 @@ def build_egg(project):
         d = tempfile.mkdtemp(prefix='gerapy-')
         o = open(os.path.join(d, 'stdout'), 'wb')
         e = open(os.path.join(d, 'stderr'), 'wb')
-        retry_on_eintr(check_call, [sys.executable, 'setup.py', 'clean', '-a', 'bdist_egg', '-d', d],
+        retry_on_eintr(check_call, [sys.executable, 'setup.py', 'clean', '-a', 'bdist_uberegg', '-d', d],
                        stdout=o, stderr=e)
         o.close()
         e.close()

@@ -42,6 +42,7 @@ beautifulsoup4 = ">=4.7.0"
 djangorestframework = ">=3.11.2"
 websocket = ">=0.2.1"
 pyppeteer = ">=0.0.25"
+uberegg = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 
