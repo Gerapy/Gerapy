@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gerapy"
-version = "0.9.12"
+version = "0.9.13"
 description = "Distributed Crawler Management Framework Based on Scrapy, Scrapyd, Scrapyd-Client, Scrapyd-API, Django and Vue.js."
 authors = ["Germey <cqc@cuiqingcai.com>"]
 license = "MIT"
