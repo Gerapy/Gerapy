@@ -94,6 +94,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': DB_PATH,
+        # SQLite locks the whole database on write. The background scheduler and
+        # the web server write concurrently, so the default 5s busy timeout is
+        # easily exceeded and raises "database is locked". A longer timeout makes
+        # writers wait for the lock instead of failing. Tune via SQLITE_TIMEOUT.
+        'OPTIONS': {
+            'timeout': int(os.getenv('SQLITE_TIMEOUT', 20)),
+        },
     }
 }
 
