@@ -448,7 +448,10 @@ def get_job_id(client, task):
     :param task: task object
     :return: job id
     """
-    return '%s-%s-%s' % (client.name, task.project, task.spider)
+    # include the client's primary key so that clients sharing the same name do
+    # not collide on the same job id (which, with replace_existing=True, would
+    # cause some selected hosts to silently not be scheduled)
+    return '%s-%s-%s-%s' % (client.id, client.name, task.project, task.spider)
 
 
 def load_dict(x, transformer=None):
