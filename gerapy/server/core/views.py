@@ -325,7 +325,7 @@ def project_create(request):
 
 @log_exception()
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def project_upload(request):
     """
     upload project
@@ -338,9 +338,17 @@ def project_upload(request):
         fs = FileSystemStorage(PROJECTS_FOLDER)
         zip_file_name = fs.save(file_name, file)
         logger.debug('zip file name %s', zip_file_name)
-        # extract zip file
-        with zipfile.ZipFile(join(PROJECTS_FOLDER, zip_file_name), 'r') as zip_ref:
-            zip_ref.extractall(PROJECTS_FOLDER)
+        # extract zip file safely to prevent path traversal (a.k.a. Zip Slip)
+        projects_dir = os.path.realpath(PROJECTS_FOLDER)
+        zip_path = join(PROJECTS_FOLDER, zip_file_name)
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            for member in zip_ref.namelist():
+                member_path = os.path.realpath(join(projects_dir, member))
+                if member_path != projects_dir and not member_path.startswith(projects_dir + os.sep):
+                    logger.error('rejected zip entry with path traversal: %s', member)
+                    return JsonResponse(
+                        {'status': False, 'message': 'Invalid file path in archive'}, status=400)
+            zip_ref.extractall(projects_dir)
         logger.debug('extracted files to %s', PROJECTS_FOLDER)
         return JsonResponse({'status': True})
 
