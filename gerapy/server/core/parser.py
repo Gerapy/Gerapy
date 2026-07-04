@@ -4,7 +4,11 @@ from twisted.internet import reactor
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
 from scrapy.http import Request
-from scrapy.item import BaseItem
+try:
+    # BaseItem was removed in Scrapy 2.6; fall back to Item on newer versions
+    from scrapy.item import BaseItem
+except ImportError:
+    from scrapy.item import Item as BaseItem
 from scrapy.utils.spider import iterate_spider_output
 from gerapy import get_logger
 from gerapy.server.core.utils import process_request, process_response, process_item
