@@ -16,6 +16,7 @@ from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.utils import timezone
+from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from subprocess import Popen, PIPE
@@ -32,6 +33,10 @@ from django.core.files.storage import FileSystemStorage
 import zipfile
 
 logger = get_logger(__name__)
+
+# fields a client is allowed to set through the API; prevents mass assignment
+# of arbitrary model attributes from the raw request body
+CLIENT_ALLOWED_FIELDS = {'name', 'ip', 'port', 'description', 'auth', 'username', 'password'}
 
 
 @log_exception()
@@ -133,7 +138,7 @@ def client_update(request, client_id):
     """
     if request.method == 'POST':
         client = Client.objects.filter(id=client_id)
-        data = json.loads(request.body)
+        data = {k: v for k, v in json.loads(request.body).items() if k in CLIENT_ALLOWED_FIELDS}
         client.update(**data)
         return JsonResponse(model_to_dict(Client.objects.get(id=client_id)))
 
@@ -148,7 +153,7 @@ def client_create(request):
     :return: json
     """
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = {k: v for k, v in json.loads(request.body).items() if k in CLIENT_ALLOWED_FIELDS}
         client = Client.objects.create(**data)
         return JsonResponse(model_to_dict(client))
 
@@ -459,11 +464,13 @@ def project_deploy(request, client_id, project_name):
         # execute deploy operation
         scrapyd = get_scrapyd(client)
         scrapyd.add_version(project_name, int(time.time()), egg_file.read())
-        # update deploy info
+        # update deploy info atomically to avoid a race between concurrent
+        # deployments that could violate the (client, project) unique constraint
         deployed_at = timezone.now()
-        Deploy.objects.filter(client=client, project=project).delete()
-        deploy, result = Deploy.objects.update_or_create(client=client, project=project, deployed_at=deployed_at,
-                                                         description=project.description)
+        with transaction.atomic():
+            deploy, result = Deploy.objects.update_or_create(
+                client=client, project=project,
+                defaults={'deployed_at': deployed_at, 'description': project.description})
         return JsonResponse(model_to_dict(deploy))
 
 
