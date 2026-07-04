@@ -19,6 +19,13 @@ PROJECTS_FOLDER = getenv('PROJECTS_FOLDER', 'projects')
 LOGS_FOLDER = LOG_DIR
 # scheduler
 SCHEDULER_HEARTBEAT = 3
+# apscheduler job defaults. The library defaults (misfire_grace_time=1s,
+# max_instances=1) cause "Run time of job ... was missed!" warnings and skipped
+# runs whenever the scheduler thread is briefly busy or a scrapyd request is
+# slow. coalesce=True collapses several missed runs into a single one.
+SCHEDULER_COALESCE = getenv('SCHEDULER_COALESCE', True)
+SCHEDULER_MAX_INSTANCES = int(getenv('SCHEDULER_MAX_INSTANCES', 10))
+SCHEDULER_MISFIRE_GRACE_TIME = int(getenv('SCHEDULER_MISFIRE_GRACE_TIME', 3600))
 
 ADMINS = [
     'admin'

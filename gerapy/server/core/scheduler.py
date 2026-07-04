@@ -6,10 +6,15 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
 from gerapy import get_logger
 from gerapy.server.core.models import Client, Task
-from gerapy.settings import SCHEDULER_HEARTBEAT
+from gerapy.settings import SCHEDULER_HEARTBEAT, SCHEDULER_COALESCE, SCHEDULER_MAX_INSTANCES, \
+    SCHEDULER_MISFIRE_GRACE_TIME
 from gerapy.server.core.utils import get_scrapyd, clients_of_task, get_job_id
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(job_defaults={
+    'coalesce': SCHEDULER_COALESCE,
+    'max_instances': SCHEDULER_MAX_INSTANCES,
+    'misfire_grace_time': SCHEDULER_MISFIRE_GRACE_TIME,
+})
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
 # map the args
