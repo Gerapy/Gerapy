@@ -27,7 +27,7 @@ from gerapy.server.server.settings import TIME_ZONE
 from gerapy.server.core.models import Client, Project, Deploy, Monitor, Task
 from gerapy.server.core.build import build_project, find_egg
 from gerapy.server.core.utils import IGNORES, is_in_curdir, scrapyd_url, log_url, get_tree, get_scrapyd, process_html, bytes2str, \
-    clients_of_task, get_job_id, log_exception
+    clients_of_task, get_job_id, log_exception, is_safe_url
 from django_apscheduler.models import DjangoJob, DjangoJobExecution
 from django.core.files.storage import FileSystemStorage
 import zipfile
@@ -983,6 +983,8 @@ def render_html(request):
     if request.method == 'GET':
         url = request.GET.get('url')
         url = unquote(base64.b64decode(url).decode('utf-8'))
+        if not is_safe_url(url):
+            return JsonResponse({'message': 'Invalid or forbidden URL'}, status=400)
         js = request.GET.get('js', 0)
         script = request.GET.get('script')
         response = requests.get(url, timeout=5)

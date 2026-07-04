@@ -14,6 +14,9 @@ import os
 import string
 from shutil import move, copy, rmtree
 from os.path import join, exists, dirname
+from urllib.parse import urlparse
+import socket
+import ipaddress
 from django.utils import timezone
 from gerapy import get_logger
 from gerapy.settings import PROJECTS_FOLDER
@@ -34,6 +37,39 @@ TEMPLATES_TO_RENDER = (
 
 NO_REFERRER = '<meta name="referrer" content="never">'
 BASE = '<base href="{href}">'
+
+
+def is_safe_url(url):
+    """
+    Validate a user-supplied URL before fetching it server-side, to mitigate
+    SSRF (server-side request forgery). Only http/https URLs are allowed and the
+    target host must not resolve to a private, loopback, link-local, reserved or
+    otherwise non-global address (e.g. cloud metadata endpoints, localhost).
+    :param url: the URL to validate
+    :return: True if the URL is safe to fetch, otherwise False
+    """
+    try:
+        parsed = urlparse(url)
+    except (ValueError, AttributeError):
+        return False
+    if parsed.scheme not in ('http', 'https'):
+        return False
+    hostname = parsed.hostname
+    if not hostname:
+        return False
+    try:
+        addr_infos = socket.getaddrinfo(hostname, None)
+    except (socket.gaierror, UnicodeError):
+        return False
+    for addr_info in addr_infos:
+        ip = addr_info[4][0]
+        try:
+            ip_obj = ipaddress.ip_address(ip)
+        except ValueError:
+            return False
+        if not ip_obj.is_global:
+            return False
+    return True
 
 
 def get_scrapyd(client):
